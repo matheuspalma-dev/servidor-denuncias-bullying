@@ -5,6 +5,7 @@ import br.com.pr.sida.usuario.dto.request.UsuarioLoginRequestDTO;
 import br.com.pr.sida.usuario.dto.request.UsuarioRegisterRequestDTO;
 import br.com.pr.sida.usuario.dto.response.CadastroResponseDTO;
 import br.com.pr.sida.util.Atividade;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class UsuarioService {
     public UsuarioService(
             UsuarioRepository usuarioRepository,
             PasswordEncoder passwordEncoder,
-            TextEncryptor textEncryptor,
+            @Qualifier("criptografarTextos") TextEncryptor textEncryptor,
             AutentificacaoService autentificacaoService
     )
     {
@@ -89,7 +90,7 @@ public class UsuarioService {
 
         do {
             id = random.nextLong();
-        } while (usuarioRepository.existsById(id));
+        } while (usuarioRepository.existsById(id) || id < 0);
 
         System.out.println("ID gerado: " + id);
         return id;
