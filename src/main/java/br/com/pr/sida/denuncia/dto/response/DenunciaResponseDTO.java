@@ -1,7 +1,9 @@
 package br.com.pr.sida.denuncia.dto.response;
 
 import br.com.pr.sida.mensagem.denuncia.MensagemDenuncia;
+import br.com.pr.sida.mensagem.denuncia.dto.response.MensagensDenunciaResponseDTO;
 import br.com.pr.sida.util.Genero;
+import br.com.pr.sida.util.PreferenciaEnvio;
 import br.com.pr.sida.util.Status;
 import br.com.pr.sida.util.TipoViolencia;
 import lombok.Getter;
@@ -22,5 +24,6 @@ public class DenunciaResponseDTO{
     private boolean violenciaNaEscola;
     private TipoViolencia tipoViolencia;
     private Status statusDenuncia;
-    private List<MensagemDenuncia> mensagens;
+    private PreferenciaEnvio preferenciaEnvio;
+    private List<MensagensDenunciaResponseDTO> mensagens;
 }

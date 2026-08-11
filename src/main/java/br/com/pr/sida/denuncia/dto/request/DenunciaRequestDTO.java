@@ -1,6 +1,7 @@
 package br.com.pr.sida.denuncia.dto.request;
 
 import br.com.pr.sida.util.Genero;
+import br.com.pr.sida.util.PreferenciaEnvio;
 import br.com.pr.sida.util.TipoViolencia;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +21,8 @@ public record DenunciaRequestDTO(
         @NotNull
         TipoViolencia tipoViolencia,
         @NotBlank
-        String mensagemDenuncia
+        String mensagemDenuncia,
+        @NotNull
+        PreferenciaEnvio preferenciaEnvio
 ) {
 }
