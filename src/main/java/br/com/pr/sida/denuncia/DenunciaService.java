@@ -53,6 +53,7 @@ public class DenunciaService {
         denuncia.setIdadeDenunciante(denunciaRequestDTO.idadeDenunciante());
         denuncia.setGeneroDenunciante(denunciaRequestDTO.generoDenunciante());
         denuncia.setViolenciaNaEscola(denunciaRequestDTO.violenciaNaEscola());
+        denuncia.setPreferenciaEnvio(denunciaRequestDTO.preferenciaEnvio());
         if (denunciaRequestDTO.violenciaNaEscola()) {
             denuncia.setTipoViolencia(denunciaRequestDTO.tipoViolencia());
         } else {

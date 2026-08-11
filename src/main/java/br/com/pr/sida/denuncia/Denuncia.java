@@ -2,6 +2,7 @@ package br.com.pr.sida.denuncia;
 
 import br.com.pr.sida.mensagem.denuncia.MensagemDenuncia;
 import br.com.pr.sida.util.Genero;
+import br.com.pr.sida.util.PreferenciaEnvio;
 import br.com.pr.sida.util.Status;
 import br.com.pr.sida.util.TipoViolencia;
 import jakarta.persistence.*;
@@ -37,6 +38,9 @@ public class Denuncia {
     @Column(name = "status_denuncia", nullable = false)
     @Enumerated(EnumType.STRING)
     private Status statusDenuncia;
-    @OneToMany(mappedBy = "denuncia_id")
+    @Column(name = "preferencia_envio", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private PreferenciaEnvio preferenciaEnvio;
+    @OneToMany(mappedBy = "denuncia")
     private List<MensagemDenuncia> mensagens;
 }
