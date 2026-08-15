@@ -2,8 +2,12 @@ package br.com.pr.sida.unidade.atendimento;
 
 import br.com.pr.sida.util.TipoUnidade;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Setter
+@Getter
 public class UnidadeAtendimento {
     @Id
     private Long id;
