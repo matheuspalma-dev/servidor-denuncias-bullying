@@ -3,8 +3,12 @@ package br.com.pr.sida.responsavel.denuncia;
 import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.unidade.atendimento.UnidadeAtendimento;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class ResponsavelDenuncia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
