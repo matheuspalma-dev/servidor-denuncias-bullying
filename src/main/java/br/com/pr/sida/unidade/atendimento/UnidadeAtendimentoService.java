@@ -1,8 +1,10 @@
 package br.com.pr.sida.unidade.atendimento;
 
+import br.com.pr.sida.denuncia.DenunciaService;
 import br.com.pr.sida.unidade.atendimento.dto.request.UnidadeAtendimentoRegisterDTO;
 import br.com.pr.sida.unidade.atendimento.dto.request.UnidadeAtendimentoRequestDTO;
 import br.com.pr.sida.unidade.atendimento.dto.response.UnidadeAtendimentoResponseDTO;
+import br.com.pr.sida.util.TipoUnidade;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +39,20 @@ public class UnidadeAtendimentoService {
     public void cadastro(UnidadeAtendimentoRegisterDTO unidadeAtendimentoRegisterDTO){
         UnidadeAtendimento unidadeAtendimento = criarUnidadeAtendimento(unidadeAtendimentoRegisterDTO);
         unidadeAtendimentoRepository.save(unidadeAtendimento);
+    }
+
+    public UnidadeAtendimento procurarUnidadeAtendimentoPorTipoUnidade(TipoUnidade tipoUnidade){
+        UnidadeAtendimento unidadeAtendimento = unidadeAtendimentoRepository.findByTipoUnidade(tipoUnidade)
+                .orElseThrow(() -> new RuntimeException("Unidade de atendimento não encontrada"));
+
+        return unidadeAtendimento;
+    }
+
+    public UnidadeAtendimento procurarUnidadeAtendimentoPorId(Long id){
+        UnidadeAtendimento unidadeAtendimento = unidadeAtendimentoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Unidade de atendimento não encontrada"));
+
+        return unidadeAtendimento;
     }
 
     private UnidadeAtendimento criarUnidadeAtendimento(UnidadeAtendimentoRegisterDTO unidadeAtendimentoRegisterDTO){

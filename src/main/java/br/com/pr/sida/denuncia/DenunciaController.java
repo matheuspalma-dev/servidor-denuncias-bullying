@@ -26,12 +26,6 @@ public class DenunciaController {
         denunciaService.salvarDenuncia(denunciaRequestDTO);
     }
 
-    //rota só para teste, não será exposta na versão final
-    @PostMapping("/deletar/{id}")
-    public void deletarDenuncia(@PathVariable Long id) {
-        denunciaService.deletarDenuncia(id);
-    }
-
     @PostMapping("/mensagem/criar")
     @ResponseStatus(HttpStatus.CREATED)
     public void adicionarMensagemDenuncia(@RequestBody MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO){
