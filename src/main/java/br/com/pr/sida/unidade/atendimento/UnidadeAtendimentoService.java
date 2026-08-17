@@ -1,6 +1,8 @@
 package br.com.pr.sida.unidade.atendimento;
 
 import br.com.pr.sida.denuncia.DenunciaService;
+import br.com.pr.sida.responsavel.denuncia.ResponsavelDenunciaService;
+import br.com.pr.sida.responsavel.denuncia.dto.response.ResponsavelDenunciaEncaminhamentoDTO;
 import br.com.pr.sida.unidade.atendimento.dto.request.UnidadeAtendimentoRegisterDTO;
 import br.com.pr.sida.unidade.atendimento.dto.request.UnidadeAtendimentoRequestDTO;
 import br.com.pr.sida.unidade.atendimento.dto.response.UnidadeAtendimentoResponseDTO;
@@ -8,21 +10,25 @@ import br.com.pr.sida.util.TipoUnidade;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Random;
 
 @Service
 public class UnidadeAtendimentoService {
 
     private final UnidadeAtendimentoRepository unidadeAtendimentoRepository;
+    private final ResponsavelDenunciaService responsavelDenunciaService;
     private final PasswordEncoder passwordEncoder;
     private final Random random = new Random();
 
     public UnidadeAtendimentoService(
             UnidadeAtendimentoRepository unidadeAtendimentoRepository,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            ResponsavelDenunciaService responsavelDenunciaService
             ) {
         this.unidadeAtendimentoRepository = unidadeAtendimentoRepository;
         this.passwordEncoder = passwordEncoder;
+        this.responsavelDenunciaService = responsavelDenunciaService;
     }
 
     public UnidadeAtendimentoResponseDTO login(UnidadeAtendimentoRequestDTO unidadeAtendimentoRequestDTO){
@@ -41,18 +47,8 @@ public class UnidadeAtendimentoService {
         unidadeAtendimentoRepository.save(unidadeAtendimento);
     }
 
-    public UnidadeAtendimento procurarUnidadeAtendimentoPorTipoUnidade(TipoUnidade tipoUnidade){
-        UnidadeAtendimento unidadeAtendimento = unidadeAtendimentoRepository.findByTipoUnidade(tipoUnidade)
-                .orElseThrow(() -> new RuntimeException("Unidade de atendimento não encontrada"));
-
-        return unidadeAtendimento;
-    }
-
-    public UnidadeAtendimento procurarUnidadeAtendimentoPorId(Long id){
-        UnidadeAtendimento unidadeAtendimento = unidadeAtendimentoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Unidade de atendimento não encontrada"));
-
-        return unidadeAtendimento;
+    public List<ResponsavelDenunciaEncaminhamentoDTO> acessarDenunciasEncaminhamento(Long idUnidadeAtendimento){
+        return responsavelDenunciaService.acessarDenunciasEncaminhamento(idUnidadeAtendimento);
     }
 
     private UnidadeAtendimento criarUnidadeAtendimento(UnidadeAtendimentoRegisterDTO unidadeAtendimentoRegisterDTO){
