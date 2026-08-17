@@ -4,31 +4,33 @@ import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.responsavel.denuncia.dto.request.ResponsavelDenunciaRequestDTO;
 import br.com.pr.sida.responsavel.denuncia.dto.response.ResponsavelDenunciaEncaminhamentoDTO;
 import br.com.pr.sida.unidade.atendimento.UnidadeAtendimento;
+import br.com.pr.sida.unidade.atendimento.UnidadeAtendimentoRepository;
 import br.com.pr.sida.unidade.atendimento.UnidadeAtendimentoService;
 import br.com.pr.sida.util.TipoUnidade;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 @Service
 public class ResponsavelDenunciaService {
     private final ResponsavelDenunciaRepository responsavelDenunciaRepository;
-    private final UnidadeAtendimentoService unidadeAtendimentoService;
+    private final UnidadeAtendimentoRepository unidadeAtendimentoRepository;
     private final Random random = new Random();
 
     public ResponsavelDenunciaService(
             ResponsavelDenunciaRepository responsavelDenunciaRepository,
-            UnidadeAtendimentoService unidadeAtendimentoService
+            UnidadeAtendimentoRepository unidadeAtendimentoRepository
     )
     {
         this.responsavelDenunciaRepository = responsavelDenunciaRepository;
-        this.unidadeAtendimentoService = unidadeAtendimentoService;
+        this.unidadeAtendimentoRepository = unidadeAtendimentoRepository;
     }
 
     public void salvarResponsavelDenuncia(Denuncia denuncia, TipoUnidade tipoUnidade){
-        UnidadeAtendimento unidadeAtendimento = unidadeAtendimentoService
-                                                    .procurarUnidadeAtendimentoPorTipoUnidade(tipoUnidade);
+        UnidadeAtendimento unidadeAtendimento = unidadeAtendimentoRepository.findByTipoUnidade(tipoUnidade)
+                .orElseThrow(() -> new RuntimeException("Unidade não encontrada"));
 
         ResponsavelDenuncia responsavelDenuncia = new ResponsavelDenuncia();
         responsavelDenuncia.setDenuncia(denuncia);
@@ -40,27 +42,32 @@ public class ResponsavelDenunciaService {
     public void mudarResponsavelDenuncia(ResponsavelDenunciaRequestDTO responsavelDenunciaRequestDTO){
         ResponsavelDenuncia responsavelDenuncia = responsavelDenunciaRepository.findByDenunciaId(responsavelDenunciaRequestDTO.denunciaId())
                                                     .orElseThrow(() -> new RuntimeException("Responsável pela denúncia não encontrado"));
-        UnidadeAtendimento unidadeAtendimento = unidadeAtendimentoService
-                                                    .procurarUnidadeAtendimentoPorTipoUnidade(responsavelDenunciaRequestDTO.tipoUnidade());
+        UnidadeAtendimento unidadeAtendimento = unidadeAtendimentoRepository.findByTipoUnidade(responsavelDenunciaRequestDTO.tipoUnidade())
+                                                    .orElseThrow(() -> new RuntimeException("Unidade não encontrada"));
 
         responsavelDenuncia.setUnidadeAtendimento(unidadeAtendimento);
         responsavelDenunciaRepository.save(responsavelDenuncia);
     }
 
-    public void acessarDenunciasResponsavel(Long idUnidadeAtendimento) {
-        UnidadeAtendimento unidadeAtendimento = unidadeAtendimentoService
-                                                    .procurarUnidadeAtendimentoPorId(idUnidadeAtendimento);
+    public List<ResponsavelDenunciaEncaminhamentoDTO> acessarDenunciasEncaminhamento(Long idUnidadeAtendimento) {
+        List<Denuncia> denuncias = getDenuncias(idUnidadeAtendimento);
+        return criarRespostaEncaminhamento(denuncias);
+    }
 
-        if (unidadeAtendimento == null) {
-            throw new RuntimeException("Unidade de atendimento não encontrada");
-        }
+    public void acessarDenunciasResponsavel(Long idUnidadeAtendimento){
+        List<Denuncia> denuncias = getDenuncias(idUnidadeAtendimento);
+    }
+
+    private List<Denuncia> getDenuncias(Long idUnidadeAtendimento){
+        UnidadeAtendimento unidadeAtendimento = unidadeAtendimentoRepository.findById(idUnidadeAtendimento)
+                .orElseThrow(() -> new RuntimeException("Unidade não encontarda"));
 
         List<ResponsavelDenuncia> responsavelDenuncias = responsavelDenunciaRepository.findByUnidadeAtendimentoId(unidadeAtendimento.getId());
         List<Denuncia> denuncias = responsavelDenuncias.stream()
                 .map(ResponsavelDenuncia::getDenuncia)
                 .toList();
 
-
+        return denuncias;
     }
 
     private Long gerarId() {
@@ -72,8 +79,16 @@ public class ResponsavelDenunciaService {
         return id;
     }
 
-    private void criarRespostaEncaminhamento(List<Denuncia> denuncias){
-        List<ResponsavelDenunciaEncaminhamentoDTO> encaminhamentos;
+    private List<ResponsavelDenunciaEncaminhamentoDTO> criarRespostaEncaminhamento(List<Denuncia> denuncias){
+        List<ResponsavelDenunciaEncaminhamentoDTO> encaminhamentos = new ArrayList<>();
+
+        for (int i = 0; i < denuncias.size(); i++){
+            Denuncia denuncia = denuncias.get(i);
+            ResponsavelDenunciaEncaminhamentoDTO responsavelDenunciaEncaminhamentoDTO = criarEncaminhamento(denuncia);
+            encaminhamentos.add(responsavelDenunciaEncaminhamentoDTO);
+        }
+
+        return encaminhamentos;
     }
 
     private ResponsavelDenunciaEncaminhamentoDTO criarEncaminhamento(Denuncia denuncia){
@@ -89,5 +104,7 @@ public class ResponsavelDenunciaService {
         return encaminhamentoDTO;
     }
 
-    private void criarRespostaDenuncia(){}
+    private List<ResponsavelDenunciaEncaminhamentoDTO> criarRespostaAcessoDenuncia(){
+        return null;
+    }
 }
