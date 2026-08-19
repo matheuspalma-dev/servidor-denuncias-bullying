@@ -54,7 +54,7 @@ public class AcessoDenunciaService {
         acessoDenunciaRepository.save(acesso);
     }
 
-    private DenunciaResponseDTO converterDenunciaEmDTO(Denuncia denuncia){
+    public DenunciaResponseDTO converterDenunciaEmDTO(Denuncia denuncia){
         DenunciaResponseDTO denunciaResponseDTO = new DenunciaResponseDTO();
         denunciaResponseDTO.setId(denuncia.getId());
         denunciaResponseDTO.setDataCriacao(denuncia.getDataCriacao());
