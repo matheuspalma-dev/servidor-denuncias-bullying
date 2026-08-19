@@ -1,5 +1,6 @@
 package br.com.pr.sida.unidade.atendimento;
 
+import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.responsavel.denuncia.dto.response.ResponsavelDenunciaEncaminhamentoDTO;
 import br.com.pr.sida.unidade.atendimento.dto.request.UnidadeAtendimentoRegisterDTO;
 import br.com.pr.sida.unidade.atendimento.dto.request.UnidadeAtendimentoRequestDTO;
@@ -36,9 +37,15 @@ public class UnidadeAtendimentoController {
         }
     }
 
-    @GetMapping("/acessar/encaminhamentos")
-    public ResponseEntity<List<ResponsavelDenunciaEncaminhamentoDTO>> acessarDenunciasEncaminhamento(@RequestBody Long unidadeId){
+    @GetMapping("/acessar/encaminhamentos/{unidadeId}")
+    public ResponseEntity<List<ResponsavelDenunciaEncaminhamentoDTO>> acessarDenunciasEncaminhamento(@PathVariable Long unidadeId){
         List<ResponsavelDenunciaEncaminhamentoDTO> encaminhamentos = unidadeAtendimentoService.acessarDenunciasEncaminhamento(unidadeId);
         return ResponseEntity.ok().body(encaminhamentos);
+    }
+
+    @GetMapping("/acessar/encaminhadas/{unidadeId}")
+    public ResponseEntity<List<DenunciaResponseDTO>> acessarDenunciasEncaminhadas(@PathVariable Long unidadeId){
+        List<DenunciaResponseDTO> encaminhadas = unidadeAtendimentoService.acessarDenunciasEncaminhadas(unidadeId);
+        return ResponseEntity.ok().body(encaminhadas);
     }
 }

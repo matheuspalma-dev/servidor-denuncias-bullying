@@ -1,6 +1,8 @@
 package br.com.pr.sida.responsavel.denuncia;
 
+import br.com.pr.sida.acesso.denuncia.AcessoDenunciaService;
 import br.com.pr.sida.denuncia.Denuncia;
+import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.responsavel.denuncia.dto.request.ResponsavelDenunciaRequestDTO;
 import br.com.pr.sida.responsavel.denuncia.dto.response.ResponsavelDenunciaEncaminhamentoDTO;
 import br.com.pr.sida.unidade.atendimento.UnidadeAtendimento;
@@ -18,14 +20,16 @@ public class ResponsavelDenunciaService {
     private final ResponsavelDenunciaRepository responsavelDenunciaRepository;
     private final UnidadeAtendimentoRepository unidadeAtendimentoRepository;
     private final Random random = new Random();
+    private final AcessoDenunciaService acessoDenunciaService;
 
     public ResponsavelDenunciaService(
             ResponsavelDenunciaRepository responsavelDenunciaRepository,
-            UnidadeAtendimentoRepository unidadeAtendimentoRepository
-    )
+            UnidadeAtendimentoRepository unidadeAtendimentoRepository,
+            AcessoDenunciaService acessoDenunciaService)
     {
         this.responsavelDenunciaRepository = responsavelDenunciaRepository;
         this.unidadeAtendimentoRepository = unidadeAtendimentoRepository;
+        this.acessoDenunciaService = acessoDenunciaService;
     }
 
     public void salvarResponsavelDenuncia(Denuncia denuncia, TipoUnidade tipoUnidade){
@@ -54,8 +58,9 @@ public class ResponsavelDenunciaService {
         return criarRespostaEncaminhamento(denuncias);
     }
 
-    public void acessarDenunciasResponsavel(Long idUnidadeAtendimento){
+    public List<DenunciaResponseDTO> acessarDenunciasResponsavel(Long idUnidadeAtendimento){
         List<Denuncia> denuncias = getDenuncias(idUnidadeAtendimento);
+        return criarRespostaDenuncia(denuncias);
     }
 
     private List<Denuncia> getDenuncias(Long idUnidadeAtendimento){
@@ -91,6 +96,16 @@ public class ResponsavelDenunciaService {
         return encaminhamentos;
     }
 
+    private List<DenunciaResponseDTO> criarRespostaDenuncia(List<Denuncia> denuncias){
+        List<DenunciaResponseDTO> denunciasDTO = new ArrayList<>();
+        for (int i = 0; i < denuncias.size(); i++){
+            Denuncia denuncia = denuncias.get(i);
+            DenunciaResponseDTO denunciaResponseDTO = acessoDenunciaService.converterDenunciaEmDTO(denuncia);
+            denunciasDTO.add(denunciaResponseDTO);
+        }
+        return denunciasDTO;
+    }
+
     private ResponsavelDenunciaEncaminhamentoDTO criarEncaminhamento(Denuncia denuncia){
         ResponsavelDenunciaEncaminhamentoDTO encaminhamentoDTO = new ResponsavelDenunciaEncaminhamentoDTO();
         encaminhamentoDTO.setDenunciaId(denuncia.getId());
@@ -102,9 +117,5 @@ public class ResponsavelDenunciaService {
         encaminhamentoDTO.setViolenciaNaEscola(denuncia.isViolenciaNaEscola());
         encaminhamentoDTO.setPreferenciaEnvio(denuncia.getPreferenciaEnvio());
         return encaminhamentoDTO;
-    }
-
-    private List<ResponsavelDenunciaEncaminhamentoDTO> criarRespostaAcessoDenuncia(){
-        return null;
     }
 }

@@ -1,6 +1,7 @@
 package br.com.pr.sida.unidade.atendimento;
 
 import br.com.pr.sida.denuncia.DenunciaService;
+import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenunciaService;
 import br.com.pr.sida.responsavel.denuncia.dto.response.ResponsavelDenunciaEncaminhamentoDTO;
 import br.com.pr.sida.unidade.atendimento.dto.request.UnidadeAtendimentoRegisterDTO;
@@ -49,6 +50,10 @@ public class UnidadeAtendimentoService {
 
     public List<ResponsavelDenunciaEncaminhamentoDTO> acessarDenunciasEncaminhamento(Long idUnidadeAtendimento){
         return responsavelDenunciaService.acessarDenunciasEncaminhamento(idUnidadeAtendimento);
+    }
+
+    public List<DenunciaResponseDTO> acessarDenunciasEncaminhadas(Long idUnidadeAtendimento){
+        return responsavelDenunciaService.acessarDenunciasResponsavel(idUnidadeAtendimento);
     }
 
     private UnidadeAtendimento criarUnidadeAtendimento(UnidadeAtendimentoRegisterDTO unidadeAtendimentoRegisterDTO){

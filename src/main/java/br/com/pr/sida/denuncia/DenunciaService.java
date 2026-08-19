@@ -38,8 +38,15 @@ public class DenunciaService {
     )
     {
         Denuncia denuncia = criarDenuncia(denunciaRequestDTO);
-        acessoDenunciaService.salvarAcessoDenuncia(denuncia);
         denunciaRepository.save(denuncia);
+        acessoDenunciaService.salvarAcessoDenuncia(denuncia);
+        mensagemDenunciaService.salvarMensagem(new MensagemDenunciaRequestDTO(
+                denuncia.getId(),
+                AutorMensagem.DENUNCIANTE,
+                denunciaRequestDTO.mensagemDenuncia()
+        ));
+
+        responsavelDenunciaService.salvarResponsavelDenuncia(denuncia, TipoUnidade.ENCAMINHAMENTO);
     }
 
     private Denuncia criarDenuncia(DenunciaRequestDTO denunciaRequestDTO){
@@ -58,14 +65,6 @@ public class DenunciaService {
         }
         denuncia.setStatusDenuncia(Status.RECEBIDA);
         denuncia.setId(gerarId());
-
-        mensagemDenunciaService.salvarMensagem(new MensagemDenunciaRequestDTO(
-                denuncia.getId(),
-                AutorMensagem.DENUNCIANTE,
-                denunciaRequestDTO.mensagemDenuncia()
-        ));
-
-        responsavelDenunciaService.salvarResponsavelDenuncia(denuncia, TipoUnidade.ENCAMINHAMENTO);
 
         return denuncia;
     }
