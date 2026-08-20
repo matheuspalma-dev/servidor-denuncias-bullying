@@ -23,7 +23,7 @@ public class UnidadeAtendimentoController {
 
     @PostMapping("/cadastro")
     @ResponseStatus(HttpStatus.CREATED)
-    public void cadastro(UnidadeAtendimentoRegisterDTO unidadeAtendimentoRegisterDTO){
+    public void cadastro(@RequestBody UnidadeAtendimentoRegisterDTO unidadeAtendimentoRegisterDTO){
         unidadeAtendimentoService.cadastro(unidadeAtendimentoRegisterDTO);
     }
 

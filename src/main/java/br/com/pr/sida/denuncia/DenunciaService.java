@@ -1,6 +1,7 @@
 package br.com.pr.sida.denuncia;
 
 import br.com.pr.sida.acesso.denuncia.AcessoDenunciaService;
+import br.com.pr.sida.acesso.denuncia.dto.AcessoDenunciaResponseDTO;
 import br.com.pr.sida.denuncia.dto.request.DenunciaRequestDTO;
 import br.com.pr.sida.mensagem.denuncia.MensagemDenunciaService;
 import br.com.pr.sida.mensagem.denuncia.dto.request.MensagemDenunciaRequestDTO;
@@ -33,13 +34,12 @@ public class DenunciaService {
         this.responsavelDenunciaService = responsavelDenunciaService;
     }
 
-    public void salvarDenuncia(
+    public AcessoDenunciaResponseDTO salvarDenuncia(
             DenunciaRequestDTO denunciaRequestDTO
     )
     {
         Denuncia denuncia = criarDenuncia(denunciaRequestDTO);
         denunciaRepository.save(denuncia);
-        acessoDenunciaService.salvarAcessoDenuncia(denuncia);
         mensagemDenunciaService.salvarMensagem(new MensagemDenunciaRequestDTO(
                 denuncia.getId(),
                 AutorMensagem.DENUNCIANTE,
@@ -47,6 +47,7 @@ public class DenunciaService {
         ));
 
         responsavelDenunciaService.salvarResponsavelDenuncia(denuncia, TipoUnidade.ENCAMINHAMENTO);
+        return acessoDenunciaService.salvarAcessoDenuncia(denuncia);
     }
 
     private Denuncia criarDenuncia(DenunciaRequestDTO denunciaRequestDTO){
