@@ -1,6 +1,7 @@
 package br.com.pr.sida.acesso.denuncia;
 
 import br.com.pr.sida.acesso.denuncia.dto.AcessoDenunciaRequestDTO;
+import br.com.pr.sida.acesso.denuncia.dto.AcessoDenunciaResponseDTO;
 import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.mensagem.denuncia.MensagemDenuncia;
@@ -49,9 +50,10 @@ public class AcessoDenunciaService {
         return converterDenunciaEmDTO(acesso.getDenuncia());
     }
 
-    public void salvarAcessoDenuncia(Denuncia denuncia) {
+    public AcessoDenunciaResponseDTO salvarAcessoDenuncia(Denuncia denuncia) {
         Acesso acesso = criarAcessoDenuncia(denuncia);
         acessoDenunciaRepository.save(acesso);
+        return new AcessoDenunciaResponseDTO(acesso.getCodigoAcesso(), acesso.getSenhaAcesso());
     }
 
     public DenunciaResponseDTO converterDenunciaEmDTO(Denuncia denuncia){

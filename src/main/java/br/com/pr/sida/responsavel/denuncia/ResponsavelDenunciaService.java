@@ -39,7 +39,6 @@ public class ResponsavelDenunciaService {
         ResponsavelDenuncia responsavelDenuncia = new ResponsavelDenuncia();
         responsavelDenuncia.setDenuncia(denuncia);
         responsavelDenuncia.setUnidadeAtendimento(unidadeAtendimento);
-        responsavelDenuncia.setId(gerarId());
         responsavelDenunciaRepository.save(responsavelDenuncia);
     }
 
@@ -73,15 +72,6 @@ public class ResponsavelDenunciaService {
                 .toList();
 
         return denuncias;
-    }
-
-    private Long gerarId() {
-        Long id;
-        do {
-            id = random.nextLong();
-        } while (responsavelDenunciaRepository.existsById(id) || id < 0);
-
-        return id;
     }
 
     private List<ResponsavelDenunciaEncaminhamentoDTO> criarRespostaEncaminhamento(List<Denuncia> denuncias){

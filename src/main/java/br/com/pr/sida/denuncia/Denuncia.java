@@ -17,7 +17,6 @@ import java.util.List;
 @Setter
 public class Denuncia {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "data_criacao", nullable = false)
     private LocalDate dataCriacao;

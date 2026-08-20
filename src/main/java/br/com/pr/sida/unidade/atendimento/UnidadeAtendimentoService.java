@@ -57,6 +57,7 @@ public class UnidadeAtendimentoService {
     }
 
     private UnidadeAtendimento criarUnidadeAtendimento(UnidadeAtendimentoRegisterDTO unidadeAtendimentoRegisterDTO){
+        System.out.println(unidadeAtendimentoRegisterDTO.nome());
         UnidadeAtendimento unidadeAtendimento = new UnidadeAtendimento();
         unidadeAtendimento.setId(gerarId());
         unidadeAtendimento.setNome(unidadeAtendimentoRegisterDTO.nome());

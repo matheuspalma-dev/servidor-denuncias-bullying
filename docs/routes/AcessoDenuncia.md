@@ -1,0 +1,24 @@
+# Rotas de Acesso de Denúncia
+* /acesso/denuncia/acessar
+    - POST
+    - recebe no body:
+        - AcessoDenunciaRequestDTO:
+            - codigoAcesso: String
+            - senhaAcesso: String
+    - retorna:
+        - DenunciaResponseDTO:
+             - - id: Long
+             - dataCriacao: LocalDate (ano-mes-dia)
+             - nomeMunicipio: String
+             - nomeEscola: String
+             - idadeDenunciante: int
+             - generoDenunciante = Enum (MASCULINO, FEMININO, PREFIRO_NAO_INFORMAR)
+             - violenciaNaEscola: boolean
+             - tipoViolencia: Enum (FISICA, PSICOLOGICA, VERBAL, SEXUAL, CYBERBULLYING, PATRIMONIAL, OUTRA)
+             - status: Enum (RECEBIDA, EM_ANALISE, ENCAMINHADA, EM_ACOMPANHAMENTO, RESOLVIDA, ARQUIVADA)
+             - mensagens: List<MensagensDenunciaResponseDTO>
+                 -  MensagensDenunciaResponseDTO:
+                     - id: Long
+                     - autorMensagem: Enum (DENUNCIANTE, RESPONSAVEL)
+                     - mensagem: String
+                     - dataCriacao: LocalDate (ano-mes-dia)
