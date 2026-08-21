@@ -19,7 +19,7 @@ public class MensagemDenunciaService {
     public MensagemDenunciaService(
             MensagemDenunciaRepository mensagemDenunciaRepository,
             DenunciaRepository denunciaRepository,
-            @Qualifier("criptografarMensagens") TextEncryptor criptografarMensagens
+            TextEncryptor criptografarMensagens
     )
     {
         this.mensagemDenunciaRepository = mensagemDenunciaRepository;

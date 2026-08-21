@@ -17,6 +17,8 @@ public class Acesso {
     private Denuncia denuncia;
     @Column(name = "codigo_acesso", nullable = false, unique = true)
     private String codigoAcesso;
+    @Column(name = "codigo_acesso_hash", nullable = false, unique = true)
+    private String codigoAcessoHash;
     @Column(name = "senha_acesso", nullable = false)
     private String senhaAcesso;
 }

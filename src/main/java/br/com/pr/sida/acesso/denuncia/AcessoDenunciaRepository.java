@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface AcessoDenunciaRepository extends JpaRepository<Acesso, Long> {
     Boolean existsByCodigoAcesso(String codigoAcesso);
 
-    Optional<Acesso> findByCodigoAcesso(String codigoAcesso);
+    Optional<Acesso> findByCodigoAcessoHash(String codigoAcesso);
 }

@@ -55,11 +55,6 @@ public class RestControllerConfig {
         return new Argon2PasswordEncoder(16, 32, 1, 65536, 3);
     }
 
-    @Bean(name = "criptografarTextos")
-    public TextEncryptor criptografarTextos(){
-        return Encryptors.text(cryptoKey, cryptoSalt);
-    }
-
     @Bean(name = "criptografarMensagens")
     public TextEncryptor criptografarMensagens(){
         return Encryptors.delux(cryptoKey, cryptoSalt);
