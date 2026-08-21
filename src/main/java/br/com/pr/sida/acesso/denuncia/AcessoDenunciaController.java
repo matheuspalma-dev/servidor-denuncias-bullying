@@ -1,6 +1,6 @@
 package br.com.pr.sida.acesso.denuncia;
 
-import br.com.pr.sida.acesso.denuncia.dto.AcessoDenunciaRequestDTO;
+import br.com.pr.sida.acesso.denuncia.dto.request.AcessoDenunciaRequestDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

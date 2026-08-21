@@ -1,7 +1,7 @@
 package br.com.pr.sida.denuncia;
 
 import br.com.pr.sida.acesso.denuncia.AcessoDenunciaService;
-import br.com.pr.sida.acesso.denuncia.dto.AcessoDenunciaResponseDTO;
+import br.com.pr.sida.acesso.denuncia.dto.response.AcessoDenunciaResponseDTO;
 import br.com.pr.sida.denuncia.dto.request.DenunciaRequestDTO;
 import br.com.pr.sida.mensagem.denuncia.MensagemDenunciaService;
 import br.com.pr.sida.mensagem.denuncia.dto.request.MensagemDenunciaRequestDTO;
@@ -40,6 +40,7 @@ public class DenunciaService {
     {
         Denuncia denuncia = criarDenuncia(denunciaRequestDTO);
         denunciaRepository.save(denuncia);
+
         mensagemDenunciaService.salvarMensagem(new MensagemDenunciaRequestDTO(
                 denuncia.getId(),
                 AutorMensagem.DENUNCIANTE,
