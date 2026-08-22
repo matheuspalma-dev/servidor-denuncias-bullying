@@ -47,7 +47,7 @@ public class DenunciaService {
                 denunciaRequestDTO.mensagemDenuncia()
         ));
 
-        responsavelDenunciaService.salvarResponsavelDenuncia(denuncia, TipoUnidade.ENCAMINHAMENTO);
+        // responsavelDenunciaService.salvarResponsavelDenuncia(denuncia, TipoUnidade.ENCAMINHAMENTO);
         return acessoDenunciaService.salvarAcessoDenuncia(denuncia);
     }
 

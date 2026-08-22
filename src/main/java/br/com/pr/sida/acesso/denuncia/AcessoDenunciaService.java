@@ -42,20 +42,6 @@ public class AcessoDenunciaService {
         this.mensagemDenunciaService = mensagemDenunciaService;
     }
 
-    public DenunciaResponseDTO acessarDenuncia(AcessoDenunciaRequestDTO acessoDenunciaRequestDTO){
-        String codigoAcesso = acessoDenunciaRequestDTO.codigoAcesso();
-        String codigoAcessoCriptografado = gerarHashCodigoAcesso(codigoAcesso);
-        Acesso acesso = acessoDenunciaRepository.findByCodigoAcessoHash(codigoAcessoCriptografado)
-                .orElseThrow(() -> new RuntimeException("Acesso não encontrado"));
-
-        if (!passwordEncoder.matches(acessoDenunciaRequestDTO.senhaAcesso(), acesso.getSenhaAcesso())){
-            throw new RuntimeException("Senha de acesso incorreta");
-        }
-
-        System.out.println("True");
-        return converterDenunciaEmDTO(acesso.getDenuncia());
-    }
-
     public AcessoDenunciaResponseDTO salvarAcessoDenuncia(Denuncia denuncia) {
         Acesso acesso = criarAcessoDenuncia(denuncia);
         AcessoDenunciaResponseDTO resposta = new AcessoDenunciaResponseDTO(acesso.getCodigoAcesso(), acesso.getSenhaAcesso());
@@ -73,6 +59,61 @@ public class AcessoDenunciaService {
         acesso.setSenhaAcesso(gerarSenhaAcesso());
         return acesso;
     }
+
+    private String gerarCodigoAcesso() {
+        String aleatorio = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+        String codigoAcesso = aleatorio + "/" + Year.now().toString();
+        return codigoAcesso;
+    }
+
+    private String gerarHashCodigoAcesso(String codigoAcesso){
+        try {
+            Mac mac = Mac.getInstance("HmacSHA256");
+
+            SecretKeySpec secretKey = new SecretKeySpec(
+                    hmacSecretKey.getBytes(StandardCharsets.UTF_8),
+                    "HmacSHA256");
+            mac.init(secretKey);
+
+            byte[] hashBytes = mac.doFinal(codigoAcesso.trim().getBytes(StandardCharsets.UTF_8));
+            return Hex.encodeHexString(hashBytes);
+        } catch (Exception e){
+            throw new RuntimeException("Erro ao gerar hash do código de acesso", e);
+        }
+    }
+
+    private String gerarSenhaAcesso() {
+        String senhaAceso = UUID.randomUUID().toString().replace("-", "").substring(0, 7);
+        return senhaAceso;
+    }
+
+    private String critografarSenhaAcesso(String senhaAcesso) {
+        return passwordEncoder.encode(senhaAcesso);
+
+    }
+
+    private String criptografarCodigoAcesso(String codigoAcesso){
+        String codigoAcessoCriptografado;
+        do {
+            codigoAcessoCriptografado = textEncryptor.encrypt(codigoAcesso);
+        } while(acessoDenunciaRepository.existsByCodigoAcesso(codigoAcessoCriptografado));
+        return codigoAcessoCriptografado;
+    }
+
+    public DenunciaResponseDTO acessarDenuncia(AcessoDenunciaRequestDTO acessoDenunciaRequestDTO){
+        String codigoAcesso = acessoDenunciaRequestDTO.codigoAcesso();
+        String codigoAcessoCriptografado = gerarHashCodigoAcesso(codigoAcesso);
+        Acesso acesso = acessoDenunciaRepository.findByCodigoAcessoHash(codigoAcessoCriptografado)
+                .orElseThrow(() -> new RuntimeException("Acesso não encontrado"));
+
+        if (!passwordEncoder.matches(acessoDenunciaRequestDTO.senhaAcesso(), acesso.getSenhaAcesso())){
+            throw new RuntimeException("Senha de acesso incorreta");
+        }
+
+        System.out.println("True");
+        return converterDenunciaEmDTO(acesso.getDenuncia());
+    }
+
 
     public DenunciaResponseDTO converterDenunciaEmDTO(Denuncia denuncia){
         DenunciaResponseDTO denunciaResponseDTO = new DenunciaResponseDTO();
@@ -102,43 +143,5 @@ public class AcessoDenunciaService {
         return denunciaResponseDTO;
     }
 
-    private String gerarCodigoAcesso() {
-        String aleatorio = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
-        String codigoAcesso = aleatorio + "/" + Year.now().toString();
-        return codigoAcesso;
-    }
 
-    private String gerarSenhaAcesso() {
-        String senhaAceso = UUID.randomUUID().toString().replace("-", "").substring(0, 7);
-        return senhaAceso;
-    }
-
-    private String critografarSenhaAcesso(String senhaAcesso) {
-        return passwordEncoder.encode(senhaAcesso);
-
-    }
-
-    private String criptografarCodigoAcesso(String codigoAcesso){
-        String codigoAcessoCriptografado;
-        do {
-            codigoAcessoCriptografado = textEncryptor.encrypt(codigoAcesso);
-        } while(acessoDenunciaRepository.existsByCodigoAcesso(codigoAcessoCriptografado));
-        return codigoAcessoCriptografado;
-    }
-
-    private String gerarHashCodigoAcesso(String codigoAcesso){
-        try {
-            Mac mac = Mac.getInstance("HmacSHA256");
-
-            SecretKeySpec secretKey = new SecretKeySpec(
-                    hmacSecretKey.getBytes(StandardCharsets.UTF_8),
-                    "HmacSHA256");
-            mac.init(secretKey);
-
-            byte[] hashBytes = mac.doFinal(codigoAcesso.trim().getBytes(StandardCharsets.UTF_8));
-            return Hex.encodeHexString(hashBytes);
-        } catch (Exception e){
-            throw new RuntimeException("Erro ao gerar hash do código de acesso", e);
-        }
-    }
 }

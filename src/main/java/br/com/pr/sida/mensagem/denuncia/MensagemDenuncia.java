@@ -21,7 +21,6 @@ public class MensagemDenuncia {
     @Enumerated(EnumType.STRING)
     @Column(name = "autor_mensagem", nullable = false)
     private AutorMensagem autor;
-    @Lob
     @Column(name = "mensagem", nullable = false)
     private String mensagem;
     @Column(name = "data_criacao", nullable = false)
