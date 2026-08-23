@@ -4,9 +4,6 @@ public enum TipoViolencia {
     FISICA,
     PSICOLOGICA,
     VERBAL,
-    SEXUAL,
     CYBERBULLYING,
-    PATRIMONIAL,
-    OUTRA,
-    NENHUMA
+    DISCRIMINACAO
 }

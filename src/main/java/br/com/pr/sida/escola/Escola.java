@@ -24,4 +24,6 @@ public class Escola {
     @ManyToOne
     @JoinColumn(name = "orgao_competente_id", nullable = false)
     private OrgaoCompetente orgaoCompetente;
+    @Column(name = "senha_acesso", nullable = false)
+    private String senhaAcesso;
 }
