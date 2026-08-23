@@ -1,5 +1,6 @@
 package br.com.pr.sida.escola;
 
+import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
 import br.com.pr.sida.util.RedeEnsino;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -20,4 +21,7 @@ public class Escola {
     private RedeEnsino redeEnsino;
     @Column(name = "ativa", nullable = false)
     private boolean ativa;
+    @ManyToOne
+    @JoinColumn(name = "orgao_competente_id", nullable = false)
+    private OrgaoCompetente orgaoCompetente;
 }
