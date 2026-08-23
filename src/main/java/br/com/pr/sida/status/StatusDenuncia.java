@@ -3,11 +3,15 @@ package br.com.pr.sida.status;
 import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.util.Status;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "status")
+@Getter
+@Setter
 public class StatusDenuncia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

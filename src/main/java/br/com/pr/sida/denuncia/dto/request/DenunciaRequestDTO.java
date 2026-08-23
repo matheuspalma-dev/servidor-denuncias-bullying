@@ -9,13 +9,20 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public record DenunciaRequestDTO(
+        @NotNull
         Long idEscola,
+        @NotNull
         OndeOcorreu ondeOcorreu,
+        @NotNull
         TipoViolencia tipoViolencia,
+        @NotNull
         boolean riscoAgressao,
+        @NotNull
         boolean situacaoGrave,
+        @NotNull
         boolean violacaoDireitos,
         String salaVitimas,
-        String salaAgressores
+        String salaAgressores,
+        String mensagem
 ) {
 }
