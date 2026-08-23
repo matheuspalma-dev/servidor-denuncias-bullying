@@ -5,7 +5,6 @@ import br.com.pr.sida.acesso.denuncia.dto.response.AcessoDenunciaResponseDTO;
 import br.com.pr.sida.denuncia.dto.request.DenunciaRequestDTO;
 import br.com.pr.sida.mensagem.denuncia.MensagemDenunciaService;
 import br.com.pr.sida.mensagem.denuncia.dto.request.MensagemDenunciaRequestDTO;
-import br.com.pr.sida.responsavel.denuncia.ResponsavelDenunciaService;
 import br.com.pr.sida.util.AutorMensagem;
 import br.com.pr.sida.util.Status;
 import org.springframework.stereotype.Service;
@@ -17,20 +16,17 @@ public class DenunciaService {
     private final AcessoDenunciaService acessoDenunciaService;
     private final DenunciaRepository denunciaRepository;
     private final MensagemDenunciaService mensagemDenunciaService;
-    private final ResponsavelDenunciaService responsavelDenunciaService;
     private final Random random = new Random();
 
     public DenunciaService(
             DenunciaRepository denunciaRepository,
             AcessoDenunciaService acessoDenunciaService,
             MensagemDenunciaService mensagemDenunciaService,
-            ResponsavelDenunciaService responsavelDenunciaService
     )
     {
         this.denunciaRepository = denunciaRepository;
         this.acessoDenunciaService = acessoDenunciaService;
         this.mensagemDenunciaService = mensagemDenunciaService;
-        this.responsavelDenunciaService = responsavelDenunciaService;
     }
 
     public AcessoDenunciaResponseDTO salvarDenuncia(

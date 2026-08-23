@@ -22,6 +22,4 @@ public class OrgaoCompetente {
     private String numero;
     @Column(name = "email", nullable = false)
     private String email;
-    @Column(name = "senha", nullable = false)
-    private String senha;
 }
