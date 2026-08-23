@@ -7,27 +7,19 @@ import br.com.pr.sida.mensagem.denuncia.MensagemDenunciaService;
 import br.com.pr.sida.mensagem.denuncia.dto.request.MensagemDenunciaRequestDTO;
 import br.com.pr.sida.util.AutorMensagem;
 import br.com.pr.sida.util.Status;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
 
 @Service
+@RequiredArgsConstructor
 public class DenunciaService {
+
     private final AcessoDenunciaService acessoDenunciaService;
     private final DenunciaRepository denunciaRepository;
     private final MensagemDenunciaService mensagemDenunciaService;
     private final Random random = new Random();
-
-    public DenunciaService(
-            DenunciaRepository denunciaRepository,
-            AcessoDenunciaService acessoDenunciaService,
-            MensagemDenunciaService mensagemDenunciaService,
-    )
-    {
-        this.denunciaRepository = denunciaRepository;
-        this.acessoDenunciaService = acessoDenunciaService;
-        this.mensagemDenunciaService = mensagemDenunciaService;
-    }
 
     public AcessoDenunciaResponseDTO salvarDenuncia(
             DenunciaRequestDTO denunciaRequestDTO

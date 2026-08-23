@@ -1,10 +1,9 @@
 package br.com.pr.sida.denuncia;
 
+import br.com.pr.sida.escola.Escola;
 import br.com.pr.sida.mensagem.denuncia.MensagemDenuncia;
-import br.com.pr.sida.util.Genero;
-import br.com.pr.sida.util.PreferenciaEnvio;
-import br.com.pr.sida.util.Status;
-import br.com.pr.sida.util.TipoViolencia;
+import br.com.pr.sida.status.StatusDenuncia;
+import br.com.pr.sida.util.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,26 +19,30 @@ public class Denuncia {
     private Long id;
     @Column(name = "data_criacao", nullable = false)
     private LocalDate dataCriacao;
-    @Column(name = "nome_municipio", nullable = false)
-    private String nomeMunicipio;
-    @Column(name = "nome_escola", nullable = false)
-    private String nomeEscola;
-    @Column(name = "idade_denunciante", nullable = false)
-    private int idadeDenunciante;
-    @Column(name = "genero_denunciante", nullable = false)
+    @JoinColumn(name = "escola_id", nullable = false)
+    @ManyToOne
+    private Escola escola;
+    @Column(name = "onde_ocorreu", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Genero generoDenunciante;
-    @Column(name = "violencia_na_escola", nullable = false)
-    private boolean violenciaNaEscola;
-    @Column(name = "tipo_violencia", nullable = true)
+    private OndeOcorreu ondeOcorreu;
+    @Column(name = "tipo_violencia", nullable = false)
     @Enumerated(EnumType.STRING)
     private TipoViolencia tipoViolencia;
-    @Column(name = "status_denuncia", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Status statusDenuncia;
-    @Column(name = "preferencia_envio", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private PreferenciaEnvio preferenciaEnvio;
+    // Alguém foi machucado fisicamente ou corre o risco de ser agredido a qualquer momento?
+    @Column(name = "risco_agressao", nullable = false)
+    private boolean riscoAgressao;
+    // A situação envolve o uso de armas, facas, drogas ou ameaça de morte?
+    @Column(name = "situacao_grave", nullable = false)
+    private boolean situacaoGrave;
+    // A situação acontece de forma grave e frequente sem ajuda em casa, ou envolve abuso/exploração de um menor de idade?
+    @Column(name = "violacao_direitos", nullable = false)
+    private boolean violacaoDireitos;
+    @Column(name = "sala_vitimas", nullable = true)
+    private String salaVitimas;
+    @Column(name = "sala_agressores", nullable = true)
+    private String salaAgressores;
+    @OneToMany(mappedBy = "denuncia")
+    private List<StatusDenuncia> statusDenuncia;
     @OneToMany(mappedBy = "denuncia")
     private List<MensagemDenuncia> mensagens;
 }
