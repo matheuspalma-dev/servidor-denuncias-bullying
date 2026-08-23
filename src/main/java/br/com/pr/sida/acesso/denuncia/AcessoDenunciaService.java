@@ -7,6 +7,8 @@ import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.mensagem.denuncia.MensagemDenuncia;
 import br.com.pr.sida.mensagem.denuncia.MensagemDenunciaService;
 import br.com.pr.sida.mensagem.denuncia.dto.response.MensagensDenunciaResponseDTO;
+import br.com.pr.sida.status.StatusDenuncia;
+import br.com.pr.sida.status.dto.response.StatusDenunciaResponseDTO;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
@@ -119,14 +121,14 @@ public class AcessoDenunciaService {
         DenunciaResponseDTO denunciaResponseDTO = new DenunciaResponseDTO();
         denunciaResponseDTO.setId(denuncia.getId());
         denunciaResponseDTO.setDataCriacao(denuncia.getDataCriacao());
-        denunciaResponseDTO.setNomeMunicipio(denuncia.getNomeMunicipio());
-        denunciaResponseDTO.setNomeEscola(denuncia.getNomeEscola());
-        denunciaResponseDTO.setIdadeDenunciante(denuncia.getIdadeDenunciante());
-        denunciaResponseDTO.setGeneroDenunciante(denuncia.getGeneroDenunciante());
-        denunciaResponseDTO.setViolenciaNaEscola(denuncia.isViolenciaNaEscola());
+        denunciaResponseDTO.setNomeEscola(denuncia.getEscola().getNome());
+        denunciaResponseDTO.setRedeEnsino(denuncia.getEscola().getRedeEnsino());
+        denunciaResponseDTO.setOrgaoCompetenteNome(denuncia.getEscola().getOrgaoCompetente().getNome());
+        denunciaResponseDTO.setOndeOcorreu(denuncia.getOndeOcorreu());
         denunciaResponseDTO.setTipoViolencia(denuncia.getTipoViolencia());
-        denunciaResponseDTO.setStatusDenuncia(denuncia.getStatusDenuncia());
-        denunciaResponseDTO.setPreferenciaEnvio(denuncia.getPreferenciaEnvio());
+        denunciaResponseDTO.setRiscoAgressao(denuncia.isRiscoAgressao());
+        denunciaResponseDTO.setSituacaoGrave(denuncia.isSituacaoGrave());
+        denunciaResponseDTO.setViolacaoDireitos(denuncia.isViolacaoDireitos());
         List<MensagensDenunciaResponseDTO> mensagensDescriptografadas = new ArrayList<>();
 
         for (MensagemDenuncia mensagemDenuncia : denuncia.getMensagens()) {
@@ -140,6 +142,17 @@ public class AcessoDenunciaService {
         }
 
         denunciaResponseDTO.setMensagens(mensagensDescriptografadas);
+
+        List<StatusDenunciaResponseDTO> statusDenunciaResponseDTOList = new ArrayList<>();
+
+        for (StatusDenuncia statusDenuncia : denuncia.getStatusDenuncia()){
+            StatusDenunciaResponseDTO statusDenunciaResponseDTO = new StatusDenunciaResponseDTO();
+            statusDenunciaResponseDTO.setDataCriacao(statusDenuncia.getDataCriacao());
+            statusDenunciaResponseDTO.setStatus(statusDenuncia.getStatus());
+            statusDenunciaResponseDTOList.add(statusDenunciaResponseDTO);
+        }
+
+        denunciaResponseDTO.setStatusDenuncias(statusDenunciaResponseDTOList);
         return denunciaResponseDTO;
     }
 
