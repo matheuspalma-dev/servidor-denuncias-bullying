@@ -7,5 +7,6 @@ public enum TipoViolencia {
     SEXUAL,
     CYBERBULLYING,
     PATRIMONIAL,
-    OUTRA
+    OUTRA,
+    NENHUMA
 }
