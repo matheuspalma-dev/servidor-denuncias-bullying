@@ -8,7 +8,6 @@ import br.com.pr.sida.mensagem.denuncia.dto.request.MensagemDenunciaRequestDTO;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenunciaService;
 import br.com.pr.sida.util.AutorMensagem;
 import br.com.pr.sida.util.Status;
-import br.com.pr.sida.util.TipoUnidade;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -47,7 +46,6 @@ public class DenunciaService {
                 denunciaRequestDTO.mensagemDenuncia()
         ));
 
-        // responsavelDenunciaService.salvarResponsavelDenuncia(denuncia, TipoUnidade.ENCAMINHAMENTO);
         return acessoDenunciaService.salvarAcessoDenuncia(denuncia);
     }
 
