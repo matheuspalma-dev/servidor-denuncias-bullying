@@ -1,8 +1,9 @@
 package br.com.pr.sida.util;
 
-public enum TipoOrgaoCompetente {
+public enum PerfilAcesso {
+    DIRECAO_ESCOLA,
     SME,
     NRE,
     CONSELHO_TUTELAR,
-    SEGURANCA_PUBLICA
+    ADIMINISTRADOR
 }
