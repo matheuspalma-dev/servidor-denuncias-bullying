@@ -1,7 +1,7 @@
 package br.com.pr.sida.status;
 
 import br.com.pr.sida.denuncia.Denuncia;
-import br.com.pr.sida.util.Status;
+import br.com.pr.sida.util.enums.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

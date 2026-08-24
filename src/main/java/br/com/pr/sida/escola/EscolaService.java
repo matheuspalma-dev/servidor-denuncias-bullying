@@ -2,8 +2,11 @@ package br.com.pr.sida.escola;
 
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteRepository;
+import br.com.pr.sida.denuncia.Denuncia;
+import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.escola.dto.request.EscolaRequestResgisterDTO;
 import br.com.pr.sida.escola.dto.response.EscolaResponseDTO;
+import br.com.pr.sida.util.mappers.DenunciaMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,18 @@ public class EscolaService {
     private final EscolaRepository escolaRepository;
     private final OrgaoCompetenteRepository orgaoCompetenteRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DenunciaMapper denunciaMapper;
+
+    public List<DenunciaResponseDTO> acessarDenuncias(long escolaId) {
+        Escola escola = escolaRepository.findById(escolaId)
+                .orElseThrow(() -> new RuntimeException("Escola não encontrada"));
+        List<DenunciaResponseDTO> denunciaResponseDTOList = new ArrayList<>();
+        for (Denuncia denuncia : escola.getDenuncias()) {
+            DenunciaResponseDTO denunciaResponseDTO = denunciaMapper.converterDenunciaEmDTO(denuncia);
+            denunciaResponseDTOList.add(denunciaResponseDTO);
+        }
+        return denunciaResponseDTOList;
+    }
 
     public List<EscolaResponseDTO> retornarTodasEscolas() {
         List<Escola> escolas = escolaRepository.findAll();
@@ -30,8 +45,8 @@ public class EscolaService {
 
     private EscolaResponseDTO converterEntityEmDTO(Escola escola){
         EscolaResponseDTO escolaResponseDTO = new EscolaResponseDTO();
-        escolaResponseDTO.setId(escolaResponseDTO.getId());
-        escolaResponseDTO.setNome(escolaResponseDTO.getNome());
+        escolaResponseDTO.setId(escola.getId());
+        escolaResponseDTO.setNome(escola.getNome());
         return escolaResponseDTO;
     }
 
@@ -58,6 +73,5 @@ public class EscolaService {
     private String criptografarSenha(String senha) {
         return passwordEncoder.encode(senha);
     }
-
 
 }

@@ -1,6 +1,6 @@
 package br.com.pr.sida.status;
 
-import br.com.pr.sida.util.Status;
+import br.com.pr.sida.util.enums.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;

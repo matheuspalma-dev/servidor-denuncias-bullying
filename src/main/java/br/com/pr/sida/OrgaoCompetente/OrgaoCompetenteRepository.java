@@ -1,6 +1,6 @@
 package br.com.pr.sida.OrgaoCompetente;
 
-import br.com.pr.sida.util.TipoOrgaoCompetente;
+import br.com.pr.sida.util.enums.TipoOrgaoCompetente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

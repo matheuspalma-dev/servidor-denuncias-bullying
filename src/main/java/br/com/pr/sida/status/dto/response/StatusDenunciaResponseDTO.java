@@ -1,6 +1,6 @@
 package br.com.pr.sida.status.dto.response;
 
-import br.com.pr.sida.util.Status;
+import br.com.pr.sida.util.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,10 +1,13 @@
 package br.com.pr.sida.escola;
 
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
-import br.com.pr.sida.util.RedeEnsino;
+import br.com.pr.sida.denuncia.Denuncia;
+import br.com.pr.sida.util.enums.RedeEnsino;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Table(name = "escolas")
@@ -26,4 +29,6 @@ public class Escola {
     private OrgaoCompetente orgaoCompetente;
     @Column(name = "senha_acesso", nullable = false)
     private String senhaAcesso;
+    @OneToMany(mappedBy = "escola")
+    private List<Denuncia> denuncias;
 }

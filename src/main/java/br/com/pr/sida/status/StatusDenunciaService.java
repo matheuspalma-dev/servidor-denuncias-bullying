@@ -2,7 +2,7 @@ package br.com.pr.sida.status;
 
 import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.denuncia.DenunciaRepository;
-import br.com.pr.sida.util.Status;
+import br.com.pr.sida.util.enums.Status;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

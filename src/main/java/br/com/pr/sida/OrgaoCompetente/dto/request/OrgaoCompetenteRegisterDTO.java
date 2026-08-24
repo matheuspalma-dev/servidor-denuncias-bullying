@@ -1,6 +1,6 @@
 package br.com.pr.sida.OrgaoCompetente.dto.request;
 
-import br.com.pr.sida.util.TipoOrgaoCompetente;
+import br.com.pr.sida.util.enums.TipoOrgaoCompetente;
 
 public record OrgaoCompetenteRegisterDTO(
         String nome,

@@ -1,4 +1,4 @@
-package br.com.pr.sida.util;
+package br.com.pr.sida.util.enums;
 
 public enum OndeOcorreu {
     DENTRO_DA_ESCOLA,

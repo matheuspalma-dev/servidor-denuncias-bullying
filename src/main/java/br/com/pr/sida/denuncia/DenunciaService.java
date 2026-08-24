@@ -9,14 +9,16 @@ import br.com.pr.sida.escola.Escola;
 import br.com.pr.sida.escola.EscolaRepository;
 import br.com.pr.sida.mensagem.denuncia.MensagemDenunciaService;
 import br.com.pr.sida.mensagem.denuncia.dto.request.MensagemDenunciaRequestDTO;
-import br.com.pr.sida.responsavel.ResponsavelDenunciaService;
+import br.com.pr.sida.responsavel.denuncia.ResponsavelDenunciaService;
 import br.com.pr.sida.status.StatusDenunciaService;
-import br.com.pr.sida.util.*;
+import br.com.pr.sida.util.enums.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -49,22 +51,26 @@ public class DenunciaService {
 
         Prioridade prioridadeDenuncia = definirPrioridadeDenuncia(denuncia);
 
+        List<OrgaoCompetente> orgaoCompetenteList = new ArrayList<>();
+
+        OrgaoCompetente orgaoCompetente = definirOrgaoCompetente(denuncia.getEscola().getRedeEnsino() == RedeEnsino.MUNICIPAL ? TipoOrgaoCompetente.SME : TipoOrgaoCompetente.NRE);
         if (prioridadeDenuncia == Prioridade.URGENTE){
-            if (denuncia.getEscola().getRedeEnsino() == RedeEnsino.MUNICIPAL){
-                OrgaoCompetente orgaoCompetente = orgaoCompetenteRepository.findByTipoOrgaoCompetente(TipoOrgaoCompetente.SME)
-                        .orElseThrow(() -> new EntityNotFoundException("orgao competente não existe"));
-            }
-            // Destino = Direção da Escola + Gestor da Rede (SME/NRE)
-            // Ação do Sistema = Exibir imediatamente em tela os telefones de emergência (190 PM e 181 Disque Denúncia).
+            orgaoCompetenteList.add(orgaoCompetente);
         } else if (prioridadeDenuncia == Prioridade.ALTA){
-            // Destino = Direção da Escola + Gestor da Rede (SME/NRE) + CONSELHO TUTELAR
-        } else {
-            // Direção da Escola (Acesso principal) + Gestor da Rede (Acesso em modo visualização/estatística)
+            orgaoCompetenteList.add(orgaoCompetente);
+            OrgaoCompetente orgaoCompetenteConselhoTutelar = definirOrgaoCompetente(TipoOrgaoCompetente.CONSELHO_TUTELAR);
+            orgaoCompetenteList.add(orgaoCompetenteConselhoTutelar);
         }
+
+        responsavelDenunciaService.adicionarResponsavelDenuncia(denuncia, denuncia.getEscola(), orgaoCompetenteList);
 
         return acessoDenunciaService.salvarAcessoDenuncia(denuncia);
     }
 
+    private OrgaoCompetente definirOrgaoCompetente(TipoOrgaoCompetente tipoOrgaoCompetente){
+        return orgaoCompetenteRepository.findByTipoOrgaoCompetente(tipoOrgaoCompetente)
+                .orElseThrow(() -> new EntityNotFoundException("orgao competente não existe"));
+    }
     private Denuncia criarDenuncia(DenunciaRequestDTO denunciaRequestDTO){
         Denuncia denuncia = new Denuncia();
         denuncia.setId(gerarId());
