@@ -1,5 +1,7 @@
 package br.com.pr.sida.denuncia;
 
+import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
+import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteRepository;
 import br.com.pr.sida.acesso.denuncia.AcessoDenunciaService;
 import br.com.pr.sida.acesso.denuncia.dto.response.AcessoDenunciaResponseDTO;
 import br.com.pr.sida.denuncia.dto.request.DenunciaRequestDTO;
@@ -7,10 +9,9 @@ import br.com.pr.sida.escola.Escola;
 import br.com.pr.sida.escola.EscolaRepository;
 import br.com.pr.sida.mensagem.denuncia.MensagemDenunciaService;
 import br.com.pr.sida.mensagem.denuncia.dto.request.MensagemDenunciaRequestDTO;
+import br.com.pr.sida.responsavel.ResponsavelDenunciaService;
 import br.com.pr.sida.status.StatusDenunciaService;
-import br.com.pr.sida.util.AutorMensagem;
-import br.com.pr.sida.util.Prioridade;
-import br.com.pr.sida.util.Status;
+import br.com.pr.sida.util.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,8 @@ public class DenunciaService {
     private final MensagemDenunciaService mensagemDenunciaService;
     private final EscolaRepository escolaRepository;
     private final StatusDenunciaService statusDenunciaService;
+    private final ResponsavelDenunciaService responsavelDenunciaService;
+    private final OrgaoCompetenteRepository orgaoCompetenteRepository;
     private final Random random = new Random();
 
     public AcessoDenunciaResponseDTO salvarDenuncia(
@@ -47,6 +50,10 @@ public class DenunciaService {
         Prioridade prioridadeDenuncia = definirPrioridadeDenuncia(denuncia);
 
         if (prioridadeDenuncia == Prioridade.URGENTE){
+            if (denuncia.getEscola().getRedeEnsino() == RedeEnsino.MUNICIPAL){
+                OrgaoCompetente orgaoCompetente = orgaoCompetenteRepository.findByTipoOrgaoCompetente(TipoOrgaoCompetente.SME)
+                        .orElseThrow(() -> new EntityNotFoundException("orgao competente não existe"));
+            }
             // Destino = Direção da Escola + Gestor da Rede (SME/NRE)
             // Ação do Sistema = Exibir imediatamente em tela os telefones de emergência (190 PM e 181 Disque Denúncia).
         } else if (prioridadeDenuncia == Prioridade.ALTA){
