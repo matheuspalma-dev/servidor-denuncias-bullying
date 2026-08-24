@@ -1,6 +1,6 @@
 package br.com.pr.sida.escola.dto.request;
 
-import br.com.pr.sida.util.RedeEnsino;
+import br.com.pr.sida.util.enums.RedeEnsino;
 
 public record EscolaRequestResgisterDTO(
         String nome,

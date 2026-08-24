@@ -2,8 +2,10 @@ package br.com.pr.sida.denuncia;
 
 import br.com.pr.sida.escola.Escola;
 import br.com.pr.sida.mensagem.denuncia.MensagemDenuncia;
+import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
 import br.com.pr.sida.status.StatusDenuncia;
-import br.com.pr.sida.util.*;
+import br.com.pr.sida.util.enums.OndeOcorreu;
+import br.com.pr.sida.util.enums.TipoViolencia;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -45,4 +47,6 @@ public class Denuncia {
     private List<StatusDenuncia> statusDenuncia;
     @OneToMany(mappedBy = "denuncia")
     private List<MensagemDenuncia> mensagens;
+    @OneToMany(mappedBy = "denuncia")
+    private List<ResponsavelDenuncia> responsavelDenuncias;
 }

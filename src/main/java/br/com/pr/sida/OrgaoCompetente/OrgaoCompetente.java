@@ -1,9 +1,12 @@
 package br.com.pr.sida.OrgaoCompetente;
 
-import br.com.pr.sida.util.TipoOrgaoCompetente;
+import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
+import br.com.pr.sida.util.enums.TipoOrgaoCompetente;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Table(name = "orgao_competente")
@@ -24,4 +27,6 @@ public class OrgaoCompetente {
     private String email;
     @Column(name = "senha_acesso", nullable = false)
     private String senhaAcesso;
+    @OneToMany(mappedBy = "orgaoCompetenteResponsavel")
+    private List<ResponsavelDenuncia> denunciasResponsaveis;
 }
