@@ -3,6 +3,8 @@ package br.com.pr.sida.escola;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.escola.dto.request.EscolaRequestResgisterDTO;
 import br.com.pr.sida.escola.dto.response.EscolaResponseDTO;
+import br.com.pr.sida.util.loginDTOS.LoginRequestDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,5 +34,11 @@ public class EscolaController {
     public ResponseEntity<List<DenunciaResponseDTO>> acessarDenuncias(@PathVariable long escolaId) {
         List<DenunciaResponseDTO> denuncias = escolaService.acessarDenuncias(escolaId);
         return ResponseEntity.ok(denuncias);
+    }
+
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void login(@RequestBody LoginRequestDTO loginRequestDTO){
+        escolaService.login(loginRequestDTO);
     }
 }

@@ -1,0 +1,11 @@
+rodar o servidor online:
+- npx localtunnel --port 8080 -subdomain sida-anti-bullying
+
+como descobrir a senha que vai pedir para o front quando acessar o servidor:
+- curl https://loca.lt/mytunnelpassword
+
+colocar no header do fetch api dp front:
+ - 'bypass-tunnel-reminder': 'true'
+
+caso precise de senha:
+- curl https://loca.lt/mytunnelpassword

@@ -2,8 +2,10 @@ package br.com.pr.sida.OrgaoCompetente;
 
 import br.com.pr.sida.OrgaoCompetente.dto.request.OrgaoCompetenteRegisterDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
+import br.com.pr.sida.util.loginDTOS.LoginRequestDTO;
 import br.com.pr.sida.util.mappers.DenunciaMapper;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,15 @@ public class OrgaoCompetenteService {
     private final OrgaoCompetenteRepository orgaoCompetenteRepository;
     private final PasswordEncoder passwordEncoder;
     private final DenunciaMapper denunciaMapper;
+
+    public void login(LoginRequestDTO loginRequestDTO){
+        OrgaoCompetente orgaoCompetente = orgaoCompetenteRepository.findByEmail(loginRequestDTO.getEmail())
+                .orElseThrow(() -> new EntityNotFoundException("Órgão competente não encontrado"));
+
+        if (!passwordEncoder.matches(loginRequestDTO.getSenha(), orgaoCompetente.getSenhaAcesso())) {
+            throw new RuntimeException("Senha incorreta");
+        }
+    }
 
     public List<DenunciaResponseDTO> acessarDenuncias(Long id) {
         OrgaoCompetente orgaoCompetente = orgaoCompetenteRepository.findById(id)

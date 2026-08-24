@@ -18,6 +18,7 @@ public class AcessoDenunciaController {
         this.acessoDenunciaService = acessoDenunciaService;
     }
 
+    // sem token
     @PostMapping("/acessar")
     public ResponseEntity<DenunciaResponseDTO> acessarDenuncia(
             @RequestBody AcessoDenunciaRequestDTO acessoDenunciaRequestDTO
