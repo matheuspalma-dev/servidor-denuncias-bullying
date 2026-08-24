@@ -19,6 +19,8 @@ public class Escola {
     Long id;
     @Column(name = "nome", nullable = false)
     private String nome;
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
     @Column(name = "rede_ensino", nullable = false)
     @Enumerated(EnumType.STRING)
     private RedeEnsino redeEnsino;

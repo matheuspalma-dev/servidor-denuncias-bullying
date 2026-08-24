@@ -6,6 +6,7 @@ import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.escola.dto.request.EscolaRequestResgisterDTO;
 import br.com.pr.sida.escola.dto.response.EscolaResponseDTO;
+import br.com.pr.sida.util.loginDTOS.LoginRequestDTO;
 import br.com.pr.sida.util.mappers.DenunciaMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,15 @@ public class EscolaService {
     private final OrgaoCompetenteRepository orgaoCompetenteRepository;
     private final PasswordEncoder passwordEncoder;
     private final DenunciaMapper denunciaMapper;
+
+    public void login(LoginRequestDTO loginRequestDTO){
+        Escola escola = escolaRepository.findByEmail(loginRequestDTO.getEmail())
+                .orElseThrow(() -> new RuntimeException("Escola não encontrada"));
+
+        if (!passwordEncoder.matches(loginRequestDTO.getSenha(), escola.getSenhaAcesso())) {
+            throw new RuntimeException("Senha incorreta");
+        }
+    }
 
     public List<DenunciaResponseDTO> acessarDenuncias(long escolaId) {
         Escola escola = escolaRepository.findById(escolaId)

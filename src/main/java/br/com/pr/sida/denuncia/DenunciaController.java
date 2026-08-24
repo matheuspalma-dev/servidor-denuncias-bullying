@@ -19,6 +19,7 @@ public class DenunciaController {
         this.mensagemDenunciaService = mensagemDenunciaService;
     }
 
+    // sem token
     @PostMapping("/criar")
     public ResponseEntity<AcessoDenunciaResponseDTO> criarDenuncia(
             @RequestBody DenunciaRequestDTO denunciaRequestDTO
@@ -28,6 +29,7 @@ public class DenunciaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(acessoDenunciaResponseDTO);
     }
 
+    // com token
     @PostMapping("/mensagem/criar")
     @ResponseStatus(HttpStatus.CREATED)
     public void adicionarMensagemDenuncia(@RequestBody MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO){
