@@ -26,7 +26,6 @@ public class AcessoDenunciaService {
     private final AcessoDenunciaRepository acessoDenunciaRepository;
     private final TextEncryptor textEncryptor;
     private final PasswordEncoder passwordEncoder;
-    private final MensagemDenunciaService mensagemDenunciaService;
     private final DenunciaMapper denunciaMapper;
     @Value("${sida.seguranca.crypto-hmac}") private String hmacSecretKey;
 

@@ -1,5 +1,7 @@
 package br.com.pr.sida.jwt;
 
+import br.com.pr.sida.util.enums.ROLE;
+import br.com.pr.sida.util.enums.RoleDenuncia;
 import br.com.pr.sida.util.loginDTOS.LoginResponseDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -19,18 +21,30 @@ public class TokenService {
     private String secretKey;
     @Value("${sida.seguranca.jwt.expiration}")
     private Long tempoexpiracao;
+    @Value("${sida.seguranca.jwt.denuncia.expiration}")
+    private Long tempoExpiracaoAcessoDenuncia;
 
     private SecretKey getSecretKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String gerarToken(LoginResponseDTO loginResponseDTO){
+    public String gerarTokenUsuario(LoginResponseDTO loginResponseDTO, ROLE role){
         return Jwts.builder()
                 .subject(loginResponseDTO.getEmail())
-                .claim("id", loginResponseDTO.getId())
-                .claim("role", loginResponseDTO.getPermissao().name())
+                .claim("role", role.name())
                 .issuedAt(new java.util.Date())
                 .expiration(new Date(System.currentTimeMillis() + tempoexpiracao))
+                .signWith(getSecretKey())
+                .compact();
+    }
+
+    public String gerarTokenAcessoDenuncia(Long idDenuncia, RoleDenuncia roleDenuncia){
+        return Jwts.builder()
+                .subject("acesso_denuncia")
+                .claim("idDenuncia", idDenuncia)
+                .claim("role", roleDenuncia.name())
+                .issuedAt(new java.util.Date())
+                .expiration(new Date(System.currentTimeMillis() + tempoExpiracaoAcessoDenuncia))
                 .signWith(getSecretKey())
                 .compact();
     }
