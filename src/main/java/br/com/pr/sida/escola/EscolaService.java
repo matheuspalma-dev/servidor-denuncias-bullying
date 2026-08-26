@@ -7,7 +7,10 @@ import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.escola.dto.request.EscolaRequestResgisterDTO;
 import br.com.pr.sida.escola.dto.response.EscolaResponseDTO;
 import br.com.pr.sida.util.loginDTOS.LoginRequestDTO;
+import br.com.pr.sida.util.loginDTOS.LoginResponseDTO;
 import br.com.pr.sida.util.mappers.DenunciaMapper;
+import br.com.pr.sida.util.mappers.LoginMapper;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,25 +25,62 @@ public class EscolaService {
     private final OrgaoCompetenteRepository orgaoCompetenteRepository;
     private final PasswordEncoder passwordEncoder;
     private final DenunciaMapper denunciaMapper;
+    private final LoginMapper loginMapper;
 
-    public void login(LoginRequestDTO loginRequestDTO){
+    public LoginResponseDTO login(LoginRequestDTO loginRequestDTO){
         Escola escola = escolaRepository.findByEmail(loginRequestDTO.getEmail())
                 .orElseThrow(() -> new RuntimeException("Escola não encontrada"));
 
         if (!passwordEncoder.matches(loginRequestDTO.getSenha(), escola.getSenhaAcesso())) {
             throw new RuntimeException("Senha incorreta");
         }
+
+        return loginMapper.devolverLoginResponseDTO(escola.getId(), escola.getNome(),escola.getEmail());
     }
 
-    public List<DenunciaResponseDTO> acessarDenuncias(long escolaId) {
-        Escola escola = escolaRepository.findById(escolaId)
-                .orElseThrow(() -> new RuntimeException("Escola não encontrada"));
-        List<DenunciaResponseDTO> denunciaResponseDTOList = new ArrayList<>();
-        for (Denuncia denuncia : escola.getDenuncias()) {
-            DenunciaResponseDTO denunciaResponseDTO = denunciaMapper.converterDenunciaEmDTO(denuncia);
-            denunciaResponseDTOList.add(denunciaResponseDTO);
+    public List<DenunciaResponseDTO> acessarDenuncias(String email, long escolaId) {
+
+        boolean temPermissao = verificarSeTemPermissao(email, escolaId);
+
+        if (temPermissao) {
+
+            Escola escola = escolaRepository.findById(escolaId)
+                    .orElseThrow(() -> new RuntimeException("Escola não encontrada"));
+
+            List<DenunciaResponseDTO> denunciaResponseDTOList = new ArrayList<>();
+
+            for (Denuncia denuncia : escola.getDenuncias()) {
+                DenunciaResponseDTO denunciaResponseDTO = denunciaMapper.converterDenunciaEmDTO(denuncia);
+                denunciaResponseDTOList.add(denunciaResponseDTO);
+            }
+
+            return denunciaResponseDTOList;
         }
-        return denunciaResponseDTOList;
+        return null;
+    }
+
+    private boolean verificarSeTemPermissao(String email, Long escolaId) {
+        Escola escola = escolaRepository.findByEmail(email)
+                .orElse(null);
+
+        if (escola != null){
+            if (escola.getId() == escolaId) {
+                return true;
+            }
+        }
+
+        OrgaoCompetente orgaoCompetente = orgaoCompetenteRepository.findByEmail(email)
+                .orElse(null);
+
+        if (orgaoCompetente != null){
+            Escola escolaAlvo = escolaRepository.findById(escolaId)
+                    .orElseThrow(() -> new EntityNotFoundException("Escola não encontrada"));
+            if (orgaoCompetente.getEscolas().contains(escolaAlvo)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public List<EscolaResponseDTO> retornarTodasEscolas() {
@@ -68,6 +108,7 @@ public class EscolaService {
     private Escola criarEscola(EscolaRequestResgisterDTO escolaRequestResgisterDTO) {
         Escola escola = new Escola();
         escola.setNome(escolaRequestResgisterDTO.nome());
+        escola.setEmail(escolaRequestResgisterDTO.email());
         escola.setAtiva(true);
         escola.setRedeEnsino(escolaRequestResgisterDTO.redeEnsino());
         escola.setSenhaAcesso(criptografarSenha(escolaRequestResgisterDTO.senhaAcesso()));

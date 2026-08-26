@@ -3,6 +3,7 @@ package br.com.pr.sida.mensagem.denuncia;
 import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.denuncia.DenunciaRepository;
 import br.com.pr.sida.mensagem.denuncia.dto.request.MensagemDenunciaRequestDTO;
+import br.com.pr.sida.util.enums.AutorMensagem;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
@@ -29,24 +30,23 @@ public class MensagemDenunciaService {
 
     @Transactional
     public void salvarMensagem(
-            MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO
+            Long idDenuncia,
+            MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO,
+            AutorMensagem autorMensagem
     ){
-        Denuncia denuncia = denunciaRepository.findById(mensagemDenunciaRequestDTO.idDenuncia())
+        Denuncia denuncia = denunciaRepository.findById(idDenuncia)
                 .orElseThrow(() -> new RuntimeException("Denúncia não encontrada"));
-        MensagemDenuncia mensagemDenuncia = criarMensagemDenuncia(mensagemDenunciaRequestDTO, denuncia);
+        MensagemDenuncia mensagemDenuncia = criarMensagemDenuncia(mensagemDenunciaRequestDTO, denuncia, autorMensagem);
         mensagemDenunciaRepository.save(mensagemDenuncia);
-    }
-
-    public String descriptografarMensagem(String mensagemCriptografada) {
-        return criptografarMensagens.decrypt(mensagemCriptografada);
     }
 
     private MensagemDenuncia criarMensagemDenuncia(
             MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO,
-            Denuncia denuncia
+            Denuncia denuncia,
+            AutorMensagem autorMensagem
     ) {
         MensagemDenuncia mensagemDenuncia = new MensagemDenuncia();
-        mensagemDenuncia.setAutor(mensagemDenunciaRequestDTO.autor());
+        mensagemDenuncia.setAutor(autorMensagem);
         String mensagemCriptografada = criptografarMensagem(mensagemDenunciaRequestDTO.mensagem());
         mensagemDenuncia.setMensagem(mensagemCriptografada);
         mensagemDenuncia.setDenuncia(denuncia);

@@ -1,5 +1,6 @@
 package br.com.pr.sida.OrgaoCompetente;
 
+import br.com.pr.sida.escola.Escola;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
 import br.com.pr.sida.util.enums.TipoOrgaoCompetente;
 import jakarta.persistence.*;
@@ -29,4 +30,6 @@ public class OrgaoCompetente {
     private String senhaAcesso;
     @OneToMany(mappedBy = "orgaoCompetenteResponsavel")
     private List<ResponsavelDenuncia> denunciasResponsaveis;
+    @OneToMany(mappedBy = "orgaoCompetente")
+    private List<Escola> escolas;
 }

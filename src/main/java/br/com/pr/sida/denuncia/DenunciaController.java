@@ -4,8 +4,12 @@ import br.com.pr.sida.acesso.denuncia.dto.response.AcessoDenunciaResponseDTO;
 import br.com.pr.sida.denuncia.dto.request.DenunciaRequestDTO;
 import br.com.pr.sida.mensagem.denuncia.MensagemDenunciaService;
 import br.com.pr.sida.mensagem.denuncia.dto.request.MensagemDenunciaRequestDTO;
+import br.com.pr.sida.util.enums.AutorMensagem;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,7 +23,6 @@ public class DenunciaController {
         this.mensagemDenunciaService = mensagemDenunciaService;
     }
 
-    // sem token
     @PostMapping("/criar")
     public ResponseEntity<AcessoDenunciaResponseDTO> criarDenuncia(
             @RequestBody DenunciaRequestDTO denunciaRequestDTO
@@ -29,10 +32,21 @@ public class DenunciaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(acessoDenunciaResponseDTO);
     }
 
-    // com token
-    @PostMapping("/mensagem/criar")
+    @PostMapping("/mensagem/criar/responsavel")
     @ResponseStatus(HttpStatus.CREATED)
-    public void adicionarMensagemDenuncia(@RequestBody MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO){
-        mensagemDenunciaService.salvarMensagem(mensagemDenunciaRequestDTO);
+    @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
+    public void adicionarMensagemDenunciaResponsavel(
+            @RequestBody MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO
+            ){
+        Long idDenuncia = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        mensagemDenunciaService.salvarMensagem(idDenuncia, mensagemDenunciaRequestDTO, AutorMensagem.RESPONSAVEL);
+    }
+
+    @PostMapping("/mensagem/criar/denunciante")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('DENUNCIANTE')")
+    public void adicionarMensagemDenunciaDenunciante(@RequestBody MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO){
+        Long idDenuncia = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        mensagemDenunciaService.salvarMensagem(idDenuncia, mensagemDenunciaRequestDTO, AutorMensagem.DENUNCIANTE);
     }
 }

@@ -41,13 +41,11 @@ public class DenunciaService {
         Denuncia denuncia = criarDenuncia(denunciaRequestDTO);
         denunciaRepository.save(denuncia);
 
-        mensagemDenunciaService.salvarMensagem(new MensagemDenunciaRequestDTO(
-                denuncia.getId(),
-                AutorMensagem.DENUNCIANTE,
+        mensagemDenunciaService.salvarMensagem(denuncia.getId(), new MensagemDenunciaRequestDTO(
                 denunciaRequestDTO.mensagem()
-        ));
+        ), AutorMensagem.DENUNCIANTE);
 
-        statusDenunciaService.atualizarStatusDenuncia(denuncia.getId(), Status.RECEBIDA);
+        statusDenunciaService.adicionarStatusDenuncia(denuncia.getId(), Status.RECEBIDA);
 
         Prioridade prioridadeDenuncia = definirPrioridadeDenuncia(denuncia);
 

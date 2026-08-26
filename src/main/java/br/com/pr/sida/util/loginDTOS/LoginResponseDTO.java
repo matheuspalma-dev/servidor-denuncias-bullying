@@ -10,5 +10,4 @@ public class LoginResponseDTO {
     private Long id;
     private String nome;
     private String email;
-    private ROLE permissao;
 }

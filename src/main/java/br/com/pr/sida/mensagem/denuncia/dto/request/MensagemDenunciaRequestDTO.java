@@ -5,10 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record MensagemDenunciaRequestDTO(
-        @NotNull
-        Long idDenuncia,
-        @NotNull
-        AutorMensagem autor,
         @NotBlank
         String mensagem
 ) {
