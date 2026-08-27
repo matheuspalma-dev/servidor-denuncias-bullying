@@ -3,7 +3,7 @@ package br.com.pr.sida.escola;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.escola.dto.request.EscolaRequestResgisterDTO;
 import br.com.pr.sida.escola.dto.response.EscolaResponseDTO;
-import br.com.pr.sida.jwt.TokenService;
+import br.com.pr.sida.security.jwt.TokenService;
 import br.com.pr.sida.util.enums.ROLE;
 import br.com.pr.sida.util.loginDTOS.LoginRequestDTO;
 import br.com.pr.sida.util.loginDTOS.LoginResponseDTO;
@@ -25,7 +25,6 @@ import java.util.List;
 public class EscolaController {
 
     private final EscolaService escolaService;
-    private final TokenService tokenService;
 
     @GetMapping("/todas")
     public ResponseEntity<List<EscolaResponseDTO>> retornarTodasEscolas() {
@@ -47,24 +46,5 @@ public class EscolaController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseEntity.ok(denuncias);
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO, HttpServletResponse response){
-
-        LoginResponseDTO loginResponseDTO = escolaService.login(loginRequestDTO);
-        String token = tokenService.gerarTokenUsuario(loginResponseDTO, ROLE.REDE_ENSINO);
-
-        ResponseCookie cookie = ResponseCookie.from("tokenAcesso", token)
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .maxAge(3600) // 1 hora
-                .sameSite("Strict")
-                .build();
-
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
-        return ResponseEntity.ok(loginResponseDTO);
     }
 }

@@ -1,7 +1,9 @@
 package br.com.pr.sida.util.mappers;
 
 import br.com.pr.sida.denuncia.Denuncia;
+import br.com.pr.sida.denuncia.dto.request.DenunciaRequestDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
+import br.com.pr.sida.escola.Escola;
 import br.com.pr.sida.mensagem.denuncia.MensagemDenuncia;
 import br.com.pr.sida.mensagem.denuncia.dto.response.MensagensDenunciaResponseDTO;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,4 +78,21 @@ public class DenunciaMapper {
     private String descriptografarMensagem(String mensagemCriptografada){
         return textEncryptor.decrypt(mensagemCriptografada);
     }
+
+    public Denuncia converterDTOEmDenuncia(DenunciaRequestDTO denunciaRequestDTO, Long idGerado, Escola escola){
+        Denuncia denuncia = new Denuncia();
+        denuncia.setId(idGerado);
+        denuncia.setDataCriacao(LocalDate.now());
+        denuncia.setEscola(escola);
+        denuncia.setOndeOcorreu(denunciaRequestDTO.ondeOcorreu());
+        denuncia.setTipoViolencia(denunciaRequestDTO.tipoViolencia());
+        denuncia.setRiscoAgressao(denunciaRequestDTO.riscoAgressao());
+        denuncia.setSituacaoGrave(denunciaRequestDTO.situacaoGrave());
+        denuncia.setViolacaoDireitos(denunciaRequestDTO.violacaoDireitos());
+        denuncia.setSalaVitimas(denunciaRequestDTO.salaVitimas());
+        denuncia.setSalaAgressores(denunciaRequestDTO.salaAgressores());
+        return denuncia;
+    }
+
+
 }

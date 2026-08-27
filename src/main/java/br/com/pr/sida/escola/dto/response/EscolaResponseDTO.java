@@ -1,5 +1,6 @@
 package br.com.pr.sida.escola.dto.response;
 
+import br.com.pr.sida.util.enums.RedeEnsino;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,4 +9,5 @@ import lombok.Setter;
 public class EscolaResponseDTO {
     private Long id;
     private String nome;
+    private RedeEnsino redeEnsino;
 }

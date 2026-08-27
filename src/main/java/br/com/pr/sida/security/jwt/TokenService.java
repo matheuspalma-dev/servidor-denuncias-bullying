@@ -1,4 +1,4 @@
-package br.com.pr.sida.jwt;
+package br.com.pr.sida.security.jwt;
 
 import br.com.pr.sida.util.enums.ROLE;
 import br.com.pr.sida.util.enums.RoleDenuncia;

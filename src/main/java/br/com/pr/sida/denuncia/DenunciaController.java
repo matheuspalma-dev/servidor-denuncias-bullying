@@ -32,14 +32,15 @@ public class DenunciaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(acessoDenunciaResponseDTO);
     }
 
-    @PostMapping("/mensagem/criar/responsavel")
+    @PostMapping("/{denunciaId}/mensagem/criar/responsavel")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
     public void adicionarMensagemDenunciaResponsavel(
-            @RequestBody MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO
+            @RequestBody MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO,
+            @PathVariable Long denunciaId
             ){
-        Long idDenuncia = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        mensagemDenunciaService.salvarMensagem(idDenuncia, mensagemDenunciaRequestDTO, AutorMensagem.RESPONSAVEL);
+        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        mensagemDenunciaService.salvarMensagemResponsavel(denunciaId, mensagemDenunciaRequestDTO, email);
     }
 
     @PostMapping("/mensagem/criar/denunciante")

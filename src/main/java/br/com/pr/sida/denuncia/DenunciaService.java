@@ -12,6 +12,7 @@ import br.com.pr.sida.mensagem.denuncia.dto.request.MensagemDenunciaRequestDTO;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenunciaService;
 import br.com.pr.sida.status.StatusDenunciaService;
 import br.com.pr.sida.util.enums.*;
+import br.com.pr.sida.util.mappers.DenunciaMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,13 +33,17 @@ public class DenunciaService {
     private final StatusDenunciaService statusDenunciaService;
     private final ResponsavelDenunciaService responsavelDenunciaService;
     private final OrgaoCompetenteRepository orgaoCompetenteRepository;
+    private final DenunciaMapper denunciaMapper;
     private final Random random = new Random();
 
     public AcessoDenunciaResponseDTO salvarDenuncia(
             DenunciaRequestDTO denunciaRequestDTO
     )
     {
-        Denuncia denuncia = criarDenuncia(denunciaRequestDTO);
+        Denuncia denuncia = denunciaMapper.converterDTOEmDenuncia(
+                denunciaRequestDTO,
+                gerarId(),
+                localizarEscola(denunciaRequestDTO.idEscola()));
         denunciaRepository.save(denuncia);
 
         mensagemDenunciaService.salvarMensagem(denuncia.getId(), new MensagemDenunciaRequestDTO(
@@ -68,20 +73,6 @@ public class DenunciaService {
     private OrgaoCompetente definirOrgaoCompetente(TipoOrgaoCompetente tipoOrgaoCompetente){
         return orgaoCompetenteRepository.findByTipoOrgaoCompetente(tipoOrgaoCompetente)
                 .orElseThrow(() -> new EntityNotFoundException("orgao competente não existe"));
-    }
-    private Denuncia criarDenuncia(DenunciaRequestDTO denunciaRequestDTO){
-        Denuncia denuncia = new Denuncia();
-        denuncia.setId(gerarId());
-        denuncia.setDataCriacao(LocalDate.now());
-        denuncia.setEscola(localizarEscola(denunciaRequestDTO.idEscola()));
-        denuncia.setOndeOcorreu(denunciaRequestDTO.ondeOcorreu());
-        denuncia.setTipoViolencia(denunciaRequestDTO.tipoViolencia());
-        denuncia.setRiscoAgressao(denunciaRequestDTO.riscoAgressao());
-        denuncia.setSituacaoGrave(denunciaRequestDTO.situacaoGrave());
-        denuncia.setViolacaoDireitos(denunciaRequestDTO.violacaoDireitos());
-        denuncia.setSalaVitimas(denunciaRequestDTO.salaVitimas());
-        denuncia.setSalaAgressores(denunciaRequestDTO.salaAgressores());
-        return denuncia;
     }
 
     private Long gerarId() {
