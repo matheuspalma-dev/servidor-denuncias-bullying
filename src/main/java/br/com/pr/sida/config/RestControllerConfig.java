@@ -1,5 +1,6 @@
 package br.com.pr.sida.config;
 
+import br.com.pr.sida.security.jwt.FiltroAutentificacaoJWT;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -31,7 +32,7 @@ public class RestControllerConfig {
     @Value("${sida.seguranca.crypto-salt}")
     private String cryptoSalt;
 
-    private final FiltroSeguranca filtroSeguranca;
+    private final FiltroAutentificacaoJWT filtroSeguranca;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -43,10 +44,9 @@ public class RestControllerConfig {
                         .requestMatchers("/acesso/denuncia/acessar",
                                 "/denuncias/criar",
                                 "/escolas/todas",
-                                "/escolas/login",
                                 "/escolas/adicionar",
                                 "/orgao-competente/registrar",
-                                "/orgao-competente/login").permitAll()
+                                "/sida/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(filtroSeguranca, UsernamePasswordAuthenticationFilter.class);

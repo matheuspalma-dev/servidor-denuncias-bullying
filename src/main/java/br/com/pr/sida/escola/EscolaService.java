@@ -6,11 +6,11 @@ import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.escola.dto.request.EscolaRequestResgisterDTO;
 import br.com.pr.sida.escola.dto.response.EscolaResponseDTO;
+import br.com.pr.sida.security.service.SecurityService;
 import br.com.pr.sida.util.loginDTOS.LoginRequestDTO;
 import br.com.pr.sida.util.loginDTOS.LoginResponseDTO;
 import br.com.pr.sida.util.mappers.DenunciaMapper;
 import br.com.pr.sida.util.mappers.LoginMapper;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,22 +25,12 @@ public class EscolaService {
     private final OrgaoCompetenteRepository orgaoCompetenteRepository;
     private final PasswordEncoder passwordEncoder;
     private final DenunciaMapper denunciaMapper;
-    private final LoginMapper loginMapper;
+    private final SecurityService securityService;
 
-    public LoginResponseDTO login(LoginRequestDTO loginRequestDTO){
-        Escola escola = escolaRepository.findByEmail(loginRequestDTO.getEmail())
-                .orElseThrow(() -> new RuntimeException("Escola não encontrada"));
-
-        if (!passwordEncoder.matches(loginRequestDTO.getSenha(), escola.getSenhaAcesso())) {
-            throw new RuntimeException("Senha incorreta");
-        }
-
-        return loginMapper.devolverLoginResponseDTO(escola.getId(), escola.getNome(),escola.getEmail());
-    }
 
     public List<DenunciaResponseDTO> acessarDenuncias(String email, long escolaId) {
 
-        boolean temPermissao = verificarSeTemPermissao(email, escolaId);
+        boolean temPermissao = securityService.temPermissaoDeAcessoEscola(email, escolaId);
 
         if (temPermissao) {
 
@@ -59,30 +49,6 @@ public class EscolaService {
         return null;
     }
 
-    private boolean verificarSeTemPermissao(String email, Long escolaId) {
-        Escola escola = escolaRepository.findByEmail(email)
-                .orElse(null);
-
-        if (escola != null){
-            if (escola.getId() == escolaId) {
-                return true;
-            }
-        }
-
-        OrgaoCompetente orgaoCompetente = orgaoCompetenteRepository.findByEmail(email)
-                .orElse(null);
-
-        if (orgaoCompetente != null){
-            Escola escolaAlvo = escolaRepository.findById(escolaId)
-                    .orElseThrow(() -> new EntityNotFoundException("Escola não encontrada"));
-            if (orgaoCompetente.getEscolas().contains(escolaAlvo)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public List<EscolaResponseDTO> retornarTodasEscolas() {
         List<Escola> escolas = escolaRepository.findAll();
         List<EscolaResponseDTO> escolaResponseDTO = new ArrayList<>();
@@ -97,6 +63,7 @@ public class EscolaService {
         EscolaResponseDTO escolaResponseDTO = new EscolaResponseDTO();
         escolaResponseDTO.setId(escola.getId());
         escolaResponseDTO.setNome(escola.getNome());
+        escolaResponseDTO.setRedeEnsino(escola.getRedeEnsino());
         return escolaResponseDTO;
     }
 

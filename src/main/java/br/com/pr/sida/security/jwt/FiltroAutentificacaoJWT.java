@@ -1,8 +1,5 @@
-package br.com.pr.sida.config;
+package br.com.pr.sida.security.jwt;
 
-import br.com.pr.sida.jwt.TokenService;
-import br.com.pr.sida.util.enums.ROLE;
-import br.com.pr.sida.util.enums.RoleDenuncia;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,7 +18,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class FiltroSeguranca extends OncePerRequestFilter {
+public class FiltroAutentificacaoJWT extends OncePerRequestFilter {
 
     private final TokenService tokenService;
 

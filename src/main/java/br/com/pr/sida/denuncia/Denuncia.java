@@ -30,13 +30,10 @@ public class Denuncia {
     @Column(name = "tipo_violencia", nullable = false)
     @Enumerated(EnumType.STRING)
     private TipoViolencia tipoViolencia;
-    // Alguém foi machucado fisicamente ou corre o risco de ser agredido a qualquer momento?
     @Column(name = "risco_agressao", nullable = false)
     private boolean riscoAgressao;
-    // A situação envolve o uso de armas, facas, drogas ou ameaça de morte?
     @Column(name = "situacao_grave", nullable = false)
     private boolean situacaoGrave;
-    // A situação acontece de forma grave e frequente sem ajuda em casa, ou envolve abuso/exploração de um menor de idade?
     @Column(name = "violacao_direitos", nullable = false)
     private boolean violacaoDireitos;
     @Column(name = "sala_vitimas", nullable = true)

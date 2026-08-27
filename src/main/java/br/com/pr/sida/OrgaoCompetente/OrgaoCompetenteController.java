@@ -2,7 +2,7 @@ package br.com.pr.sida.OrgaoCompetente;
 
 import br.com.pr.sida.OrgaoCompetente.dto.request.OrgaoCompetenteRegisterDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
-import br.com.pr.sida.jwt.TokenService;
+import br.com.pr.sida.security.jwt.TokenService;
 import br.com.pr.sida.util.enums.ROLE;
 import br.com.pr.sida.util.loginDTOS.LoginRequestDTO;
 import br.com.pr.sida.util.loginDTOS.LoginResponseDTO;
@@ -24,42 +24,18 @@ import java.util.List;
 public class OrgaoCompetenteController {
 
     private final OrgaoCompetenteService orgaoCompetenteService;
-    private final TokenService tokenService;
 
     @PostMapping("/registrar")
     public void registrarOrgaoCompetente(@RequestBody OrgaoCompetenteRegisterDTO orgaoCompetenteRegisterDTO) {
         orgaoCompetenteService.registrarOrgaoCompetente(orgaoCompetenteRegisterDTO);
     }
 
-    @GetMapping("/{id}/denuncias")
+    @GetMapping("/{orgaoCompetenteId}/denuncias")
     @PreAuthorize("hasRole('ORGAO_COMPETENTE')")
-    public ResponseEntity<List<DenunciaResponseDTO>> acessarDenuncias(@PathVariable Long id) {
+    public ResponseEntity<List<DenunciaResponseDTO>> acessarDenuncias(@PathVariable Long orgaoCompetenteId) {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<DenunciaResponseDTO> denuncias = orgaoCompetenteService.acessarDenuncias(email, id);
+        List<DenunciaResponseDTO> denuncias = orgaoCompetenteService.acessarDenuncias(email, orgaoCompetenteId);
         return ResponseEntity.ok(denuncias);
     }
 
-    @PostMapping("/login")
-    @ResponseStatus(HttpStatus.ACCEPTED)
-    public ResponseEntity<LoginResponseDTO> login(
-            @RequestBody LoginRequestDTO loginDTO,
-            HttpServletResponse response
-    )
-    {
-        LoginResponseDTO loginResponseDTO = orgaoCompetenteService.login(loginDTO);
-
-        String token = tokenService.gerarTokenUsuario(loginResponseDTO, ROLE.ORGAO_COMPETENTE);
-
-        ResponseCookie cookie = ResponseCookie.from("tokenAcesso", token)
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .maxAge(3600)
-                .sameSite("Strict")
-                .build();
-
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
-        return ResponseEntity.ok(loginResponseDTO);
-    }
 }

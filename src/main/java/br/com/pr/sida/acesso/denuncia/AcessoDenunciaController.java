@@ -2,17 +2,16 @@ package br.com.pr.sida.acesso.denuncia;
 
 import br.com.pr.sida.acesso.denuncia.dto.request.AcessoDenunciaRequestDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
-import br.com.pr.sida.jwt.TokenService;
+import br.com.pr.sida.security.jwt.TokenService;
 import br.com.pr.sida.util.enums.RoleDenuncia;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/acesso/denuncia")
@@ -41,6 +40,14 @@ public class AcessoDenunciaController {
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
+        return ResponseEntity.ok().body(denuncia);
+    }
+
+    @GetMapping("/acessar/{codigoAcesso}")
+    @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
+    public ResponseEntity<DenunciaResponseDTO> acessarDenunciaResponsavel(@PathVariable String codigoAcesso){
+        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        DenunciaResponseDTO denuncia = acessoDenunciaService.acessoDenuncia(email, codigoAcesso);
         return ResponseEntity.ok().body(denuncia);
     }
 }
