@@ -1,4 +1,4 @@
-package br.com.pr.sida.util.enums;
+package br.com.pr.sida.security.jwt;
 
 public enum ROLE {
     ORGAO_COMPETENTE,

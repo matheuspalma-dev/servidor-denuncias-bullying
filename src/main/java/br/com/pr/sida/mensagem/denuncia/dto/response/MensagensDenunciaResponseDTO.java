@@ -1,6 +1,6 @@
 package br.com.pr.sida.mensagem.denuncia.dto.response;
 
-import br.com.pr.sida.util.enums.AutorMensagem;
+import br.com.pr.sida.mensagem.denuncia.AutorMensagem;
 import lombok.Getter;
 import lombok.Setter;
 

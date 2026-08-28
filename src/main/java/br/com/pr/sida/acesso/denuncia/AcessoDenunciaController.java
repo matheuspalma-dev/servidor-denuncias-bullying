@@ -3,7 +3,6 @@ package br.com.pr.sida.acesso.denuncia;
 import br.com.pr.sida.acesso.denuncia.dto.request.AcessoDenunciaRequestDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.security.jwt.TokenService;
-import br.com.pr.sida.util.enums.RoleDenuncia;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

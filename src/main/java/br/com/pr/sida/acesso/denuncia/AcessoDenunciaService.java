@@ -1,17 +1,11 @@
 package br.com.pr.sida.acesso.denuncia;
 
-import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
-import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteRepository;
 import br.com.pr.sida.acesso.denuncia.dto.request.AcessoDenunciaRequestDTO;
 import br.com.pr.sida.acesso.denuncia.dto.response.AcessoDenunciaResponseDTO;
 import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
-import br.com.pr.sida.escola.Escola;
-import br.com.pr.sida.escola.EscolaRepository;
-import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
 import br.com.pr.sida.security.service.SecurityService;
 import br.com.pr.sida.util.mappers.DenunciaMapper;
-import br.com.pr.sida.mensagem.denuncia.MensagemDenunciaService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,8 +25,6 @@ import java.util.UUID;
 public class AcessoDenunciaService {
 
     private final AcessoDenunciaRepository acessoDenunciaRepository;
-    private final EscolaRepository escolaRepository;
-    private final OrgaoCompetenteRepository orgaoCompetenteRepository;
     private final TextEncryptor textEncryptor;
     private final PasswordEncoder passwordEncoder;
     private final DenunciaMapper denunciaMapper;

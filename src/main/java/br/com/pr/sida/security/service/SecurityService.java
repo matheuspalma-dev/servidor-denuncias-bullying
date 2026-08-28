@@ -1,27 +1,24 @@
 package br.com.pr.sida.security.service;
 
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
-import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteRepository;
+import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteService;
 import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.escola.Escola;
-import br.com.pr.sida.escola.EscolaRepository;
+import br.com.pr.sida.escola.EscolaService;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class SecurityService {
-    private final OrgaoCompetenteRepository orgaoCompetenteRepository;
-    private final EscolaRepository escolaRepository;
+    private final OrgaoCompetenteService orgaoCompetenteService;
+    private final EscolaService escolaService;
 
     public boolean temPermissaoDeAcessoDenuncia(String email, Denuncia denuncia) {
-        Escola escola = escolaRepository.findByEmail(email)
-                .orElse(null);
+        Escola escola = escolaService.buscarEscolaPorEmail(email);
 
-        OrgaoCompetente orgaoCompetente = orgaoCompetenteRepository.findByEmail(email)
-                .orElse(null);
+        OrgaoCompetente orgaoCompetente = orgaoCompetenteService.buscarOrgaoCompetentePorEmailSemExcecao(email);
 
         if (escola != null || orgaoCompetente != null) {
             for (ResponsavelDenuncia responsavelDenuncia : denuncia.getResponsavelDenuncias()) {
@@ -42,18 +39,16 @@ public class SecurityService {
     }
 
     public boolean temPermissaoDeAcessoEscola(String email, Long escolaId) {
-        Escola escolaAlvo = escolaRepository.findById(escolaId)
-                .orElse(null);
+        Escola escolaAlvo = escolaService.buscarEscolaPorIdSemExcecao(escolaId);
 
         if (escolaAlvo == null) {
             return false;
         }
 
-        Escola escola = escolaRepository.findByEmail(email)
-                .orElse(null);
+        Escola escola = escolaService.buscarEscolaPorEmailSemExcecao(email);
 
-        OrgaoCompetente orgaoCompetente = orgaoCompetenteRepository.findByEmail(email)
-                .orElse(null);
+        OrgaoCompetente orgaoCompetente = orgaoCompetenteService
+                .buscarOrgaoCompetentePorEmailSemExcecao(email);
 
         if (escola != null) {
             if (escola.getId() == escolaId) {
@@ -69,8 +64,8 @@ public class SecurityService {
     }
 
     public boolean temPermissaoDeAcessoOrgaoCompetente(String email, Long orgaoCompetenteId) {
-        OrgaoCompetente orgaoCompetente = orgaoCompetenteRepository.findByEmail(email)
-                .orElse(null);
+        OrgaoCompetente orgaoCompetente = orgaoCompetenteService
+                .buscarOrgaoCompetentePorEmailSemExcecao(email);
 
         if (orgaoCompetente == null || orgaoCompetente.getId() != orgaoCompetenteId) {
             return false;

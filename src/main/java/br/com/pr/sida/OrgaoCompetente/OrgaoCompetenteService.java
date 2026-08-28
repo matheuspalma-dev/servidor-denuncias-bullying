@@ -3,11 +3,8 @@ package br.com.pr.sida.OrgaoCompetente;
 import br.com.pr.sida.OrgaoCompetente.dto.request.OrgaoCompetenteRegisterDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.security.service.SecurityService;
-import br.com.pr.sida.util.loginDTOS.LoginRequestDTO;
-import br.com.pr.sida.util.loginDTOS.LoginResponseDTO;
 import br.com.pr.sida.util.mappers.DenunciaMapper;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
-import br.com.pr.sida.util.mappers.LoginMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,6 +58,26 @@ public class OrgaoCompetenteService {
 
     private String criptografarSenha(String senha) {
         return passwordEncoder.encode(senha);
+    }
+
+    public OrgaoCompetente buscarOrgaoCompetentePorId(Long id) {
+        return orgaoCompetenteRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Órgão competente não encontrado"));
+    }
+
+    public OrgaoCompetente buscarOrgaoCompetentePorEmail(String email) {
+        return orgaoCompetenteRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Órgão competente não encontrado"));
+    }
+
+    public OrgaoCompetente buscarOrgaoCompetentePorEmailSemExcecao(String email) {
+        return orgaoCompetenteRepository.findByEmail(email)
+                .orElse(null);
+    }
+
+    public OrgaoCompetente buscarOrgaoCompetentePorTipoDeUnidade(TipoOrgaoCompetente tipoOrgaoCompetente) {
+        return orgaoCompetenteRepository.findByTipoOrgaoCompetente(tipoOrgaoCompetente)
+                .orElseThrow(() -> new EntityNotFoundException("Órgão competente não encontrado"));
     }
 
 }

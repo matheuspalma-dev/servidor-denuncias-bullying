@@ -1,6 +1,5 @@
-package br.com.pr.sida.util.loginDTOS;
+package br.com.pr.sida.login.dto;
 
-import br.com.pr.sida.util.enums.ROLE;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,6 +1,5 @@
 package br.com.pr.sida.status;
 
-import br.com.pr.sida.util.enums.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,10 +15,10 @@ public class StatusDenunciaController {
 
     private final StatusDenunciaService statusDenunciaService;
 
-    @PostMapping("/atualizar-status/{denunciaId}/{status}")
+    @PostMapping("/atualizar-status/{denunciaId}/{statusDenunciaEnum}")
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
-    public void atualizarStatusDenuncia(@PathVariable Long denunciaId,@PathVariable Status status) {
+    public void atualizarStatusDenuncia(@PathVariable Long denunciaId,@PathVariable StatusDenunciaEnum statusDenunciaEnum) {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        statusDenunciaService.atualizarStatusDenuncia(email, denunciaId, status);
+        statusDenunciaService.atualizarStatusDenuncia(email, denunciaId, statusDenunciaEnum);
     }
 }

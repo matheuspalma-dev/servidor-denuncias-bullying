@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface AcessoDenunciaRepository extends JpaRepository<Acesso, Long> {
+interface AcessoDenunciaRepository extends JpaRepository<Acesso, Long> {
     Boolean existsByCodigoAcesso(String codigoAcesso);
 
     Optional<Acesso> findByCodigoAcessoHash(String codigoAcesso);
