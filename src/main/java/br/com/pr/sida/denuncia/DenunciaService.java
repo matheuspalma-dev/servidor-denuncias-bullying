@@ -1,23 +1,26 @@
 package br.com.pr.sida.denuncia;
 
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
-import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteRepository;
+import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteService;
+import br.com.pr.sida.OrgaoCompetente.TipoOrgaoCompetente;
 import br.com.pr.sida.acesso.denuncia.AcessoDenunciaService;
 import br.com.pr.sida.acesso.denuncia.dto.response.AcessoDenunciaResponseDTO;
 import br.com.pr.sida.denuncia.dto.request.DenunciaRequestDTO;
+import br.com.pr.sida.denuncia.enums.Prioridade;
+import br.com.pr.sida.escola.EscolaService;
+import br.com.pr.sida.status.StatusDenunciaEnum;
 import br.com.pr.sida.escola.Escola;
-import br.com.pr.sida.escola.EscolaRepository;
+import br.com.pr.sida.escola.RedeEnsino;
+import br.com.pr.sida.mensagem.denuncia.AutorMensagem;
 import br.com.pr.sida.mensagem.denuncia.MensagemDenunciaService;
 import br.com.pr.sida.mensagem.denuncia.dto.request.MensagemDenunciaRequestDTO;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenunciaService;
 import br.com.pr.sida.status.StatusDenunciaService;
-import br.com.pr.sida.util.enums.*;
 import br.com.pr.sida.util.mappers.DenunciaMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -29,10 +32,10 @@ public class DenunciaService {
     private final AcessoDenunciaService acessoDenunciaService;
     private final DenunciaRepository denunciaRepository;
     private final MensagemDenunciaService mensagemDenunciaService;
-    private final EscolaRepository escolaRepository;
+    private final EscolaService escolaService;
     private final StatusDenunciaService statusDenunciaService;
     private final ResponsavelDenunciaService responsavelDenunciaService;
-    private final OrgaoCompetenteRepository orgaoCompetenteRepository;
+    private final OrgaoCompetenteService orgaoCompetenteService;
     private final DenunciaMapper denunciaMapper;
     private final Random random = new Random();
 
@@ -50,7 +53,7 @@ public class DenunciaService {
                 denunciaRequestDTO.mensagem()
         ), AutorMensagem.DENUNCIANTE);
 
-        statusDenunciaService.adicionarStatusDenuncia(denuncia.getId(), Status.RECEBIDA);
+        statusDenunciaService.adicionarStatusDenuncia(denuncia.getId(), StatusDenunciaEnum.RECEBIDA);
 
         Prioridade prioridadeDenuncia = definirPrioridadeDenuncia(denuncia);
 
@@ -71,8 +74,7 @@ public class DenunciaService {
     }
 
     private OrgaoCompetente definirOrgaoCompetente(TipoOrgaoCompetente tipoOrgaoCompetente){
-        return orgaoCompetenteRepository.findByTipoOrgaoCompetente(tipoOrgaoCompetente)
-                .orElseThrow(() -> new EntityNotFoundException("orgao competente não existe"));
+        return orgaoCompetenteService.buscarOrgaoCompetentePorTipoDeUnidade(tipoOrgaoCompetente);
     }
 
     private Long gerarId() {
@@ -84,8 +86,7 @@ public class DenunciaService {
     }
 
     private Escola localizarEscola(Long idEscola) {
-        return escolaRepository.findById(idEscola)
-                .orElseThrow(() -> new EntityNotFoundException("Escola não encontrada"));
+        return escolaService.buscarEscolaPorId(idEscola);
     }
 
     private Prioridade definirPrioridadeDenuncia(Denuncia denuncia){
@@ -96,5 +97,10 @@ public class DenunciaService {
         } else {
             return Prioridade.NORMAL;
         }
+    }
+
+    public Denuncia buscarDenunciaPorId(Long idDenuncia) {
+        return denunciaRepository.findById(idDenuncia)
+                .orElseThrow(() -> new EntityNotFoundException("Denúncia não encontrada"));
     }
 }

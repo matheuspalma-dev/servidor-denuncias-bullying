@@ -1,16 +1,13 @@
 package br.com.pr.sida.escola;
 
-import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
-import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteRepository;
+import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteService;
 import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.escola.dto.request.EscolaRequestResgisterDTO;
 import br.com.pr.sida.escola.dto.response.EscolaResponseDTO;
 import br.com.pr.sida.security.service.SecurityService;
-import br.com.pr.sida.util.loginDTOS.LoginRequestDTO;
-import br.com.pr.sida.util.loginDTOS.LoginResponseDTO;
 import br.com.pr.sida.util.mappers.DenunciaMapper;
-import br.com.pr.sida.util.mappers.LoginMapper;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EscolaService {
     private final EscolaRepository escolaRepository;
-    private final OrgaoCompetenteRepository orgaoCompetenteRepository;
+    private final OrgaoCompetenteService orgaoCompetenteService;
     private final PasswordEncoder passwordEncoder;
     private final DenunciaMapper denunciaMapper;
     private final SecurityService securityService;
@@ -34,8 +31,7 @@ public class EscolaService {
 
         if (temPermissao) {
 
-            Escola escola = escolaRepository.findById(escolaId)
-                    .orElseThrow(() -> new RuntimeException("Escola não encontrada"));
+            Escola escola = buscarEscolaPorId(escolaId);
 
             List<DenunciaResponseDTO> denunciaResponseDTOList = new ArrayList<>();
 
@@ -79,17 +75,32 @@ public class EscolaService {
         escola.setAtiva(true);
         escola.setRedeEnsino(escolaRequestResgisterDTO.redeEnsino());
         escola.setSenhaAcesso(criptografarSenha(escolaRequestResgisterDTO.senhaAcesso()));
-        escola.setOrgaoCompetente(buscarOrgaoCompetentePorId(escolaRequestResgisterDTO.orgaoCompetenteId()));
+        escola.setOrgaoCompetente(orgaoCompetenteService.buscarOrgaoCompetentePorId(escolaRequestResgisterDTO.orgaoCompetenteId()));
         return escola;
-    }
-
-    private OrgaoCompetente buscarOrgaoCompetentePorId(Long orgaoCompetenteId) {
-        return orgaoCompetenteRepository.findById(orgaoCompetenteId)
-                .orElseThrow(() -> new RuntimeException("Órgão competente não encontrado"));
     }
 
     private String criptografarSenha(String senha) {
         return passwordEncoder.encode(senha);
+    }
+
+    public Escola buscarEscolaPorId(Long escolaId) {
+        return escolaRepository.findById(escolaId)
+                .orElseThrow(() -> new EntityNotFoundException("Escola não encontrada"));
+    }
+
+    public Escola buscarEscolaPorEmail(String email) {
+        return escolaRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Escola não encontrada"));
+    }
+
+    public Escola buscarEscolaPorEmailSemExcecao(String email) {
+        return escolaRepository.findByEmail(email)
+                .orElse(null);
+    }
+
+    public Escola buscarEscolaPorIdSemExcecao(Long escolaId) {
+        return escolaRepository.findById(escolaId)
+                .orElse(null);
     }
 
 }

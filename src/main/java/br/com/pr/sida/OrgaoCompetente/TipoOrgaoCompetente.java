@@ -1,4 +1,4 @@
-package br.com.pr.sida.util.enums;
+package br.com.pr.sida.OrgaoCompetente;
 
 public enum TipoOrgaoCompetente {
     SME,

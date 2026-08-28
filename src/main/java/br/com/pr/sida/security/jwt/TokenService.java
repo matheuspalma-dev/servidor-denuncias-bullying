@@ -1,8 +1,7 @@
 package br.com.pr.sida.security.jwt;
 
-import br.com.pr.sida.util.enums.ROLE;
-import br.com.pr.sida.util.enums.RoleDenuncia;
-import br.com.pr.sida.util.loginDTOS.LoginResponseDTO;
+import br.com.pr.sida.acesso.denuncia.RoleDenuncia;
+import br.com.pr.sida.login.dto.LoginResponseDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;

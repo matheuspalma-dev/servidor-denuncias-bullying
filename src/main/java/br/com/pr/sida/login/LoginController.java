@@ -1,10 +1,9 @@
 package br.com.pr.sida.login;
 
 import br.com.pr.sida.security.jwt.TokenService;
-import br.com.pr.sida.util.enums.ROLE;
-import br.com.pr.sida.util.enums.TipoLogin;
-import br.com.pr.sida.util.loginDTOS.LoginRequestDTO;
-import br.com.pr.sida.util.loginDTOS.LoginResponseDTO;
+import br.com.pr.sida.security.jwt.ROLE;
+import br.com.pr.sida.login.dto.LoginRequestDTO;
+import br.com.pr.sida.login.dto.LoginResponseDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

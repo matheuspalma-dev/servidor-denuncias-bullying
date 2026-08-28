@@ -55,7 +55,7 @@ public class DenunciaMapper {
         for (StatusDenuncia statusDenuncia : denuncia.getStatusDenuncia()){
             StatusDenunciaResponseDTO statusDenunciaResponseDTO = new StatusDenunciaResponseDTO();
             statusDenunciaResponseDTO.setDataCriacao(statusDenuncia.getDataCriacao());
-            statusDenunciaResponseDTO.setStatus(statusDenuncia.getStatus());
+            statusDenunciaResponseDTO.setStatusDenunciaEnum(statusDenuncia.getStatusDenunciaEnum());
             statusDenunciaResponseDTOList.add(statusDenunciaResponseDTO);
         }
 

@@ -1,11 +1,11 @@
 package br.com.pr.sida.denuncia;
 
+import br.com.pr.sida.denuncia.enums.TipoViolencia;
 import br.com.pr.sida.escola.Escola;
 import br.com.pr.sida.mensagem.denuncia.MensagemDenuncia;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
 import br.com.pr.sida.status.StatusDenuncia;
-import br.com.pr.sida.util.enums.OndeOcorreu;
-import br.com.pr.sida.util.enums.TipoViolencia;
+import br.com.pr.sida.denuncia.enums.OndeOcorreu;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

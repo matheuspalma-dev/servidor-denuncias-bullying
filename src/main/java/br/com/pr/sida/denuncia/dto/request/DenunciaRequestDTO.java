@@ -1,7 +1,7 @@
 package br.com.pr.sida.denuncia.dto.request;
 
-import br.com.pr.sida.util.enums.OndeOcorreu;
-import br.com.pr.sida.util.enums.TipoViolencia;
+import br.com.pr.sida.denuncia.enums.OndeOcorreu;
+import br.com.pr.sida.denuncia.enums.TipoViolencia;
 import jakarta.validation.constraints.NotNull;
 
 public record DenunciaRequestDTO(

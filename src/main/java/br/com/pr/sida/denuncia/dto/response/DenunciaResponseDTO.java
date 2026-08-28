@@ -3,9 +3,9 @@ package br.com.pr.sida.denuncia.dto.response;
 import br.com.pr.sida.mensagem.denuncia.dto.response.MensagensDenunciaResponseDTO;
 import br.com.pr.sida.responsavel.denuncia.dto.response.ResponsavelDenunciaResponseDTO;
 import br.com.pr.sida.status.dto.response.StatusDenunciaResponseDTO;
-import br.com.pr.sida.util.enums.OndeOcorreu;
-import br.com.pr.sida.util.enums.RedeEnsino;
-import br.com.pr.sida.util.enums.TipoViolencia;
+import br.com.pr.sida.denuncia.enums.OndeOcorreu;
+import br.com.pr.sida.escola.RedeEnsino;
+import br.com.pr.sida.denuncia.enums.TipoViolencia;
 import lombok.Getter;
 import lombok.Setter;
 

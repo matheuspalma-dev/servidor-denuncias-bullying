@@ -1,7 +1,6 @@
 package br.com.pr.sida.status;
 
 import br.com.pr.sida.denuncia.Denuncia;
-import br.com.pr.sida.util.enums.Status;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +19,7 @@ public class StatusDenuncia {
     private LocalDate dataCriacao;
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private StatusDenunciaEnum statusDenunciaEnum;
     @ManyToOne
     @JoinColumn(name = "denuncia_id", nullable = false, referencedColumnName = "id")
     private Denuncia denuncia;

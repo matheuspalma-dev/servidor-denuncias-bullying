@@ -1,15 +1,12 @@
 package br.com.pr.sida.login;
 
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
-import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteRepository;
+import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteService;
 import br.com.pr.sida.escola.Escola;
-import br.com.pr.sida.escola.EscolaRepository;
-import br.com.pr.sida.util.enums.TipoLogin;
-import br.com.pr.sida.util.loginDTOS.LoginRequestDTO;
-import br.com.pr.sida.util.loginDTOS.LoginResponseDTO;
-import br.com.pr.sida.util.mappers.LoginMapper;
+import br.com.pr.sida.escola.EscolaService;
+import br.com.pr.sida.login.dto.LoginRequestDTO;
+import br.com.pr.sida.login.dto.LoginResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,22 +15,21 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LoginService {
 
-    private final EscolaRepository escolaRepository;
-    private final OrgaoCompetenteRepository orgaoCompetenteRepository;
+    private final EscolaService escolaService;
+    private final OrgaoCompetenteService orgaoCompetenteService;
     private  final PasswordEncoder passwordEncoder;
     private  final LoginMapper loginMapper;
 
     public LoginResponseDTO login(LoginRequestDTO loginRequestDTO, TipoLogin tipoLogin) {
         if (tipoLogin == TipoLogin.ESCOLA){
-            Escola escola = escolaRepository.findByEmail(loginRequestDTO.getEmail())
-                    .orElse(null);
+            Escola escola = escolaService.buscarEscolaPorEmailSemExcecao(loginRequestDTO.getEmail());
 
             if (passwordEncoder.matches(loginRequestDTO.getSenha(), escola.getSenhaAcesso())) {
                 return loginMapper.devolverLoginResponseDTO(escola.getId(), escola.getNome(), escola.getEmail());
             }
         } else {
-            OrgaoCompetente orgaoCompetente = orgaoCompetenteRepository.findByEmail(loginRequestDTO.getEmail())
-                    .orElse(null);
+            OrgaoCompetente orgaoCompetente = orgaoCompetenteService
+                    .buscarOrgaoCompetentePorEmailSemExcecao(loginRequestDTO.getEmail());
 
             if (passwordEncoder.matches(loginRequestDTO.getSenha(), orgaoCompetente.getSenhaAcesso())) {
                 return loginMapper.devolverLoginResponseDTO(orgaoCompetente.getId(), orgaoCompetente.getNome(), orgaoCompetente.getEmail());
@@ -44,11 +40,10 @@ public class LoginService {
     }
 
     public TipoLogin tipoLogin(String email) {
-        Escola escola = escolaRepository.findByEmail(email)
-                .orElse(null);
+        Escola escola = escolaService.buscarEscolaPorEmailSemExcecao(email);
 
-        OrgaoCompetente orgaoCompetente = orgaoCompetenteRepository.findByEmail(email)
-                .orElse(null);
+        OrgaoCompetente orgaoCompetente = orgaoCompetenteService
+                .buscarOrgaoCompetentePorEmailSemExcecao(email);
 
         if (escola == null && orgaoCompetente == null) {
             throw new BadCredentialsException("Email não pertence a nenhuma organização");

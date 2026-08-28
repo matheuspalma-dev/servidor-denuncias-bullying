@@ -1,4 +1,4 @@
-package br.com.pr.sida.util.enums;
+package br.com.pr.sida.denuncia.enums;
 
 public enum TipoViolencia {
     FISICA,

@@ -1,6 +1,6 @@
-package br.com.pr.sida.util.enums;
+package br.com.pr.sida.status;
 
-public enum Status {
+public enum StatusDenunciaEnum {
     RECEBIDA,
     EM_ANALISE,
     ENCAMINHADA,

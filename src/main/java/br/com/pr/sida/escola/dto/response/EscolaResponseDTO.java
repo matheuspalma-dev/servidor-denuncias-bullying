@@ -1,6 +1,6 @@
 package br.com.pr.sida.escola.dto.response;
 
-import br.com.pr.sida.util.enums.RedeEnsino;
+import br.com.pr.sida.escola.RedeEnsino;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -2,7 +2,6 @@ package br.com.pr.sida.escola;
 
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
 import br.com.pr.sida.denuncia.Denuncia;
-import br.com.pr.sida.util.enums.RedeEnsino;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

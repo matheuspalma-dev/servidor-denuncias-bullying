@@ -1,6 +1,6 @@
-package br.com.pr.sida.util.mappers;
+package br.com.pr.sida.login;
 
-import br.com.pr.sida.util.loginDTOS.LoginResponseDTO;
+import br.com.pr.sida.login.dto.LoginResponseDTO;
 import org.springframework.stereotype.Component;
 
 @Component

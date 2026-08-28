@@ -1,4 +1,4 @@
-package br.com.pr.sida.util.enums;
+package br.com.pr.sida.acesso.denuncia;
 
 public enum RoleDenuncia {
     DENUNCIANTE,
