@@ -3,20 +3,30 @@ package br.com.pr.sida.denuncia;
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteService;
 import br.com.pr.sida.OrgaoCompetente.TipoOrgaoCompetente;
-import br.com.pr.sida.acesso.denuncia.AcessoDenunciaService;
-import br.com.pr.sida.acesso.denuncia.dto.response.AcessoDenunciaResponseDTO;
+import br.com.pr.sida.como.afetou.ComoAfetouService;
+import br.com.pr.sida.como.afetou.ComoTeAfetou;
+import br.com.pr.sida.como.afetou.dto.request.ComoAfetouRequestDTO;
 import br.com.pr.sida.denuncia.dto.request.DenunciaRequestDTO;
-import br.com.pr.sida.denuncia.enums.Prioridade;
+import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
+import br.com.pr.sida.denuncia.enums.*;
 import br.com.pr.sida.escola.EscolaService;
+import br.com.pr.sida.mensagem.denuncia.MensagemDenunciaService;
+import br.com.pr.sida.mensagem.denuncia.dto.response.MensagensDenunciaResponseDTO;
+import br.com.pr.sida.onde.ocorreu.OndeOcorreuDenunciaService;
+import br.com.pr.sida.onde.ocorreu.dto.request.OndeOcorreuRequestDTO;
+import br.com.pr.sida.praticaAcao.PraticaAcaoService;
+import br.com.pr.sida.praticaAcao.QuemPratica;
+import br.com.pr.sida.praticaAcao.dto.request.PraticaAcaoRequestDTO;
+import br.com.pr.sida.responsavel.denuncia.dto.response.ResponsavelDenunciaResponseDTO;
+import br.com.pr.sida.situacao.denuncia.SituacaoDenunciaService;
+import br.com.pr.sida.situacao.denuncia.SituacaoDenunciada;
+import br.com.pr.sida.situacao.denuncia.dto.request.SituacaoDenunciaRequestDTO;
 import br.com.pr.sida.status.StatusDenunciaEnum;
 import br.com.pr.sida.escola.Escola;
 import br.com.pr.sida.escola.RedeEnsino;
-import br.com.pr.sida.mensagem.denuncia.AutorMensagem;
-import br.com.pr.sida.mensagem.denuncia.MensagemDenunciaService;
-import br.com.pr.sida.mensagem.denuncia.dto.request.MensagemDenunciaRequestDTO;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenunciaService;
 import br.com.pr.sida.status.StatusDenunciaService;
-import br.com.pr.sida.util.mappers.DenunciaMapper;
+import br.com.pr.sida.status.dto.response.StatusDenunciaResponseDTO;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,17 +39,20 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class DenunciaService {
 
-    private final AcessoDenunciaService acessoDenunciaService;
     private final DenunciaRepository denunciaRepository;
-    private final MensagemDenunciaService mensagemDenunciaService;
     private final EscolaService escolaService;
     private final StatusDenunciaService statusDenunciaService;
     private final ResponsavelDenunciaService responsavelDenunciaService;
     private final OrgaoCompetenteService orgaoCompetenteService;
     private final DenunciaMapper denunciaMapper;
+    private final ComoAfetouService comoAfetouService;
+    private final PraticaAcaoService praticaAcaoService;
+    private final SituacaoDenunciaService situacaoDenunciaService;
+    private final MensagemDenunciaService mensagemDenunciaService;
+    private final OndeOcorreuDenunciaService ondeOcorreuDenunciaService;
     private final Random random = new Random();
 
-    public AcessoDenunciaResponseDTO salvarDenuncia(
+    public Denuncia salvarDenuncia(
             DenunciaRequestDTO denunciaRequestDTO
     )
     {
@@ -49,17 +62,36 @@ public class DenunciaService {
                 localizarEscola(denunciaRequestDTO.idEscola()));
         denunciaRepository.save(denuncia);
 
-        mensagemDenunciaService.salvarMensagem(denuncia.getId(), new MensagemDenunciaRequestDTO(
-                denunciaRequestDTO.mensagem()
-        ), AutorMensagem.DENUNCIANTE);
+        adicionarComoAfetou(denuncia, denunciaRequestDTO.comoTeAfetouList());
 
         statusDenunciaService.adicionarStatusDenuncia(denuncia.getId(), StatusDenunciaEnum.RECEBIDA);
 
+        adicionarQuemPratica(denuncia, denunciaRequestDTO.quemPratica());
+
+        adicionarSituacaoDenunciada(denuncia, denunciaRequestDTO.situacaoDenunciadas());
+
+        adicionarResponsaveisDenuncia(denuncia);
+
+        adicionarOndeOcorreuDenuncia(denuncia, denunciaRequestDTO.ondeOcorreuList());
+
+        return denuncia;
+    }
+
+    private void adicionarOndeOcorreuDenuncia(Denuncia denuncia, List<OndeOcorreu> ondeOcorreuList){
+        for (OndeOcorreu ondeOcorreu : ondeOcorreuList){
+            ondeOcorreuDenunciaService.adicionarOndeOcorreuDenuncia(new OndeOcorreuRequestDTO(ondeOcorreu, denuncia));
+        }
+    }
+
+    private void adicionarResponsaveisDenuncia(Denuncia denuncia){
         Prioridade prioridadeDenuncia = definirPrioridadeDenuncia(denuncia);
 
         List<OrgaoCompetente> orgaoCompetenteList = new ArrayList<>();
 
         OrgaoCompetente orgaoCompetente = definirOrgaoCompetente(denuncia.getEscola().getRedeEnsino() == RedeEnsino.MUNICIPAL ? TipoOrgaoCompetente.SME : TipoOrgaoCompetente.NRE);
+
+        boolean houveNegligencia = houveNegligencia(denuncia);
+
         if (prioridadeDenuncia == Prioridade.URGENTE){
             orgaoCompetenteList.add(orgaoCompetente);
         } else if (prioridadeDenuncia == Prioridade.ALTA){
@@ -68,9 +100,48 @@ public class DenunciaService {
             orgaoCompetenteList.add(orgaoCompetenteConselhoTutelar);
         }
 
-        responsavelDenunciaService.adicionarResponsavelDenuncia(denuncia, denuncia.getEscola(), orgaoCompetenteList);
+        boolean escolaVaiTerAcesso = escolaVaiTerAcesso(denuncia, houveNegligencia);
 
-        return acessoDenunciaService.salvarAcessoDenuncia(denuncia);
+        responsavelDenunciaService.adicionarResponsavelDenuncia(denuncia, denuncia.getEscola(), orgaoCompetenteList, escolaVaiTerAcesso);
+    }
+
+    private boolean escolaVaiTerAcesso(Denuncia denuncia, boolean houveNegligencia){
+        if (houveNegligencia){
+            if (denuncia.getRelatadoParaOResponsavel() == RelatadoParaOResponsavel.SIM_EQUIPE_ESCOLA){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean houveNegligencia(Denuncia denuncia){
+        if (denuncia.getResultadoRelato() == null){
+            return false;
+        }
+
+        if (denuncia.getResultadoRelato() == ResultadoRelato.NINGUEM_FEZ_NADA || denuncia.getResultadoRelato() == ResultadoRelato.DISSERAM_QUE_NAO_PODIAM_FAZER_NADA){
+            return true;
+        }
+
+        return false;
+    }
+
+    private void adicionarSituacaoDenunciada(Denuncia denuncia, List<SituacaoDenunciada> situacaoDenunciadas){
+        for (SituacaoDenunciada situacaoDenunciada : situacaoDenunciadas){
+            situacaoDenunciaService.adicionarSituacaoDenuncia(new SituacaoDenunciaRequestDTO(situacaoDenunciada, denuncia));
+        }
+    }
+
+    private void adicionarComoAfetou(Denuncia denuncia, List<ComoTeAfetou> comoTeAfetouList){
+        for (ComoTeAfetou comoTeAfetou : comoTeAfetouList){
+            comoAfetouService.salvarComoAfetou(new ComoAfetouRequestDTO(comoTeAfetou, denuncia));
+        }
+    }
+
+    private void adicionarQuemPratica(Denuncia denuncia, List<QuemPratica> quemPraticaList){
+        for (QuemPratica quemPratica : quemPraticaList){
+            praticaAcaoService.salvarPraticaAcao(new PraticaAcaoRequestDTO(quemPratica, denuncia));
+        }
     }
 
     private OrgaoCompetente definirOrgaoCompetente(TipoOrgaoCompetente tipoOrgaoCompetente){
@@ -90,17 +161,35 @@ public class DenunciaService {
     }
 
     private Prioridade definirPrioridadeDenuncia(Denuncia denuncia){
-        if (denuncia.isRiscoAgressao() || denuncia.isSituacaoGrave()){
+        if (denuncia.isEstaEmPerigo()){
             return Prioridade.URGENTE;
-        } else if (denuncia.isViolacaoDireitos()){
+        } else if (denuncia.isContinuaAcontecendo() && !denuncia.isSenteSeguroNaEscola() && (denuncia.getFrequenciaOcorre() == FrequenciaOcorre.FREQUENTEMENTE || denuncia.getFrequenciaOcorre() == FrequenciaOcorre.TODOS_OS_DIAS)) {
+            return Prioridade.URGENTE;
+        } else if (denuncia.isContinuaAcontecendo() && denuncia.getFrequenciaOcorre() == FrequenciaOcorre.FREQUENTEMENTE) {
             return Prioridade.ALTA;
         } else {
             return Prioridade.NORMAL;
         }
     }
 
-    public Denuncia buscarDenunciaPorId(Long idDenuncia) {
-        return denunciaRepository.findById(idDenuncia)
-                .orElseThrow(() -> new EntityNotFoundException("Denúncia não encontrada"));
+    public DenunciaResponseDTO retornarDenunciaResponseDTO(Denuncia denuncia) {
+        List<ComoTeAfetou> comoTeAfetouList = comoAfetouService.retornarComoAfetou(denuncia.getComoTeAfetou());
+        List<QuemPratica> quemPraticaList = praticaAcaoService.retornarQuemPratica(denuncia.getPraticantesAcao());
+        List<SituacaoDenunciada> situacaoDenunciadaList = situacaoDenunciaService.retornarSituacoesDenunciadas(denuncia.getSituacaoDenuncias());
+        List<StatusDenunciaResponseDTO> statusDenunciaResponseDTOList = statusDenunciaService.retornarStatusDenuncia(denuncia.getStatusDenuncia());
+        List<MensagensDenunciaResponseDTO> mensagensDenunciaResponseDTOList = mensagemDenunciaService.retornarMensagens(denuncia.getMensagens());
+        List<ResponsavelDenunciaResponseDTO> responsavelDenunciaResponseDTOList = responsavelDenunciaService.retornarResponsavelDenuncia(denuncia.getResponsavelDenuncias());
+        List<OndeOcorreu> ondeOcorreuList = ondeOcorreuDenunciaService.listarOndeOcorreuDenuncia(denuncia.getOndeOcorreuDenunciaList());
+        DenunciaResponseDTO denunciaResponseDTO = denunciaMapper.converterDenunciaEmDTO(
+                denuncia,
+                comoTeAfetouList,
+                quemPraticaList,
+                situacaoDenunciadaList,
+                statusDenunciaResponseDTOList,
+                mensagensDenunciaResponseDTOList,
+                responsavelDenunciaResponseDTOList,
+                ondeOcorreuList
+                );
+        return denunciaResponseDTO;
     }
 }

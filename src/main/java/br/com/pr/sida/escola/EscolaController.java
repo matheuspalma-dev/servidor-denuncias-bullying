@@ -29,15 +29,4 @@ public class EscolaController {
     public void adicionarEscola(@RequestBody EscolaRequestResgisterDTO escolaRequestResgisterDTO) {
         escolaService.adicionarEscola(escolaRequestResgisterDTO);
     }
-
-    @GetMapping("/{escolaId}/denuncias")
-    @PreAuthorize("hasAnyRole('REDE_ENSINO', 'ORGAO_COMPETENTE')")
-    public ResponseEntity<List<DenunciaResponseDTO>> acessarDenuncias(@PathVariable long escolaId) {
-        String emailUsuarioLogado = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<DenunciaResponseDTO> denuncias = escolaService.acessarDenuncias(emailUsuarioLogado, escolaId);
-        if (denuncias == null){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        return ResponseEntity.ok(denuncias);
-    }
 }

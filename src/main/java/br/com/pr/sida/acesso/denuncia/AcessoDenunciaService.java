@@ -3,9 +3,10 @@ package br.com.pr.sida.acesso.denuncia;
 import br.com.pr.sida.acesso.denuncia.dto.request.AcessoDenunciaRequestDTO;
 import br.com.pr.sida.acesso.denuncia.dto.response.AcessoDenunciaResponseDTO;
 import br.com.pr.sida.denuncia.Denuncia;
+import br.com.pr.sida.denuncia.DenunciaMapper;
+import br.com.pr.sida.denuncia.DenunciaService;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.security.service.SecurityService;
-import br.com.pr.sida.util.mappers.DenunciaMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,8 +28,8 @@ public class AcessoDenunciaService {
     private final AcessoDenunciaRepository acessoDenunciaRepository;
     private final TextEncryptor textEncryptor;
     private final PasswordEncoder passwordEncoder;
-    private final DenunciaMapper denunciaMapper;
     private final SecurityService securityService;
+    private final DenunciaService denunciaService;
     @Value("${sida.seguranca.crypto-hmac}") private String hmacSecretKey;
 
     public AcessoDenunciaResponseDTO salvarAcessoDenuncia(Denuncia denuncia) {
@@ -100,7 +101,7 @@ public class AcessoDenunciaService {
         }
 
         System.out.println("True");
-        return denunciaMapper.converterDenunciaEmDTO(acesso.getDenuncia());
+        return denunciaService.retornarDenunciaResponseDTO(acesso.getDenuncia());
     }
 
     public DenunciaResponseDTO acessoDenuncia(String email, String codigoAcesso){
@@ -114,7 +115,6 @@ public class AcessoDenunciaService {
         if (!temPermissao){
             throw new BadCredentialsException("Usuário não tem permissão para acessar essa denúncia");
         }
-        DenunciaResponseDTO denunciaResponseDTO = denunciaMapper.converterDenunciaEmDTO(denuncia);
-        return denunciaResponseDTO;
+        return denunciaService.retornarDenunciaResponseDTO(denuncia);
     }
 }

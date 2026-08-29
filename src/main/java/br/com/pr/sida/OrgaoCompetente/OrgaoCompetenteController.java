@@ -22,12 +22,4 @@ public class OrgaoCompetenteController {
         orgaoCompetenteService.registrarOrgaoCompetente(orgaoCompetenteRegisterDTO);
     }
 
-    @GetMapping("/{orgaoCompetenteId}/denuncias")
-    @PreAuthorize("hasRole('ORGAO_COMPETENTE')")
-    public ResponseEntity<List<DenunciaResponseDTO>> acessarDenuncias(@PathVariable Long orgaoCompetenteId) {
-        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<DenunciaResponseDTO> denuncias = orgaoCompetenteService.acessarDenuncias(email, orgaoCompetenteId);
-        return ResponseEntity.ok(denuncias);
-    }
-
 }
