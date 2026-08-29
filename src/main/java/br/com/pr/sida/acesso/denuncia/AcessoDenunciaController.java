@@ -42,13 +42,13 @@ public class AcessoDenunciaController {
         return ResponseEntity.ok().body(denuncia);
     }
 
-    @GetMapping("/acessar/{codigoAcesso}")
+    @GetMapping("/acessar/{denunciaId}")
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
-    public ResponseEntity<DenunciaResponseDTO> acessarDenunciaResponsavel(@PathVariable String codigoAcesso){
+    public ResponseEntity<DenunciaResponseDTO> acessarDenunciaResponsavel(@PathVariable Long denunciaId){
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        DenunciaResponseDTO denuncia = acessoDenunciaService.acessoDenuncia(email, codigoAcesso);
+        DenunciaResponseDTO denuncia = acessoDenunciaService.acessoDenuncia(email, denunciaId);
         return ResponseEntity.ok().body(denuncia);
     }
 
-    
+
 }
