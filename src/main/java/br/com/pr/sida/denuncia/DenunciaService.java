@@ -2,6 +2,7 @@ package br.com.pr.sida.denuncia;
 
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteService;
+import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteServiceReader;
 import br.com.pr.sida.OrgaoCompetente.TipoOrgaoCompetente;
 import br.com.pr.sida.como.afetou.ComoAfetouService;
 import br.com.pr.sida.como.afetou.ComoTeAfetou;
@@ -9,7 +10,7 @@ import br.com.pr.sida.como.afetou.dto.request.ComoAfetouRequestDTO;
 import br.com.pr.sida.denuncia.dto.request.DenunciaRequestDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.denuncia.enums.*;
-import br.com.pr.sida.escola.EscolaService;
+import br.com.pr.sida.escola.EscolaServiceReader;
 import br.com.pr.sida.mensagem.denuncia.MensagemDenunciaService;
 import br.com.pr.sida.mensagem.denuncia.dto.response.MensagensDenunciaResponseDTO;
 import br.com.pr.sida.onde.ocorreu.OndeOcorreuDenunciaService;
@@ -27,7 +28,6 @@ import br.com.pr.sida.escola.RedeEnsino;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenunciaService;
 import br.com.pr.sida.status.StatusDenunciaService;
 import br.com.pr.sida.status.dto.response.StatusDenunciaResponseDTO;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -40,10 +40,10 @@ import java.util.Random;
 public class DenunciaService {
 
     private final DenunciaRepository denunciaRepository;
-    private final EscolaService escolaService;
+    private final EscolaServiceReader escolaServiceReader;
     private final StatusDenunciaService statusDenunciaService;
     private final ResponsavelDenunciaService responsavelDenunciaService;
-    private final OrgaoCompetenteService orgaoCompetenteService;
+    private final OrgaoCompetenteServiceReader orgaoCompetenteServiceReader;
     private final DenunciaMapper denunciaMapper;
     private final ComoAfetouService comoAfetouService;
     private final PraticaAcaoService praticaAcaoService;
@@ -145,7 +145,7 @@ public class DenunciaService {
     }
 
     private OrgaoCompetente definirOrgaoCompetente(TipoOrgaoCompetente tipoOrgaoCompetente){
-        return orgaoCompetenteService.buscarOrgaoCompetentePorTipoDeUnidade(tipoOrgaoCompetente);
+        return orgaoCompetenteServiceReader.buscarPorTipoDeUnidade(tipoOrgaoCompetente);
     }
 
     private Long gerarId() {
@@ -157,7 +157,7 @@ public class DenunciaService {
     }
 
     private Escola localizarEscola(Long idEscola) {
-        return escolaService.buscarEscolaPorId(idEscola);
+        return escolaServiceReader.buscarEscolaPorId(idEscola);
     }
 
     private Prioridade definirPrioridadeDenuncia(Denuncia denuncia){

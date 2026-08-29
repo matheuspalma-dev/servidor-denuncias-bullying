@@ -32,25 +32,4 @@ public class OrgaoCompetenteService {
     private String criptografarSenha(String senha) {
         return passwordEncoder.encode(senha);
     }
-
-    public OrgaoCompetente buscarOrgaoCompetentePorId(Long id) {
-        return orgaoCompetenteRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Órgão competente não encontrado"));
-    }
-
-    public OrgaoCompetente buscarOrgaoCompetentePorEmail(String email) {
-        return orgaoCompetenteRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Órgão competente não encontrado"));
-    }
-
-    public OrgaoCompetente buscarOrgaoCompetentePorEmailSemExcecao(String email) {
-        return orgaoCompetenteRepository.findByEmail(email)
-                .orElse(null);
-    }
-
-    public OrgaoCompetente buscarOrgaoCompetentePorTipoDeUnidade(TipoOrgaoCompetente tipoOrgaoCompetente) {
-        return orgaoCompetenteRepository.findByTipoOrgaoCompetente(tipoOrgaoCompetente)
-                .orElseThrow(() -> new EntityNotFoundException("Órgão competente não encontrado"));
-    }
-
 }

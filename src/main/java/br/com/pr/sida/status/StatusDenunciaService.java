@@ -1,6 +1,6 @@
 package br.com.pr.sida.status;
 
-import br.com.pr.sida.denuncia.DenunciaReader;
+import br.com.pr.sida.denuncia.DenunciaServiceReader;
 import br.com.pr.sida.security.service.SecurityService;
 import br.com.pr.sida.status.dto.response.StatusDenunciaResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -15,16 +15,16 @@ import java.util.List;
 public class StatusDenunciaService {
 
     private final StatusDenunciaRepository statusDenunciaRepository;
-    private final DenunciaReader denunciaReader;
+    private final DenunciaServiceReader denunciaServiceReader;
     private final SecurityService securityService;
     private final StatusMapper statusMapper;
 
     public void atualizarStatusDenuncia(String email, Long denunciaId, StatusDenunciaEnum status) {
-        boolean temPermissao = securityService.temPermissaoDeAcessoDenuncia(email, denunciaReader.buscarDenunciaPorId(denunciaId));
+        boolean temPermissao = securityService.temPermissaoDeAcessoDenuncia(email, denunciaServiceReader.buscarDenunciaPorId(denunciaId));
         if (temPermissao) {
             br.com.pr.sida.status.StatusDenuncia statusDenuncia = new br.com.pr.sida.status.StatusDenuncia();
             statusDenuncia.setDataCriacao(LocalDate.now());
-            statusDenuncia.setDenuncia(denunciaReader.buscarDenunciaPorId(denunciaId));
+            statusDenuncia.setDenuncia(denunciaServiceReader.buscarDenunciaPorId(denunciaId));
             statusDenuncia.setStatusDenunciaEnum(status);
 
             statusDenunciaRepository.save(statusDenuncia);
@@ -34,7 +34,7 @@ public class StatusDenunciaService {
     public void adicionarStatusDenuncia(Long denunciaId, StatusDenunciaEnum status) {
         br.com.pr.sida.status.StatusDenuncia statusDenuncia = new br.com.pr.sida.status.StatusDenuncia();
         statusDenuncia.setDataCriacao(LocalDate.now());
-        statusDenuncia.setDenuncia(denunciaReader.buscarDenunciaPorId(denunciaId));
+        statusDenuncia.setDenuncia(denunciaServiceReader.buscarDenunciaPorId(denunciaId));
         statusDenuncia.setStatusDenunciaEnum(status);
         statusDenunciaRepository.save(statusDenuncia);
     }

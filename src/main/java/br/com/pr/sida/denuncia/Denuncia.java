@@ -1,5 +1,6 @@
 package br.com.pr.sida.denuncia;
 
+import br.com.pr.sida.acesso.denuncia.Acesso;
 import br.com.pr.sida.como.afetou.ComoAfetou;
 import br.com.pr.sida.denuncia.enums.*;
 import br.com.pr.sida.escola.Escola;
@@ -57,6 +58,8 @@ public class Denuncia {
     private boolean senteSeguroNaEscola;
     @Column(name = "pedido_ou_informacao_extra")
     private String pedidoOuInformacaoExtra;
+    @OneToOne(mappedBy = "denuncia")
+    private Acesso acesso;
     @OneToMany(mappedBy = "denuncia")
     private List<OndeOcorreuDenuncia> ondeOcorreuDenunciaList;
     @OneToMany(mappedBy = "denuncia")

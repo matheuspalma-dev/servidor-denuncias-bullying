@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class DenunciaReader {
+public class DenunciaServiceReader {
 
     private final DenunciaRepository denunciaRepository;
 

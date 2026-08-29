@@ -51,6 +51,7 @@ public class DenunciaMapper {
         denunciaResponseDTO.setSenteSeguroNaEscola(denuncia.isSenteSeguroNaEscola());
         denunciaResponseDTO.setPedidoOuInformacaoExtra(descriptografarDetalhes(denuncia.getPedidoOuInformacaoExtra()));
 
+        denunciaResponseDTO.setCodigoAcesso(descriptografarDetalhes(denuncia.getAcesso().getCodigoAcesso()));
         denunciaResponseDTO.setOndeOcorreuList(ondeOcorreuList);
         denunciaResponseDTO.setComoTeAfetouList(comoTeAfetouList);
         denunciaResponseDTO.setQuemPraticaList(quemPraticaList);
