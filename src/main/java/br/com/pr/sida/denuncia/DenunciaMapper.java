@@ -1,21 +1,20 @@
-package br.com.pr.sida.util.mappers;
+package br.com.pr.sida.denuncia;
 
-import br.com.pr.sida.denuncia.Denuncia;
+import br.com.pr.sida.como.afetou.ComoTeAfetou;
 import br.com.pr.sida.denuncia.dto.request.DenunciaRequestDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
+import br.com.pr.sida.denuncia.enums.OndeOcorreu;
 import br.com.pr.sida.escola.Escola;
-import br.com.pr.sida.mensagem.denuncia.MensagemDenuncia;
 import br.com.pr.sida.mensagem.denuncia.dto.response.MensagensDenunciaResponseDTO;
-import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
+import br.com.pr.sida.praticaAcao.QuemPratica;
 import br.com.pr.sida.responsavel.denuncia.dto.response.ResponsavelDenunciaResponseDTO;
-import br.com.pr.sida.status.StatusDenuncia;
+import br.com.pr.sida.situacao.denuncia.SituacaoDenunciada;
 import br.com.pr.sida.status.dto.response.StatusDenunciaResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -24,58 +23,45 @@ public class DenunciaMapper {
 
     private final TextEncryptor textEncryptor;
 
-    public DenunciaResponseDTO converterDenunciaEmDTO(Denuncia denuncia){
+    public DenunciaResponseDTO converterDenunciaEmDTO(
+            Denuncia denuncia,
+            List<ComoTeAfetou> comoTeAfetouList,
+            List<QuemPratica> quemPraticaList,
+            List<SituacaoDenunciada> situacaoDenunciadaList,
+            List<StatusDenunciaResponseDTO> statusDenunciaResponseDTOList,
+            List<MensagensDenunciaResponseDTO> mensagensDenunciaResponseDTOList,
+            List<ResponsavelDenunciaResponseDTO> responsavelDenunciaResponseDTOList,
+            List<OndeOcorreu> ondeOcorreuList
+    ){
         DenunciaResponseDTO denunciaResponseDTO = new DenunciaResponseDTO();
         denunciaResponseDTO.setId(denuncia.getId());
         denunciaResponseDTO.setDataCriacao(denuncia.getDataCriacao());
         denunciaResponseDTO.setNomeEscola(denuncia.getEscola().getNome());
-        denunciaResponseDTO.setRedeEnsino(denuncia.getEscola().getRedeEnsino());
-        denunciaResponseDTO.setOrgaoCompetenteNome(denuncia.getEscola().getOrgaoCompetente().getNome());
-        denunciaResponseDTO.setOndeOcorreu(denuncia.getOndeOcorreu());
-        denunciaResponseDTO.setTipoViolencia(denuncia.getTipoViolencia());
-        denunciaResponseDTO.setRiscoAgressao(denuncia.isRiscoAgressao());
-        denunciaResponseDTO.setSituacaoGrave(denuncia.isSituacaoGrave());
-        denunciaResponseDTO.setViolacaoDireitos(denuncia.isViolacaoDireitos());
-        List<MensagensDenunciaResponseDTO> mensagensDescriptografadas = new ArrayList<>();
+        denunciaResponseDTO.setAfetados(denuncia.getAfetados());
+        denunciaResponseDTO.setOqueAconteceu(descriptografarDetalhes(denuncia.getOqueAconteceu()));
+        denunciaResponseDTO.setEstaEmPerigo(denuncia.isEstaEmPerigo());
+        denunciaResponseDTO.setFrequenciaOcorre(denuncia.getFrequenciaOcorre());
+        denunciaResponseDTO.setQuandoOcorreu(denuncia.getQuandoOcorreu());
+        denunciaResponseDTO.setContinuaAcontecendo(denuncia.isContinuaAcontecendo());
+        denunciaResponseDTO.setDetalhesAgressores(descriptografarDetalhes(denuncia.getDetalhesAgressores()));
+        denunciaResponseDTO.setPossuiTestemuna(denuncia.getPossuiTestemuna());
+        denunciaResponseDTO.setDetalhesTestemunha(descriptografarDetalhes(denuncia.getDetalhesTestemunha()));
+        denunciaResponseDTO.setRelatadoParaOResponsavel(denuncia.getRelatadoParaOResponsavel());
+        denunciaResponseDTO.setResultadoRelato(denuncia.getResultadoRelato());
+        denunciaResponseDTO.setSenteSeguroNaEscola(denuncia.isSenteSeguroNaEscola());
+        denunciaResponseDTO.setPedidoOuInformacaoExtra(descriptografarDetalhes(denuncia.getPedidoOuInformacaoExtra()));
 
-        for (MensagemDenuncia mensagemDenuncia : denuncia.getMensagens()) {
-            MensagensDenunciaResponseDTO mensagemDTO = new MensagensDenunciaResponseDTO();
-            mensagemDTO.setId(mensagemDenuncia.getId());
-            mensagemDTO.setAutorMensagem(mensagemDenuncia.getAutor());
-            String mensagemDescriptografada = descriptografarMensagem(mensagemDenuncia.getMensagem());
-            mensagemDTO.setMensagem(mensagemDescriptografada);
-            mensagemDTO.setDataCriacao(mensagemDenuncia.getDataCriacao());
-            mensagensDescriptografadas.add(mensagemDTO);
-        }
-
-        denunciaResponseDTO.setMensagens(mensagensDescriptografadas);
-
-        List<StatusDenunciaResponseDTO> statusDenunciaResponseDTOList = new ArrayList<>();
-
-        for (StatusDenuncia statusDenuncia : denuncia.getStatusDenuncia()){
-            StatusDenunciaResponseDTO statusDenunciaResponseDTO = new StatusDenunciaResponseDTO();
-            statusDenunciaResponseDTO.setDataCriacao(statusDenuncia.getDataCriacao());
-            statusDenunciaResponseDTO.setStatusDenunciaEnum(statusDenuncia.getStatusDenunciaEnum());
-            statusDenunciaResponseDTOList.add(statusDenunciaResponseDTO);
-        }
-
-        denunciaResponseDTO.setStatusDenuncias(statusDenunciaResponseDTOList);
-
-        List<ResponsavelDenunciaResponseDTO> responsavelDenunciaResponseDTOList = new ArrayList<>();
-
-        for (ResponsavelDenuncia responsavelDenuncia : denuncia.getResponsavelDenuncias()) {
-            ResponsavelDenunciaResponseDTO responsavelDenunciaResponseDTO = new ResponsavelDenunciaResponseDTO();
-            responsavelDenunciaResponseDTO.setNomeOrgaoCompetenteResponsavel(responsavelDenuncia.getOrgaoCompetenteResponsavel().getNome());
-            responsavelDenunciaResponseDTO.setIdOrgaoCompetenteResponsavel(responsavelDenuncia.getOrgaoCompetenteResponsavel().getId());
-            responsavelDenunciaResponseDTO.setEmailOrgaoCompetenteResponsavel(responsavelDenuncia.getOrgaoCompetenteResponsavel().getEmail());
-            responsavelDenunciaResponseDTO.setNumeroOrgaoCompetenteResponsavel(responsavelDenuncia.getOrgaoCompetenteResponsavel().getNumero());
-            responsavelDenunciaResponseDTOList.add(responsavelDenunciaResponseDTO);
-        }
-        denunciaResponseDTO.setResponsaveisDenuncia(responsavelDenunciaResponseDTOList);
+        denunciaResponseDTO.setOndeOcorreuList(ondeOcorreuList);
+        denunciaResponseDTO.setComoTeAfetouList(comoTeAfetouList);
+        denunciaResponseDTO.setQuemPraticaList(quemPraticaList);
+        denunciaResponseDTO.setSituacaoDenunciadaList(situacaoDenunciadaList);
+        denunciaResponseDTO.setStatusDenunciaResponseDTOList(statusDenunciaResponseDTOList);
+        denunciaResponseDTO.setMensagensDenunciaResponseDTOList(mensagensDenunciaResponseDTOList);
+        denunciaResponseDTO.setResponsavelDenunciaResponseDTOList(responsavelDenunciaResponseDTOList);
         return denunciaResponseDTO;
     }
 
-    private String descriptografarMensagem(String mensagemCriptografada){
+    private String descriptografarDetalhes(String mensagemCriptografada){
         return textEncryptor.decrypt(mensagemCriptografada);
     }
 
@@ -84,14 +70,24 @@ public class DenunciaMapper {
         denuncia.setId(idGerado);
         denuncia.setDataCriacao(LocalDate.now());
         denuncia.setEscola(escola);
-        denuncia.setOndeOcorreu(denunciaRequestDTO.ondeOcorreu());
-        denuncia.setTipoViolencia(denunciaRequestDTO.tipoViolencia());
-        denuncia.setRiscoAgressao(denunciaRequestDTO.riscoAgressao());
-        denuncia.setSituacaoGrave(denunciaRequestDTO.situacaoGrave());
-        denuncia.setViolacaoDireitos(denunciaRequestDTO.violacaoDireitos());
-        denuncia.setSalaVitimas(denunciaRequestDTO.salaVitimas());
-        denuncia.setSalaAgressores(denunciaRequestDTO.salaAgressores());
+        denuncia.setAfetados(denunciaRequestDTO.afetados());
+        denuncia.setOqueAconteceu(criptografarDetalhes(denunciaRequestDTO.oqueAconteceu()));
+        denuncia.setEstaEmPerigo(denunciaRequestDTO.estaEmPerigo());
+        denuncia.setFrequenciaOcorre(denunciaRequestDTO.frequenciaOcorre());
+        denuncia.setQuandoOcorreu(denunciaRequestDTO.quandoOcorreu());
+        denuncia.setContinuaAcontecendo(denunciaRequestDTO.continuaAcontecendo());
+        denuncia.setDetalhesAgressores(criptografarDetalhes(denunciaRequestDTO.detalhesAgressores()));
+        denuncia.setPossuiTestemuna(denunciaRequestDTO.possuiTestemunha());
+        denuncia.setDetalhesTestemunha(criptografarDetalhes(denunciaRequestDTO.detalhesTestemunha()));
+        denuncia.setRelatadoParaOResponsavel((denunciaRequestDTO.relatadoParaOResponsavel()));
+        denuncia.setResultadoRelato(denunciaRequestDTO.resultadoRelato());
+        denuncia.setSenteSeguroNaEscola(denunciaRequestDTO.senteSeguroNaEscola());
+        denuncia.setPedidoOuInformacaoExtra(criptografarDetalhes(denunciaRequestDTO.pedidoOuInformacaoExtra()));
         return denuncia;
+    }
+
+    private String criptografarDetalhes(String detalhes){
+        return textEncryptor.encrypt(detalhes);
     }
 
 

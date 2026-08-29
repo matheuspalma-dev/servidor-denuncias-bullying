@@ -1,12 +1,8 @@
 package br.com.pr.sida.escola;
 
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteService;
-import br.com.pr.sida.denuncia.Denuncia;
-import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.escola.dto.request.EscolaRequestResgisterDTO;
 import br.com.pr.sida.escola.dto.response.EscolaResponseDTO;
-import br.com.pr.sida.security.service.SecurityService;
-import br.com.pr.sida.util.mappers.DenunciaMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,29 +17,6 @@ public class EscolaService {
     private final EscolaRepository escolaRepository;
     private final OrgaoCompetenteService orgaoCompetenteService;
     private final PasswordEncoder passwordEncoder;
-    private final DenunciaMapper denunciaMapper;
-    private final SecurityService securityService;
-
-
-    public List<DenunciaResponseDTO> acessarDenuncias(String email, long escolaId) {
-
-        boolean temPermissao = securityService.temPermissaoDeAcessoEscola(email, escolaId);
-
-        if (temPermissao) {
-
-            Escola escola = buscarEscolaPorId(escolaId);
-
-            List<DenunciaResponseDTO> denunciaResponseDTOList = new ArrayList<>();
-
-            for (Denuncia denuncia : escola.getDenuncias()) {
-                DenunciaResponseDTO denunciaResponseDTO = denunciaMapper.converterDenunciaEmDTO(denuncia);
-                denunciaResponseDTOList.add(denunciaResponseDTO);
-            }
-
-            return denunciaResponseDTOList;
-        }
-        return null;
-    }
 
     public List<EscolaResponseDTO> retornarTodasEscolas() {
         List<Escola> escolas = escolaRepository.findAll();

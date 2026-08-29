@@ -1,9 +1,11 @@
 package br.com.pr.sida.security.service;
 
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
+import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteReader;
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteService;
 import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.escola.Escola;
+import br.com.pr.sida.escola.EscolaReader;
 import br.com.pr.sida.escola.EscolaService;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
 import lombok.RequiredArgsConstructor;
@@ -12,18 +14,18 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class SecurityService {
-    private final OrgaoCompetenteService orgaoCompetenteService;
-    private final EscolaService escolaService;
+    private final OrgaoCompetenteReader orgaoCompetenteReader;
+    private final EscolaReader escolaReader;
 
     public boolean temPermissaoDeAcessoDenuncia(String email, Denuncia denuncia) {
-        Escola escola = escolaService.buscarEscolaPorEmail(email);
+        Escola escola = escolaReader.buscarEscolaPorEmail(email);
 
-        OrgaoCompetente orgaoCompetente = orgaoCompetenteService.buscarOrgaoCompetentePorEmailSemExcecao(email);
+        OrgaoCompetente orgaoCompetente = orgaoCompetenteReader.buscarPorEmail(email);
 
         if (escola != null || orgaoCompetente != null) {
             for (ResponsavelDenuncia responsavelDenuncia : denuncia.getResponsavelDenuncias()) {
                 if (escola != null) {
-                    if (responsavelDenuncia.getEscolaResponsavelId().getId() == escola.getId()) {
+                    if (responsavelDenuncia.getEscolaResponsavel().getId() == escola.getId()) {
                         return true;
                     }
                 }
@@ -39,16 +41,16 @@ public class SecurityService {
     }
 
     public boolean temPermissaoDeAcessoEscola(String email, Long escolaId) {
-        Escola escolaAlvo = escolaService.buscarEscolaPorIdSemExcecao(escolaId);
+        Escola escolaAlvo = escolaReader.buscarEscolaPorIdSemExcecao(escolaId);
 
         if (escolaAlvo == null) {
             return false;
         }
 
-        Escola escola = escolaService.buscarEscolaPorEmailSemExcecao(email);
+        Escola escola = escolaReader.buscarEscolaPorEmailSemExcecao(email);
 
-        OrgaoCompetente orgaoCompetente = orgaoCompetenteService
-                .buscarOrgaoCompetentePorEmailSemExcecao(email);
+        OrgaoCompetente orgaoCompetente = orgaoCompetenteReader
+                .buscarPorEmailSemExcessao(email);
 
         if (escola != null) {
             if (escola.getId() == escolaId) {
@@ -64,8 +66,8 @@ public class SecurityService {
     }
 
     public boolean temPermissaoDeAcessoOrgaoCompetente(String email, Long orgaoCompetenteId) {
-        OrgaoCompetente orgaoCompetente = orgaoCompetenteService
-                .buscarOrgaoCompetentePorEmailSemExcecao(email);
+        OrgaoCompetente orgaoCompetente = orgaoCompetenteReader
+                .buscarPorEmailSemExcessao(email);
 
         if (orgaoCompetente == null || orgaoCompetente.getId() != orgaoCompetenteId) {
             return false;

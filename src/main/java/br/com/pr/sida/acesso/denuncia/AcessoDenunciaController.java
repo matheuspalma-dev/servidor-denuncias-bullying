@@ -49,4 +49,6 @@ public class AcessoDenunciaController {
         DenunciaResponseDTO denuncia = acessoDenunciaService.acessoDenuncia(email, codigoAcesso);
         return ResponseEntity.ok().body(denuncia);
     }
+
+    
 }

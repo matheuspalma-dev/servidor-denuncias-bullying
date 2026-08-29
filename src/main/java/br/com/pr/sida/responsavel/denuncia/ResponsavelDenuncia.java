@@ -23,5 +23,7 @@ public class ResponsavelDenuncia {
     private OrgaoCompetente orgaoCompetenteResponsavel;
     @ManyToOne
     @JoinColumn(name = "escola_responsavel_id", referencedColumnName = "id", nullable = false)
-    private Escola escolaResponsavelId;
+    private Escola escolaResponsavel;
+    @Column(name = "escola_vai_ter_acesso", nullable = false)
+    private boolean escolaVaiTerAcesso;
 }

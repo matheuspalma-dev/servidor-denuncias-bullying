@@ -1,11 +1,14 @@
 package br.com.pr.sida.denuncia;
 
-import br.com.pr.sida.denuncia.enums.TipoViolencia;
+import br.com.pr.sida.como.afetou.ComoAfetou;
+import br.com.pr.sida.denuncia.enums.*;
 import br.com.pr.sida.escola.Escola;
 import br.com.pr.sida.mensagem.denuncia.MensagemDenuncia;
+import br.com.pr.sida.onde.ocorreu.OndeOcorreuDenuncia;
+import br.com.pr.sida.praticaAcao.PraticaAcao;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
+import br.com.pr.sida.situacao.denuncia.SituacaoDenuncia;
 import br.com.pr.sida.status.StatusDenuncia;
-import br.com.pr.sida.denuncia.enums.OndeOcorreu;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,22 +27,44 @@ public class Denuncia {
     @JoinColumn(name = "escola_id", nullable = false)
     @ManyToOne
     private Escola escola;
-    @Column(name = "onde_ocorreu", nullable = false)
+    @Column(name = "afetados")
     @Enumerated(EnumType.STRING)
-    private OndeOcorreu ondeOcorreu;
-    @Column(name = "tipo_violencia", nullable = false)
+    private Afetados afetados;
+    @Column(name = "oqueAconteceu")
+    private String oqueAconteceu;
+    @Column(name = "esta_em_perigo")
+    private boolean estaEmPerigo;
+    @Column(name = "frequencia_que_ocorre")
     @Enumerated(EnumType.STRING)
-    private TipoViolencia tipoViolencia;
-    @Column(name = "risco_agressao", nullable = false)
-    private boolean riscoAgressao;
-    @Column(name = "situacao_grave", nullable = false)
-    private boolean situacaoGrave;
-    @Column(name = "violacao_direitos", nullable = false)
-    private boolean violacaoDireitos;
-    @Column(name = "sala_vitimas", nullable = true)
-    private String salaVitimas;
-    @Column(name = "sala_agressores", nullable = true)
-    private String salaAgressores;
+    private FrequenciaOcorre frequenciaOcorre;
+    @Column(name = "quando_aconteceu")
+    @Enumerated(EnumType.STRING)
+    private QuandoOcorreu quandoOcorreu;
+    @Column(name = "continua_acontecendo")
+    private boolean continuaAcontecendo;
+    @Column(name = "detalhes_agressores")
+    private String detalhesAgressores;
+    @Column(name = "possui_testemunha")
+    @Enumerated(EnumType.STRING)
+    private Testemunha possuiTestemuna;
+    @Column(name = "detalhes_testemunha")
+    private String detalhesTestemunha;
+    @Column(name = "relatado_para_qual_responsavel")
+    private RelatadoParaOResponsavel relatadoParaOResponsavel;
+    @Column(name = "resultado_relato", nullable = true)
+    private ResultadoRelato resultadoRelato;
+    @Column(name = "se_sente_seguro_na_escola")
+    private boolean senteSeguroNaEscola;
+    @Column(name = "pedido_ou_informacao_extra")
+    private String pedidoOuInformacaoExtra;
+    @OneToMany(mappedBy = "denuncia")
+    private List<OndeOcorreuDenuncia> ondeOcorreuDenunciaList;
+    @OneToMany(mappedBy = "denuncia")
+    private List<ComoAfetou> comoTeAfetou;
+    @OneToMany(mappedBy = "denuncia")
+    private List<PraticaAcao> praticantesAcao;
+    @OneToMany(mappedBy = "denuncia")
+    private List<SituacaoDenuncia> situacaoDenuncias;
     @OneToMany(mappedBy = "denuncia")
     private List<StatusDenuncia> statusDenuncia;
     @OneToMany(mappedBy = "denuncia")

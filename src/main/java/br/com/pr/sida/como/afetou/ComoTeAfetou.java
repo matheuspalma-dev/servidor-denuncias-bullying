@@ -1,0 +1,12 @@
+package br.com.pr.sida.como.afetou;
+
+public enum ComoTeAfetou {
+    MEDO_OU_INSEGURANCA,
+    TRISTEZA_OU_SOFRIMENTO,
+    DIFICULDADE_PARA_ESTUDAR,
+    VONTADE_DE_NAO_IR_A_ESCOLA,
+    PROBLEMAS_PARA_DORMIR,
+    FERIMENTOS_OU_DOR_FISICA,
+    PREFIRO_NAO_DIZER
+
+}

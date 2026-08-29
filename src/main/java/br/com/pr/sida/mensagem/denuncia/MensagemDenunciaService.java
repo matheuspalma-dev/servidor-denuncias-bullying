@@ -1,8 +1,9 @@
 package br.com.pr.sida.mensagem.denuncia;
 
 import br.com.pr.sida.denuncia.Denuncia;
-import br.com.pr.sida.denuncia.DenunciaService;
+import br.com.pr.sida.denuncia.DenunciaReader;
 import br.com.pr.sida.mensagem.denuncia.dto.request.MensagemDenunciaRequestDTO;
+import br.com.pr.sida.mensagem.denuncia.dto.response.MensagensDenunciaResponseDTO;
 import br.com.pr.sida.security.service.SecurityService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -11,14 +12,17 @@ import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class MensagemDenunciaService {
     private final MensagemDenunciaRepository mensagemDenunciaRepository;
-    private final DenunciaService denunciaService;
+    private final DenunciaReader denunciaReader;
     private final TextEncryptor criptografarMensagens;
     private final SecurityService securityService;
+    private final MensagemDenunciaMapper mensagemDenunciaMapper;
 
 
     @Transactional
@@ -27,13 +31,13 @@ public class MensagemDenunciaService {
             MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO,
             AutorMensagem autorMensagem
     ){
-        Denuncia denuncia = denunciaService.buscarDenunciaPorId(idDenuncia);
+        Denuncia denuncia = denunciaReader.buscarDenunciaPorId(idDenuncia);
         MensagemDenuncia mensagemDenuncia = criarMensagemDenuncia(mensagemDenunciaRequestDTO, denuncia, autorMensagem);
         mensagemDenunciaRepository.save(mensagemDenuncia);
     }
 
     public void salvarMensagemResponsavel(Long idDenuncia, MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO, String email){
-        Denuncia denuncia = denunciaService.buscarDenunciaPorId(idDenuncia);
+        Denuncia denuncia = denunciaReader.buscarDenunciaPorId(idDenuncia);
 
         boolean temPermissao = securityService.temPermissaoDeAcessoDenuncia(email, denuncia);
 
@@ -62,5 +66,13 @@ public class MensagemDenunciaService {
 
     private String criptografarMensagem(String mensagem) {
         return criptografarMensagens.encrypt(mensagem);
+    }
+
+    public List<MensagensDenunciaResponseDTO> retornarMensagens(List<MensagemDenuncia> mensagemDenunciaList){
+        List<MensagensDenunciaResponseDTO> mensagensDenunciaResponseDTOList = new ArrayList<>();
+        for (MensagemDenuncia mensagemDenuncia : mensagemDenunciaList){
+            mensagensDenunciaResponseDTOList.add(mensagemDenunciaMapper.converterEntityEmDTO(mensagemDenuncia));
+        }
+        return mensagensDenunciaResponseDTOList;
     }
 }
