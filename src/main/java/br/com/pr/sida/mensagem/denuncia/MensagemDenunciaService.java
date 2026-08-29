@@ -1,7 +1,7 @@
 package br.com.pr.sida.mensagem.denuncia;
 
 import br.com.pr.sida.denuncia.Denuncia;
-import br.com.pr.sida.denuncia.DenunciaReader;
+import br.com.pr.sida.denuncia.DenunciaServiceReader;
 import br.com.pr.sida.mensagem.denuncia.dto.request.MensagemDenunciaRequestDTO;
 import br.com.pr.sida.mensagem.denuncia.dto.response.MensagensDenunciaResponseDTO;
 import br.com.pr.sida.security.service.SecurityService;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MensagemDenunciaService {
     private final MensagemDenunciaRepository mensagemDenunciaRepository;
-    private final DenunciaReader denunciaReader;
+    private final DenunciaServiceReader denunciaServiceReader;
     private final TextEncryptor criptografarMensagens;
     private final SecurityService securityService;
     private final MensagemDenunciaMapper mensagemDenunciaMapper;
@@ -31,13 +31,13 @@ public class MensagemDenunciaService {
             MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO,
             AutorMensagem autorMensagem
     ){
-        Denuncia denuncia = denunciaReader.buscarDenunciaPorId(idDenuncia);
+        Denuncia denuncia = denunciaServiceReader.buscarDenunciaPorId(idDenuncia);
         MensagemDenuncia mensagemDenuncia = criarMensagemDenuncia(mensagemDenunciaRequestDTO, denuncia, autorMensagem);
         mensagemDenunciaRepository.save(mensagemDenuncia);
     }
 
     public void salvarMensagemResponsavel(Long idDenuncia, MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO, String email){
-        Denuncia denuncia = denunciaReader.buscarDenunciaPorId(idDenuncia);
+        Denuncia denuncia = denunciaServiceReader.buscarDenunciaPorId(idDenuncia);
 
         boolean temPermissao = securityService.temPermissaoDeAcessoDenuncia(email, denuncia);
 

@@ -1,9 +1,8 @@
 package br.com.pr.sida.escola;
 
-import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteService;
+import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteServiceReader;
 import br.com.pr.sida.escola.dto.request.EscolaRequestResgisterDTO;
 import br.com.pr.sida.escola.dto.response.EscolaResponseDTO;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EscolaService {
     private final EscolaRepository escolaRepository;
-    private final OrgaoCompetenteService orgaoCompetenteService;
+    private final OrgaoCompetenteServiceReader orgaoCompetenteServiceReader;
     private final PasswordEncoder passwordEncoder;
 
     public List<EscolaResponseDTO> retornarTodasEscolas() {
@@ -48,32 +47,11 @@ public class EscolaService {
         escola.setAtiva(true);
         escola.setRedeEnsino(escolaRequestResgisterDTO.redeEnsino());
         escola.setSenhaAcesso(criptografarSenha(escolaRequestResgisterDTO.senhaAcesso()));
-        escola.setOrgaoCompetente(orgaoCompetenteService.buscarOrgaoCompetentePorId(escolaRequestResgisterDTO.orgaoCompetenteId()));
+        escola.setOrgaoCompetente(orgaoCompetenteServiceReader.buscarPorId(escolaRequestResgisterDTO.orgaoCompetenteId()));
         return escola;
     }
 
     private String criptografarSenha(String senha) {
         return passwordEncoder.encode(senha);
     }
-
-    public Escola buscarEscolaPorId(Long escolaId) {
-        return escolaRepository.findById(escolaId)
-                .orElseThrow(() -> new EntityNotFoundException("Escola não encontrada"));
-    }
-
-    public Escola buscarEscolaPorEmail(String email) {
-        return escolaRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Escola não encontrada"));
-    }
-
-    public Escola buscarEscolaPorEmailSemExcecao(String email) {
-        return escolaRepository.findByEmail(email)
-                .orElse(null);
-    }
-
-    public Escola buscarEscolaPorIdSemExcecao(Long escolaId) {
-        return escolaRepository.findById(escolaId)
-                .orElse(null);
-    }
-
 }

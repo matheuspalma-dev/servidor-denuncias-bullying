@@ -32,6 +32,7 @@ public class DenunciaResponseDTO{
     private ResultadoRelato resultadoRelato;
     private boolean senteSeguroNaEscola;
     private String pedidoOuInformacaoExtra;
+    private String codigoAcesso;
     private List<OndeOcorreu> ondeOcorreuList;
     private List<ComoTeAfetou> comoTeAfetouList;
     private List<QuemPratica> quemPraticaList;
