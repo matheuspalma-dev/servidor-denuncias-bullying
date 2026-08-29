@@ -56,10 +56,13 @@ public class DenunciaService {
             DenunciaRequestDTO denunciaRequestDTO
     )
     {
+        Prioridade prioridadeDenuncia = definirPrioridadeDenuncia(denunciaRequestDTO);
+
         Denuncia denuncia = denunciaMapper.converterDTOEmDenuncia(
                 denunciaRequestDTO,
                 gerarId(),
-                localizarEscola(denunciaRequestDTO.idEscola()));
+                localizarEscola(denunciaRequestDTO.idEscola()),
+                prioridadeDenuncia);
         denunciaRepository.save(denuncia);
 
         adicionarComoAfetou(denuncia, denunciaRequestDTO.comoTeAfetouList());
@@ -70,7 +73,7 @@ public class DenunciaService {
 
         adicionarSituacaoDenunciada(denuncia, denunciaRequestDTO.situacaoDenunciadas());
 
-        adicionarResponsaveisDenuncia(denuncia);
+        adicionarResponsaveisDenuncia(denuncia, prioridadeDenuncia);
 
         adicionarOndeOcorreuDenuncia(denuncia, denunciaRequestDTO.ondeOcorreuList());
 
@@ -83,9 +86,7 @@ public class DenunciaService {
         }
     }
 
-    private void adicionarResponsaveisDenuncia(Denuncia denuncia){
-        Prioridade prioridadeDenuncia = definirPrioridadeDenuncia(denuncia);
-
+    private void adicionarResponsaveisDenuncia(Denuncia denuncia, Prioridade prioridadeDenuncia){
         List<OrgaoCompetente> orgaoCompetenteList = new ArrayList<>();
 
         OrgaoCompetente orgaoCompetente = definirOrgaoCompetente(denuncia.getEscola().getRedeEnsino() == RedeEnsino.MUNICIPAL ? TipoOrgaoCompetente.SME : TipoOrgaoCompetente.NRE);
@@ -160,12 +161,12 @@ public class DenunciaService {
         return escolaServiceReader.buscarEscolaPorId(idEscola);
     }
 
-    private Prioridade definirPrioridadeDenuncia(Denuncia denuncia){
-        if (denuncia.isEstaEmPerigo()){
+    private Prioridade definirPrioridadeDenuncia(DenunciaRequestDTO denuncia){
+        if (denuncia.estaEmPerigo()){
             return Prioridade.URGENTE;
-        } else if (denuncia.isContinuaAcontecendo() && !denuncia.isSenteSeguroNaEscola() && (denuncia.getFrequenciaOcorre() == FrequenciaOcorre.FREQUENTEMENTE || denuncia.getFrequenciaOcorre() == FrequenciaOcorre.TODOS_OS_DIAS)) {
+        } else if (denuncia.continuaAcontecendo() && !denuncia.senteSeguroNaEscola() && (denuncia.frequenciaOcorre() == FrequenciaOcorre.FREQUENTEMENTE || denuncia.frequenciaOcorre() == FrequenciaOcorre.TODOS_OS_DIAS)) {
             return Prioridade.URGENTE;
-        } else if (denuncia.isContinuaAcontecendo() && denuncia.getFrequenciaOcorre() == FrequenciaOcorre.FREQUENTEMENTE) {
+        } else if (denuncia.continuaAcontecendo() && denuncia.frequenciaOcorre() == FrequenciaOcorre.FREQUENTEMENTE) {
             return Prioridade.ALTA;
         } else {
             return Prioridade.NORMAL;

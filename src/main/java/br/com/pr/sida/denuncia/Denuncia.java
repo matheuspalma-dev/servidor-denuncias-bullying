@@ -58,6 +58,9 @@ public class Denuncia {
     private boolean senteSeguroNaEscola;
     @Column(name = "pedido_ou_informacao_extra")
     private String pedidoOuInformacaoExtra;
+    @Column(name = "prioridade_denuncia", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Prioridade prioridade;
     @OneToOne(mappedBy = "denuncia")
     private Acesso acesso;
     @OneToMany(mappedBy = "denuncia")

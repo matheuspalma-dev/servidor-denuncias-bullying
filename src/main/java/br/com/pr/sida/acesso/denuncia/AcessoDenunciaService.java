@@ -5,6 +5,7 @@ import br.com.pr.sida.acesso.denuncia.dto.response.AcessoDenunciaResponseDTO;
 import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.denuncia.DenunciaMapper;
 import br.com.pr.sida.denuncia.DenunciaService;
+import br.com.pr.sida.denuncia.DenunciaServiceReader;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.security.service.SecurityService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class AcessoDenunciaService {
     private final PasswordEncoder passwordEncoder;
     private final SecurityService securityService;
     private final DenunciaService denunciaService;
+    private final DenunciaServiceReader denunciaServiceReader;
     @Value("${sida.seguranca.crypto-hmac}") private String hmacSecretKey;
 
     public AcessoDenunciaResponseDTO salvarAcessoDenuncia(Denuncia denuncia) {
@@ -104,11 +106,8 @@ public class AcessoDenunciaService {
         return denunciaService.retornarDenunciaResponseDTO(acesso.getDenuncia());
     }
 
-    public DenunciaResponseDTO acessoDenuncia(String email, String codigoAcesso){
-        Acesso acesso = acessoDenunciaRepository.findByCodigoAcessoHash(gerarHashCodigoAcesso(codigoAcesso))
-                .orElseThrow(() -> new RuntimeException("Acesso não encontrado"));
-
-        Denuncia denuncia = acesso.getDenuncia();
+    public DenunciaResponseDTO acessoDenuncia(String email, Long denunciaId){
+        Denuncia denuncia = denunciaServiceReader.buscarDenunciaPorId(denunciaId);
 
         boolean temPermissao = securityService.temPermissaoDeAcessoDenuncia(email, denuncia);
 

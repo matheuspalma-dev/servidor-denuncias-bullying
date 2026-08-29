@@ -4,6 +4,7 @@ import br.com.pr.sida.como.afetou.ComoTeAfetou;
 import br.com.pr.sida.denuncia.dto.request.DenunciaRequestDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.denuncia.enums.OndeOcorreu;
+import br.com.pr.sida.denuncia.enums.Prioridade;
 import br.com.pr.sida.escola.Escola;
 import br.com.pr.sida.mensagem.denuncia.dto.response.MensagensDenunciaResponseDTO;
 import br.com.pr.sida.praticaAcao.QuemPratica;
@@ -50,6 +51,7 @@ public class DenunciaMapper {
         denunciaResponseDTO.setResultadoRelato(denuncia.getResultadoRelato());
         denunciaResponseDTO.setSenteSeguroNaEscola(denuncia.isSenteSeguroNaEscola());
         denunciaResponseDTO.setPedidoOuInformacaoExtra(descriptografarDetalhes(denuncia.getPedidoOuInformacaoExtra()));
+        denunciaResponseDTO.setPrioridade(denuncia.getPrioridade());
 
         denunciaResponseDTO.setCodigoAcesso(descriptografarDetalhes(denuncia.getAcesso().getCodigoAcesso()));
         denunciaResponseDTO.setOndeOcorreuList(ondeOcorreuList);
@@ -66,7 +68,7 @@ public class DenunciaMapper {
         return textEncryptor.decrypt(mensagemCriptografada);
     }
 
-    public Denuncia converterDTOEmDenuncia(DenunciaRequestDTO denunciaRequestDTO, Long idGerado, Escola escola){
+    public Denuncia converterDTOEmDenuncia(DenunciaRequestDTO denunciaRequestDTO, Long idGerado, Escola escola, Prioridade prioridade){
         Denuncia denuncia = new Denuncia();
         denuncia.setId(idGerado);
         denuncia.setDataCriacao(LocalDate.now());
@@ -84,6 +86,7 @@ public class DenunciaMapper {
         denuncia.setResultadoRelato(denunciaRequestDTO.resultadoRelato());
         denuncia.setSenteSeguroNaEscola(denunciaRequestDTO.senteSeguroNaEscola());
         denuncia.setPedidoOuInformacaoExtra(criptografarDetalhes(denunciaRequestDTO.pedidoOuInformacaoExtra()));
+        denuncia.setPrioridade(prioridade);
         return denuncia;
     }
 
