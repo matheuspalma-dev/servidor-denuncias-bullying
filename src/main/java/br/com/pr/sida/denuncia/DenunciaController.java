@@ -6,6 +6,7 @@ import br.com.pr.sida.denuncia.dto.request.DenunciaRequestDTO;
 import br.com.pr.sida.mensagem.denuncia.MensagemDenunciaService;
 import br.com.pr.sida.mensagem.denuncia.dto.request.MensagemDenunciaRequestDTO;
 import br.com.pr.sida.mensagem.denuncia.AutorMensagem;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +26,10 @@ public class DenunciaController {
 
     @PostMapping("/criar")
     public ResponseEntity<AcessoDenunciaResponseDTO> criarDenuncia(
-            @RequestBody DenunciaRequestDTO denunciaRequestDTO
+            @RequestBody @Valid DenunciaRequestDTO denunciaRequestDTO
     )
     {
+        System.out.println("chegouuuuuuu");
         Denuncia denuncia = denunciaService.salvarDenuncia(denunciaRequestDTO);
         AcessoDenunciaResponseDTO acessoDenunciaResponseDTO = acessoDenunciaService.salvarAcessoDenuncia(denuncia);
         return ResponseEntity.status(HttpStatus.CREATED).body(acessoDenunciaResponseDTO);

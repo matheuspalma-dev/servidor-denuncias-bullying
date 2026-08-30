@@ -1,12 +1,11 @@
 package br.com.pr.sida.login;
 
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
-import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteService;
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteServiceReader;
 import br.com.pr.sida.escola.Escola;
 import br.com.pr.sida.escola.EscolaServiceReader;
-import br.com.pr.sida.login.dto.LoginRequestDTO;
-import br.com.pr.sida.login.dto.LoginResponseDTO;
+import br.com.pr.sida.login.dto.request.LoginRequestDTO;
+import br.com.pr.sida.login.dto.response.LoginResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;

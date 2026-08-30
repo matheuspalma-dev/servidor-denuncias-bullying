@@ -1,4 +1,4 @@
-package br.com.pr.sida.login.dto;
+package br.com.pr.sida.login.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;

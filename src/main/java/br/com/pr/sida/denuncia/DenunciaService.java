@@ -1,7 +1,6 @@
 package br.com.pr.sida.denuncia;
 
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
-import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteService;
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteServiceReader;
 import br.com.pr.sida.OrgaoCompetente.TipoOrgaoCompetente;
 import br.com.pr.sida.como.afetou.ComoAfetouService;

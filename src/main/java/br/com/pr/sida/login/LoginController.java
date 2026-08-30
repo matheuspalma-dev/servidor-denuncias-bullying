@@ -1,9 +1,9 @@
 package br.com.pr.sida.login;
 
+import br.com.pr.sida.login.dto.request.LoginRequestDTO;
+import br.com.pr.sida.login.dto.response.LoginResponseDTO;
 import br.com.pr.sida.security.jwt.TokenService;
 import br.com.pr.sida.security.jwt.ROLE;
-import br.com.pr.sida.login.dto.LoginRequestDTO;
-import br.com.pr.sida.login.dto.LoginResponseDTO;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -39,7 +39,7 @@ public class LoginController {
 
         ResponseCookie cookie = ResponseCookie.from("tokenAcesso", token)
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .path("/")
                 .maxAge(3600) // 1 hora
                 .sameSite("Strict")
