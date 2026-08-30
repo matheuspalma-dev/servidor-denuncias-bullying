@@ -1,6 +1,6 @@
 package br.com.pr.sida.login;
 
-import br.com.pr.sida.login.dto.LoginResponseDTO;
+import br.com.pr.sida.login.dto.response.LoginResponseDTO;
 import org.springframework.stereotype.Component;
 
 @Component

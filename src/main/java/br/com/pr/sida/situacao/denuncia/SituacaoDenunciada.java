@@ -5,6 +5,7 @@ public enum SituacaoDenunciada {
     CYBERBULLYING,
     ASSEDIO,
     DESCRIMINACAO,
-    VIOLENCIA_FISICA
+    VIOLENCIA_FISICA,
+    OUTROS
 
 }

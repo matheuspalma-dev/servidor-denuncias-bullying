@@ -34,7 +34,7 @@ public class AcessoDenunciaController {
 
         ResponseCookie cookie = ResponseCookie.from("tokenAcesso", token)
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .path("/")
                 .maxAge(1800) // 30 minutos
                 .sameSite("Strict")

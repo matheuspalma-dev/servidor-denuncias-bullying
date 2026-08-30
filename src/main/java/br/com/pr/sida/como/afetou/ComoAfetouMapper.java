@@ -1,7 +1,6 @@
 package br.com.pr.sida.como.afetou;
 
 import br.com.pr.sida.como.afetou.dto.request.ComoAfetouRequestDTO;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component

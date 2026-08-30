@@ -5,5 +5,6 @@ public enum QuemPratica {
     MAIS_DE_UM_ALUNO,
     PROFESSOR,
     FUNCIONARIO_ESCOLA,
-    ALGUEM_FORA_DA_ESCOLA
+    ALGUEM_FORA_DA_ESCOLA,
+    OUTRO
 }
