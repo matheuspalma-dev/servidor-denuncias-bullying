@@ -24,7 +24,7 @@ public class DenunciaResponseDTO{
     private boolean estaEmPerigo;
     private FrequenciaOcorre frequenciaOcorre;
     private QuandoOcorreu quandoOcorreu;
-    private boolean continuaAcontecendo;
+    private Boolean continuaAcontecendo;
     private String detalhesAgressores;
     private Testemunha possuiTestemuna;
     private String detalhesTestemunha;
