@@ -1,5 +1,5 @@
 rodar o servidor online:
-- npx localtunnel --port 8080 --subdomain sida-anti-bullying
+- npx localtunnel --port 8080 --subdomain sida-server-test
 
 como descobrir a senha que vai pedir para o front quando acessar o servidor:
 - curl https://loca.lt/mytunnelpassword
