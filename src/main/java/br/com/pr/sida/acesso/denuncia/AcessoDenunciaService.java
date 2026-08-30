@@ -7,6 +7,7 @@ import br.com.pr.sida.denuncia.DenunciaMapper;
 import br.com.pr.sida.denuncia.DenunciaService;
 import br.com.pr.sida.denuncia.DenunciaServiceReader;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
+import br.com.pr.sida.denuncia.dto.response.DenunciaResumoResponseDTO;
 import br.com.pr.sida.security.service.SecurityService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.binary.Hex;
@@ -20,6 +21,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Year;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -115,5 +117,17 @@ public class AcessoDenunciaService {
             throw new BadCredentialsException("Usuário não tem permissão para acessar essa denúncia");
         }
         return denunciaService.retornarDenunciaResponseDTO(denuncia);
+    }
+
+    public List<DenunciaResumoResponseDTO> acessarDenunciasEscola(String email, Long escolaId){
+        boolean temPermissao = securityService.temPermissaoDeAcessoEscola(email, escolaId);
+
+        if (!temPermissao){
+            throw new BadCredentialsException("Usuário não tem permissão para acessar as denúncias dessa escola");
+        }
+
+        List<Denuncia> denunciaList = denunciaServiceReader.buscarDenunciasPorEscolaId(escolaId);
+
+        return denunciaServiceReader.retornarDenunciasResumo(denunciaList);
     }
 }

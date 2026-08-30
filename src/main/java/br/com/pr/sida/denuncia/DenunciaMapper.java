@@ -3,6 +3,7 @@ package br.com.pr.sida.denuncia;
 import br.com.pr.sida.como.afetou.ComoTeAfetou;
 import br.com.pr.sida.denuncia.dto.request.DenunciaRequestDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
+import br.com.pr.sida.denuncia.dto.response.DenunciaResumoResponseDTO;
 import br.com.pr.sida.denuncia.enums.OndeOcorreu;
 import br.com.pr.sida.denuncia.enums.Prioridade;
 import br.com.pr.sida.escola.Escola;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -94,5 +96,17 @@ public class DenunciaMapper {
         return textEncryptor.encrypt(detalhes);
     }
 
+    public List<DenunciaResumoResponseDTO> retornarResumoDenunciaDTOList(List<Denuncia> denunciaList){
+        List<DenunciaResumoResponseDTO> denunciaResumoResponseDTOList = new ArrayList<>();
+
+        for (Denuncia denuncia : denunciaList){
+            DenunciaResumoResponseDTO denunciaResumoResponseDTO = new DenunciaResumoResponseDTO();
+            denunciaResumoResponseDTO.setDenunciaId(denuncia.getId());
+            denunciaResumoResponseDTO.setNomeEscola(denuncia.getEscola().getNome());
+            denunciaResumoResponseDTO.setPrioridadeDenuncia(denuncia.getPrioridade());
+            denunciaResumoResponseDTOList.add(denunciaResumoResponseDTO);
+        }
+        return denunciaResumoResponseDTOList;
+    }
 
 }
