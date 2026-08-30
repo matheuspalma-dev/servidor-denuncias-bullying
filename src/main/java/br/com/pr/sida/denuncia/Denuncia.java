@@ -42,7 +42,7 @@ public class Denuncia {
     @Enumerated(EnumType.STRING)
     private QuandoOcorreu quandoOcorreu;
     @Column(name = "continua_acontecendo", nullable = true)
-    private boolean continuaAcontecendo;
+    private Boolean continuaAcontecendo;
     @Column(name = "detalhes_agressores", nullable = false)
     private String detalhesAgressores;
     @Column(name = "possui_testemunha", nullable = false)
