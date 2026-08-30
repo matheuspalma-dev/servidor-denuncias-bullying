@@ -163,9 +163,9 @@ public class DenunciaService {
     private Prioridade definirPrioridadeDenuncia(DenunciaRequestDTO denuncia){
         if (denuncia.estaEmPerigo()){
             return Prioridade.URGENTE;
-        } else if (denuncia.continuaAcontecendo() && !denuncia.senteSeguroNaEscola() && (denuncia.frequenciaOcorre() == FrequenciaOcorre.FREQUENTEMENTE || denuncia.frequenciaOcorre() == FrequenciaOcorre.TODOS_OS_DIAS)) {
+        } else if (!denuncia.senteSeguroNaEscola() && (denuncia.frequenciaOcorre() == FrequenciaOcorre.FREQUENTEMENTE || denuncia.frequenciaOcorre() == FrequenciaOcorre.TODOS_OS_DIAS)) {
             return Prioridade.URGENTE;
-        } else if (denuncia.continuaAcontecendo() && denuncia.frequenciaOcorre() == FrequenciaOcorre.FREQUENTEMENTE) {
+        } else if (denuncia.frequenciaOcorre() == FrequenciaOcorre.FREQUENTEMENTE) {
             return Prioridade.ALTA;
         } else {
             return Prioridade.NORMAL;

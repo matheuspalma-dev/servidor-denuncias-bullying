@@ -45,7 +45,7 @@ public class DenunciaMapper {
         denunciaResponseDTO.setEstaEmPerigo(denuncia.isEstaEmPerigo());
         denunciaResponseDTO.setFrequenciaOcorre(denuncia.getFrequenciaOcorre());
         denunciaResponseDTO.setQuandoOcorreu(denuncia.getQuandoOcorreu());
-        denunciaResponseDTO.setContinuaAcontecendo(denuncia.isContinuaAcontecendo());
+        denunciaResponseDTO.setContinuaAcontecendo(denuncia.getContinuaAcontecendo());
         denunciaResponseDTO.setDetalhesAgressores(descriptografarDetalhes(denuncia.getDetalhesAgressores()));
         denunciaResponseDTO.setPossuiTestemuna(denuncia.getPossuiTestemuna());
         denunciaResponseDTO.setDetalhesTestemunha(descriptografarDetalhes(denuncia.getDetalhesTestemunha()));

@@ -26,7 +26,7 @@ public class DenunciaController {
 
     @PostMapping("/criar")
     public ResponseEntity<AcessoDenunciaResponseDTO> criarDenuncia(
-            @RequestBody DenunciaRequestDTO denunciaRequestDTO
+            @RequestBody @Valid DenunciaRequestDTO denunciaRequestDTO
     )
     {
         Denuncia denuncia = denunciaService.salvarDenuncia(denunciaRequestDTO);

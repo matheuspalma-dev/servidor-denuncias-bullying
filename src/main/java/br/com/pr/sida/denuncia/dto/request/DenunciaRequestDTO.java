@@ -21,7 +21,7 @@ public record DenunciaRequestDTO(
         @NotNull
         FrequenciaOcorre frequenciaOcorre,
         QuandoOcorreu quandoOcorreu,
-        boolean continuaAcontecendo,
+        Boolean continuaAcontecendo,
         String detalhesAgressores,
         @NotNull
         Testemunha possuiTestemunha,
@@ -32,13 +32,9 @@ public record DenunciaRequestDTO(
         @NotNull
         boolean senteSeguroNaEscola,
         String pedidoOuInformacaoExtra,
-        @NotNull
         List<OndeOcorreu> ondeOcorreuList,
-        @NotNull
         List<ComoTeAfetou> comoTeAfetouList,
-        @NotNull
         List<QuemPratica> quemPratica,
-        @NotNull
         List<SituacaoDenunciada> situacaoDenunciadas
 ) {
 }
