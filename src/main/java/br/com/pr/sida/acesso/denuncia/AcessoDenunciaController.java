@@ -61,4 +61,12 @@ public class AcessoDenunciaController {
         return ResponseEntity.ok().body(denuncias);
     }
 
+    @GetMapping("/{orgaoCompetenteId}/denuncias")
+    @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
+    public ResponseEntity<List<DenunciaResumoResponseDTO>> acessarDenunciasOrgaoCompetente(@PathVariable Long orgaoCompetenteId){
+        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<DenunciaResumoResponseDTO> denuncias = acessoDenunciaService.acessarDenunciasOrgaoCompetente(email, orgaoCompetenteId);
+        return ResponseEntity.ok().body(denuncias);
+    }
+
 }

@@ -8,6 +8,8 @@ import br.com.pr.sida.denuncia.DenunciaService;
 import br.com.pr.sida.denuncia.DenunciaServiceReader;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResumoResponseDTO;
+import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
+import br.com.pr.sida.responsavel.denuncia.ResponsavelDenunciaServiceReader;
 import br.com.pr.sida.security.service.SecurityService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.binary.Hex;
@@ -21,6 +23,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +37,7 @@ public class AcessoDenunciaService {
     private final SecurityService securityService;
     private final DenunciaService denunciaService;
     private final DenunciaServiceReader denunciaServiceReader;
+    private final ResponsavelDenunciaServiceReader responsavelDenunciaServiceReader;
     @Value("${sida.seguranca.crypto-hmac}") private String hmacSecretKey;
 
     public AcessoDenunciaResponseDTO salvarAcessoDenuncia(Denuncia denuncia) {
@@ -129,5 +133,26 @@ public class AcessoDenunciaService {
         List<Denuncia> denunciaList = denunciaServiceReader.buscarDenunciasPorEscolaId(escolaId);
 
         return denunciaServiceReader.retornarDenunciasResumo(denunciaList);
+    }
+
+    public List<DenunciaResumoResponseDTO> acessarDenunciasOrgaoCompetente(String email, Long orgaoCompetenteId){
+        boolean temPermissao = securityService.temPermissaoDeAcessoOrgaoCompetente(email, orgaoCompetenteId);
+
+        if (!temPermissao){
+            throw new BadCredentialsException("Usuário não tem permissão para acessar as denúncias desse orgão competente");
+        }
+
+        List<ResponsavelDenuncia> responsavelList = responsavelDenunciaServiceReader.listarTodasAsDenunciasResponsavel(orgaoCompetenteId);
+        List<Denuncia> denunciaList = converterResponsavelDenunciaParaDenuncia(responsavelList);
+
+        return denunciaServiceReader.retornarDenunciasResumo(denunciaList);
+    }
+
+    private List<Denuncia> converterResponsavelDenunciaParaDenuncia(List<ResponsavelDenuncia> responsavelList){
+        List<Denuncia> denunciaList = new ArrayList<>();
+        for (ResponsavelDenuncia responsavelDenuncia : responsavelList){
+            denunciaList.add(responsavelDenuncia.getDenuncia());
+        }
+        return denunciaList;
     }
 }
