@@ -4,6 +4,7 @@ import br.com.pr.sida.acesso.denuncia.dto.request.AcessoDenunciaRequestDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResumoResponseDTO;
 import br.com.pr.sida.security.jwt.TokenService;
+import br.com.pr.sida.security.service.RequerAcesso;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -47,9 +48,10 @@ public class AcessoDenunciaController {
 
     @GetMapping("/acessar/{denunciaId}")
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
+    @RequerAcesso
     public ResponseEntity<DenunciaResponseDTO> acessarDenunciaResponsavel(@PathVariable Long denunciaId){
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        DenunciaResponseDTO denuncia = acessoDenunciaService.acessoDenuncia(email, denunciaId);
+        DenunciaResponseDTO denuncia = acessoDenunciaService.acessoDenuncia(denunciaId);
         return ResponseEntity.ok().body(denuncia);
     }
 

@@ -111,14 +111,8 @@ public class AcessoDenunciaService {
         return denunciaService.retornarDenunciaResponseDTO(acesso.getDenuncia());
     }
 
-    public DenunciaResponseDTO acessoDenuncia(String email, Long denunciaId){
+    public DenunciaResponseDTO acessoDenuncia(Long denunciaId){
         Denuncia denuncia = denunciaServiceReader.buscarDenunciaPorId(denunciaId);
-
-        boolean temPermissao = securityService.temPermissaoDeAcessoDenuncia(email, denuncia);
-
-        if (!temPermissao){
-            throw new BadCredentialsException("Usuário não tem permissão para acessar essa denúncia");
-        }
         return denunciaService.retornarDenunciaResponseDTO(denuncia);
     }
 
