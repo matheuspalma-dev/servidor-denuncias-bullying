@@ -2,10 +2,12 @@ package br.com.pr.sida.denuncia.dto.response;
 
 import br.com.pr.sida.como.afetou.ComoTeAfetou;
 import br.com.pr.sida.denuncia.enums.*;
+import br.com.pr.sida.mensagem.denuncia.AutorMensagem;
 import br.com.pr.sida.mensagem.denuncia.dto.response.MensagensDenunciaResponseDTO;
 import br.com.pr.sida.praticaAcao.QuemPratica;
 import br.com.pr.sida.responsavel.denuncia.dto.response.ResponsavelDenunciaResponseDTO;
 import br.com.pr.sida.situacao.denuncia.SituacaoDenunciada;
+import br.com.pr.sida.status.StatusDenunciaEnum;
 import br.com.pr.sida.status.dto.response.StatusDenunciaResponseDTO;
 import lombok.Getter;
 import lombok.Setter;

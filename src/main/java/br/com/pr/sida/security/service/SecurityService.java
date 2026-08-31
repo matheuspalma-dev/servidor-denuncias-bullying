@@ -3,6 +3,7 @@ package br.com.pr.sida.security.service;
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteServiceReader;
 import br.com.pr.sida.denuncia.Denuncia;
+import br.com.pr.sida.denuncia.DenunciaServiceReader;
 import br.com.pr.sida.escola.Escola;
 import br.com.pr.sida.escola.EscolaServiceReader;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
@@ -15,6 +16,7 @@ public class SecurityService {
 
     private final OrgaoCompetenteServiceReader orgaoCompetenteServiceReader;
     private final EscolaServiceReader escolaServiceReader;
+    private final DenunciaServiceReader denunciaServiceReader;
 
     public boolean temPermissaoDeAcessoDenuncia(String email, Denuncia denuncia) {
         Escola escola = escolaServiceReader.buscarEscolaPorEmailSemExcecao(email);
@@ -38,6 +40,32 @@ public class SecurityService {
         }
         return false;
     }
+
+    public boolean temPermissaoDeAcessoDenuncia1(String email, Long denunciaId) {
+        Escola escola = escolaServiceReader.buscarEscolaPorEmailSemExcecao(email);
+
+        Denuncia denuncia = denunciaServiceReader.buscarDenunciaPorId(denunciaId);
+
+        OrgaoCompetente orgaoCompetente = orgaoCompetenteServiceReader.buscarPorEmailSemExcessao(email);
+
+        if (escola != null || orgaoCompetente != null) {
+            for (ResponsavelDenuncia responsavelDenuncia : denuncia.getResponsavelDenuncias()) {
+                if (escola != null) {
+                    if (responsavelDenuncia.getEscolaResponsavel().getId() == escola.getId() && responsavelDenuncia.isEscolaVaiTerAcesso()) {
+                        return true;
+                    }
+                }
+
+                if (orgaoCompetente != null) {
+                    if (responsavelDenuncia.getOrgaoCompetenteResponsavel().getId() == orgaoCompetente.getId()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
 
     public boolean temPermissaoDeAcessoEscola(String email, Long escolaId) {
         Escola escolaAlvo = escolaServiceReader.buscarEscolaPorIdSemExcecao(escolaId);

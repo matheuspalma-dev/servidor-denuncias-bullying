@@ -8,5 +8,4 @@ public enum ComoTeAfetou {
     PROBLEMAS_PARA_DORMIR,
     FERIMENTOS_OU_DOR_FISICA,
     PREFIRO_NAO_DIZER
-
 }

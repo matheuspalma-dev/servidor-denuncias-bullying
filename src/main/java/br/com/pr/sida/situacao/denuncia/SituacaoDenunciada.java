@@ -7,5 +7,4 @@ public enum SituacaoDenunciada {
     DISCRIMINACAO,
     VIOLENCIA_FISICA,
     OUTROS
-
 }
