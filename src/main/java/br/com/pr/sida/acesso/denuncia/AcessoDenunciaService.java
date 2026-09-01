@@ -9,11 +9,9 @@ import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResumoResponseDTO;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenunciaServiceReader;
-import br.com.pr.sida.security.service.SecurityService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,7 +31,6 @@ public class AcessoDenunciaService {
     private final AcessoDenunciaRepository acessoDenunciaRepository;
     private final TextEncryptor textEncryptor;
     private final PasswordEncoder passwordEncoder;
-    private final SecurityService securityService;
     private final DenunciaService denunciaService;
     private final DenunciaServiceReader denunciaServiceReader;
     private final ResponsavelDenunciaServiceReader responsavelDenunciaServiceReader;
@@ -117,24 +114,12 @@ public class AcessoDenunciaService {
     }
 
     public List<DenunciaResumoResponseDTO> acessarDenunciasEscola(String email, Long escolaId){
-        boolean temPermissao = securityService.temPermissaoDeAcessoEscola(email, escolaId);
-
-        if (!temPermissao){
-            throw new BadCredentialsException("Usuário não tem permissão para acessar as denúncias dessa escola");
-        }
-
         List<Denuncia> denunciaList = denunciaServiceReader.buscarDenunciasPorEscolaId(escolaId);
 
         return denunciaServiceReader.retornarDenunciasResumo(denunciaList);
     }
 
     public List<DenunciaResumoResponseDTO> acessarDenunciasOrgaoCompetente(String email, Long orgaoCompetenteId){
-        boolean temPermissao = securityService.temPermissaoDeAcessoOrgaoCompetente(email, orgaoCompetenteId);
-
-        if (!temPermissao){
-            throw new BadCredentialsException("Usuário não tem permissão para acessar as denúncias desse orgão competente");
-        }
-
         List<ResponsavelDenuncia> responsavelList = responsavelDenunciaServiceReader.listarTodasAsDenunciasResponsavel(orgaoCompetenteId);
         List<Denuncia> denunciaList = converterResponsavelDenunciaParaDenuncia(responsavelList);
 

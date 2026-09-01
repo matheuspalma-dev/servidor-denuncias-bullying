@@ -1,7 +1,6 @@
 package br.com.pr.sida.status;
 
 import br.com.pr.sida.denuncia.DenunciaServiceReader;
-import br.com.pr.sida.security.service.SecurityService;
 import br.com.pr.sida.status.dto.response.StatusDenunciaResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,19 +15,15 @@ public class StatusDenunciaService {
 
     private final StatusDenunciaRepository statusDenunciaRepository;
     private final DenunciaServiceReader denunciaServiceReader;
-    private final SecurityService securityService;
     private final StatusMapper statusMapper;
 
-    public void atualizarStatusDenuncia(String email, Long denunciaId, StatusDenunciaEnum status) {
-        boolean temPermissao = securityService.temPermissaoDeAcessoDenuncia(email, denunciaServiceReader.buscarDenunciaPorId(denunciaId));
-        if (temPermissao) {
-            br.com.pr.sida.status.StatusDenuncia statusDenuncia = new br.com.pr.sida.status.StatusDenuncia();
-            statusDenuncia.setDataCriacao(LocalDate.now());
-            statusDenuncia.setDenuncia(denunciaServiceReader.buscarDenunciaPorId(denunciaId));
-            statusDenuncia.setStatusDenunciaEnum(status);
+    public void atualizarStatusDenuncia(Long denunciaId, StatusDenunciaEnum status) {
+        StatusDenuncia statusDenuncia = new StatusDenuncia();
+        statusDenuncia.setDataCriacao(LocalDate.now());
+        statusDenuncia.setDenuncia(denunciaServiceReader.buscarDenunciaPorId(denunciaId));
+        statusDenuncia.setStatusDenunciaEnum(status);
 
-            statusDenunciaRepository.save(statusDenuncia);
-        }
+        statusDenunciaRepository.save(statusDenuncia);
     }
 
     public void adicionarStatusDenuncia(Long denunciaId, StatusDenunciaEnum status) {

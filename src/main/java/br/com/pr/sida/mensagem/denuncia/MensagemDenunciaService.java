@@ -4,10 +4,8 @@ import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.denuncia.DenunciaServiceReader;
 import br.com.pr.sida.mensagem.denuncia.dto.request.MensagemDenunciaRequestDTO;
 import br.com.pr.sida.mensagem.denuncia.dto.response.MensagensDenunciaResponseDTO;
-import br.com.pr.sida.security.service.SecurityService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +19,6 @@ public class MensagemDenunciaService {
     private final MensagemDenunciaRepository mensagemDenunciaRepository;
     private final DenunciaServiceReader denunciaServiceReader;
     private final TextEncryptor criptografarMensagens;
-    private final SecurityService securityService;
     private final MensagemDenunciaMapper mensagemDenunciaMapper;
 
 
@@ -36,17 +33,10 @@ public class MensagemDenunciaService {
         mensagemDenunciaRepository.save(mensagemDenuncia);
     }
 
-    public void salvarMensagemResponsavel(Long idDenuncia, MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO, String email){
+    public void salvarMensagemResponsavel(Long idDenuncia, MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO){
         Denuncia denuncia = denunciaServiceReader.buscarDenunciaPorId(idDenuncia);
-
-        boolean temPermissao = securityService.temPermissaoDeAcessoDenuncia(email, denuncia);
-
-        if (temPermissao) {
-            MensagemDenuncia mensagemDenuncia = criarMensagemDenuncia(mensagemDenunciaRequestDTO, denuncia, AutorMensagem.RESPONSAVEL);
-            mensagemDenunciaRepository.save(mensagemDenuncia);
-        } else {
-            throw new BadCredentialsException("Usuário não tem permissão para adicionar mensagem a esta denúncia");
-        }
+        MensagemDenuncia mensagemDenuncia = criarMensagemDenuncia(mensagemDenunciaRequestDTO, denuncia, AutorMensagem.RESPONSAVEL);
+        mensagemDenunciaRepository.save(mensagemDenuncia);
 
     }
 
