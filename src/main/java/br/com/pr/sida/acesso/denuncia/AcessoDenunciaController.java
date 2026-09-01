@@ -4,7 +4,7 @@ import br.com.pr.sida.acesso.denuncia.dto.request.AcessoDenunciaRequestDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResumoResponseDTO;
 import br.com.pr.sida.security.jwt.TokenService;
-import br.com.pr.sida.security.service.RequerAcesso;
+import br.com.pr.sida.security.service.RequerPermissao;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -48,7 +48,7 @@ public class AcessoDenunciaController {
 
     @GetMapping("/acessar/{denunciaId}")
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
-    @RequerAcesso
+    @RequerPermissao
     public ResponseEntity<DenunciaResponseDTO> acessarDenunciaResponsavel(@PathVariable Long denunciaId){
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         DenunciaResponseDTO denuncia = acessoDenunciaService.acessoDenuncia(denunciaId);
@@ -57,6 +57,7 @@ public class AcessoDenunciaController {
 
     @GetMapping("/escola/{escolaId}/denuncias")
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
+    @RequerPermissao
     public ResponseEntity<List<DenunciaResumoResponseDTO>> acessarDenunciasEscola(@PathVariable Long escolaId){
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<DenunciaResumoResponseDTO> denuncias = acessoDenunciaService.acessarDenunciasEscola(email, escolaId);
@@ -65,6 +66,7 @@ public class AcessoDenunciaController {
 
     @GetMapping("/orgaoCompetente/{orgaoCompetenteId}/denuncias")
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
+    @RequerPermissao
     public ResponseEntity<List<DenunciaResumoResponseDTO>> acessarDenunciasOrgaoCompetente(@PathVariable Long orgaoCompetenteId){
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<DenunciaResumoResponseDTO> denuncias = acessoDenunciaService.acessarDenunciasOrgaoCompetente(email, orgaoCompetenteId);

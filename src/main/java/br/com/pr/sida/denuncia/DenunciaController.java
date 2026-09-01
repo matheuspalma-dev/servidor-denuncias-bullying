@@ -6,6 +6,7 @@ import br.com.pr.sida.denuncia.dto.request.DenunciaRequestDTO;
 import br.com.pr.sida.mensagem.denuncia.MensagemDenunciaService;
 import br.com.pr.sida.mensagem.denuncia.dto.request.MensagemDenunciaRequestDTO;
 import br.com.pr.sida.mensagem.denuncia.AutorMensagem;
+import br.com.pr.sida.security.service.RequerPermissao;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,12 +38,12 @@ public class DenunciaController {
     @PostMapping("/{denunciaId}/mensagem/criar/responsavel")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
+    @RequerPermissao
     public void adicionarMensagemDenunciaResponsavel(
             @RequestBody MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO,
             @PathVariable Long denunciaId
             ){
-        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        mensagemDenunciaService.salvarMensagemResponsavel(denunciaId, mensagemDenunciaRequestDTO, email);
+        mensagemDenunciaService.salvarMensagemResponsavel(denunciaId, mensagemDenunciaRequestDTO);
     }
 
     @PostMapping("/mensagem/criar/denunciante")
