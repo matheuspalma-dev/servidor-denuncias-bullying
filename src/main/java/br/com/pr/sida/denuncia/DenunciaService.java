@@ -3,28 +3,30 @@ package br.com.pr.sida.denuncia;
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
 import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteServiceReader;
 import br.com.pr.sida.OrgaoCompetente.TipoOrgaoCompetente;
-import br.com.pr.sida.como.afetou.ComoAfetouService;
-import br.com.pr.sida.como.afetou.ComoTeAfetou;
-import br.com.pr.sida.como.afetou.dto.request.ComoAfetouRequestDTO;
+import br.com.pr.sida.denuncia.como.afetou.ComoAfetouService;
+import br.com.pr.sida.denuncia.como.afetou.ComoTeAfetou;
+import br.com.pr.sida.denuncia.como.afetou.dto.request.ComoAfetouRequestDTO;
 import br.com.pr.sida.denuncia.dto.request.DenunciaRequestDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
+import br.com.pr.sida.denuncia.dto.response.DenunciaResumoResponseDTO;
 import br.com.pr.sida.denuncia.enums.*;
 import br.com.pr.sida.escola.EscolaServiceReader;
-import br.com.pr.sida.mensagem.denuncia.MensagemDenunciaService;
-import br.com.pr.sida.mensagem.denuncia.dto.response.MensagensDenunciaResponseDTO;
-import br.com.pr.sida.onde.ocorreu.OndeOcorreuDenunciaService;
-import br.com.pr.sida.onde.ocorreu.dto.request.OndeOcorreuRequestDTO;
-import br.com.pr.sida.praticaAcao.PraticaAcaoService;
-import br.com.pr.sida.praticaAcao.QuemPratica;
-import br.com.pr.sida.praticaAcao.dto.request.PraticaAcaoRequestDTO;
-import br.com.pr.sida.responsavel.denuncia.dto.response.ResponsavelDenunciaResponseDTO;
-import br.com.pr.sida.situacao.denuncia.SituacaoDenunciaService;
-import br.com.pr.sida.situacao.denuncia.SituacaoDenunciada;
-import br.com.pr.sida.situacao.denuncia.dto.request.SituacaoDenunciaRequestDTO;
+import br.com.pr.sida.denuncia.mensagem.denuncia.MensagemDenunciaService;
+import br.com.pr.sida.denuncia.mensagem.denuncia.dto.response.MensagensDenunciaResponseDTO;
+import br.com.pr.sida.denuncia.onde.ocorreu.OndeOcorreuDenunciaService;
+import br.com.pr.sida.denuncia.onde.ocorreu.dto.request.OndeOcorreuRequestDTO;
+import br.com.pr.sida.denuncia.pratica.acao.PraticaAcaoService;
+import br.com.pr.sida.denuncia.pratica.acao.QuemPratica;
+import br.com.pr.sida.denuncia.pratica.acao.dto.request.PraticaAcaoRequestDTO;
+import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenuncia;
+import br.com.pr.sida.denuncia.responsavel.denuncia.dto.response.ResponsavelDenunciaResponseDTO;
+import br.com.pr.sida.denuncia.situacao.denuncia.SituacaoDenunciaService;
+import br.com.pr.sida.denuncia.situacao.denuncia.SituacaoDenunciada;
+import br.com.pr.sida.denuncia.situacao.denuncia.dto.request.SituacaoDenunciaRequestDTO;
 import br.com.pr.sida.status.StatusDenunciaEnum;
 import br.com.pr.sida.escola.Escola;
 import br.com.pr.sida.escola.RedeEnsino;
-import br.com.pr.sida.responsavel.denuncia.ResponsavelDenunciaService;
+import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenunciaService;
 import br.com.pr.sida.status.StatusDenunciaService;
 import br.com.pr.sida.status.dto.response.StatusDenunciaResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -191,5 +193,13 @@ public class DenunciaService {
                 ondeOcorreuList
                 );
         return denunciaResponseDTO;
+    }
+
+    public List<DenunciaResumoResponseDTO> retornarDenunciasResumo(List<Denuncia> denunciaList) {
+        return denunciaMapper.retornarResumoDenunciaDTOList(denunciaList);
+    }
+
+    public List<Denuncia> converterResponsavelDenunciaParaDenuncia(List<ResponsavelDenuncia> responsavelList){
+        return denunciaMapper.converterResponsavelDenunciaParaDenuncia(responsavelList);
     }
 }

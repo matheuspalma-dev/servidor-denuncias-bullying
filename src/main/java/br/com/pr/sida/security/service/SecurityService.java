@@ -6,7 +6,7 @@ import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.denuncia.DenunciaServiceReader;
 import br.com.pr.sida.escola.Escola;
 import br.com.pr.sida.escola.EscolaServiceReader;
-import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
+import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenuncia;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

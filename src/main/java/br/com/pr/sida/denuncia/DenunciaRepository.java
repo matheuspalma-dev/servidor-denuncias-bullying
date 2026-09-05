@@ -7,6 +7,4 @@ import java.util.List;
 
 @Repository
 interface DenunciaRepository extends JpaRepository<Denuncia, Long> {
-
-    public List<Denuncia> findAllByEscolaId(Long escolaId);
 }
