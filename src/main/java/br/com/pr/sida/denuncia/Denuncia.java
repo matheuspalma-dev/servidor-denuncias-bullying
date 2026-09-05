@@ -1,14 +1,14 @@
 package br.com.pr.sida.denuncia;
 
 import br.com.pr.sida.acesso.denuncia.Acesso;
-import br.com.pr.sida.como.afetou.ComoAfetou;
+import br.com.pr.sida.denuncia.como.afetou.ComoAfetou;
 import br.com.pr.sida.denuncia.enums.*;
 import br.com.pr.sida.escola.Escola;
-import br.com.pr.sida.mensagem.denuncia.MensagemDenuncia;
-import br.com.pr.sida.onde.ocorreu.OndeOcorreuDenuncia;
-import br.com.pr.sida.praticaAcao.PraticaAcao;
-import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
-import br.com.pr.sida.situacao.denuncia.SituacaoDenuncia;
+import br.com.pr.sida.denuncia.mensagem.denuncia.MensagemDenuncia;
+import br.com.pr.sida.denuncia.onde.ocorreu.OndeOcorreuDenuncia;
+import br.com.pr.sida.denuncia.pratica.acao.PraticaAcao;
+import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenuncia;
+import br.com.pr.sida.denuncia.situacao.denuncia.SituacaoDenuncia;
 import br.com.pr.sida.status.StatusDenuncia;
 import jakarta.persistence.*;
 import lombok.Getter;

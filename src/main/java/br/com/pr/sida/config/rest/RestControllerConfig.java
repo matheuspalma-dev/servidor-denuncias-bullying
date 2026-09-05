@@ -2,6 +2,8 @@ package br.com.pr.sida.config.rest;
 
 import br.com.pr.sida.security.jwt.FiltroAutentificacaoJWT;
 import lombok.RequiredArgsConstructor;
+import org.owasp.html.PolicyFactory;
+import org.owasp.html.Sanitizers;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -73,5 +75,10 @@ public class RestControllerConfig {
     @Bean
     public TextEncryptor criptografarMensagens(){
         return Encryptors.delux(cryptoKey, cryptoSalt);
+    }
+
+    @Bean
+    public PolicyFactory htmlPolicy(){
+        return Sanitizers.FORMATTING.and(Sanitizers.BLOCKS);
     }
 }

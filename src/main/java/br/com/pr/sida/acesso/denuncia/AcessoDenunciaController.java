@@ -60,8 +60,7 @@ public class AcessoDenunciaController {
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
     @RequerPermissao
     public ResponseEntity<List<DenunciaResumoResponseDTO>> acessarDenunciasEscola(@PathVariable Long escolaId){
-        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<DenunciaResumoResponseDTO> denuncias = acessoDenunciaService.acessarDenunciasEscola(email, escolaId);
+        List<DenunciaResumoResponseDTO> denuncias = acessoDenunciaService.acessarDenunciasEscola(escolaId);
         return ResponseEntity.ok().body(denuncias);
     }
 
@@ -69,8 +68,7 @@ public class AcessoDenunciaController {
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
     @RequerPermissao
     public ResponseEntity<List<DenunciaResumoResponseDTO>> acessarDenunciasOrgaoCompetente(@PathVariable Long orgaoCompetenteId){
-        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<DenunciaResumoResponseDTO> denuncias = acessoDenunciaService.acessarDenunciasOrgaoCompetente(email, orgaoCompetenteId);
+        List<DenunciaResumoResponseDTO> denuncias = acessoDenunciaService.acessarDenunciasOrgaoCompetente(orgaoCompetenteId);
         return ResponseEntity.ok().body(denuncias);
     }
 

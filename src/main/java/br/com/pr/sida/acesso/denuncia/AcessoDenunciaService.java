@@ -9,8 +9,8 @@ import br.com.pr.sida.denuncia.DenunciaServiceReader;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResumoResponseDTO;
 import br.com.pr.sida.login.exceptions.InformacoesIncorretasException;
-import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
-import br.com.pr.sida.responsavel.denuncia.ResponsavelDenunciaServiceReader;
+import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenuncia;
+import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenunciaServiceReader;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +22,6 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Year;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -105,8 +104,7 @@ public class AcessoDenunciaService {
         if (!passwordEncoder.matches(acessoDenunciaRequestDTO.senhaAcesso(), acesso.getSenhaAcesso())){
             throw new InformacoesIncorretasException("Informações de acesso incorretas");
         }
-
-        System.out.println("True");
+        
         return denunciaService.retornarDenunciaResponseDTO(acesso.getDenuncia());
     }
 
@@ -115,24 +113,17 @@ public class AcessoDenunciaService {
         return denunciaService.retornarDenunciaResponseDTO(denuncia);
     }
 
-    public List<DenunciaResumoResponseDTO> acessarDenunciasEscola(String email, Long escolaId){
-        List<Denuncia> denunciaList = denunciaServiceReader.buscarDenunciasPorEscolaId(escolaId);
+    public List<DenunciaResumoResponseDTO> acessarDenunciasEscola(Long escolaId){
+        List<ResponsavelDenuncia> responsavelDenunciaList = responsavelDenunciaServiceReader.buscarDenunciasPorEscolaId(escolaId);
+        List<Denuncia> denunciaList = denunciaService.converterResponsavelDenunciaParaDenuncia(responsavelDenunciaList);
 
         return denunciaServiceReader.retornarDenunciasResumo(denunciaList);
     }
 
-    public List<DenunciaResumoResponseDTO> acessarDenunciasOrgaoCompetente(String email, Long orgaoCompetenteId){
-        List<ResponsavelDenuncia> responsavelList = responsavelDenunciaServiceReader.listarTodasAsDenunciasResponsavel(orgaoCompetenteId);
-        List<Denuncia> denunciaList = converterResponsavelDenunciaParaDenuncia(responsavelList);
+    public List<DenunciaResumoResponseDTO> acessarDenunciasOrgaoCompetente(Long orgaoCompetenteId){
+        List<ResponsavelDenuncia> responsavelDenunciaList = responsavelDenunciaServiceReader.buscarDenunciasPorOrgaoCompetenteId(orgaoCompetenteId);
+        List<Denuncia> denunciaList = denunciaService.converterResponsavelDenunciaParaDenuncia(responsavelDenunciaList);
 
         return denunciaServiceReader.retornarDenunciasResumo(denunciaList);
-    }
-
-    private List<Denuncia> converterResponsavelDenunciaParaDenuncia(List<ResponsavelDenuncia> responsavelList){
-        List<Denuncia> denunciaList = new ArrayList<>();
-        for (ResponsavelDenuncia responsavelDenuncia : responsavelList){
-            denunciaList.add(responsavelDenuncia.getDenuncia());
-        }
-        return denunciaList;
     }
 }

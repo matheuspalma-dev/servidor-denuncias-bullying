@@ -1,16 +1,17 @@
 package br.com.pr.sida.denuncia;
 
-import br.com.pr.sida.como.afetou.ComoTeAfetou;
+import br.com.pr.sida.denuncia.como.afetou.ComoTeAfetou;
 import br.com.pr.sida.denuncia.dto.request.DenunciaRequestDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResumoResponseDTO;
 import br.com.pr.sida.denuncia.enums.OndeOcorreu;
 import br.com.pr.sida.denuncia.enums.Prioridade;
 import br.com.pr.sida.escola.Escola;
-import br.com.pr.sida.mensagem.denuncia.dto.response.MensagensDenunciaResponseDTO;
-import br.com.pr.sida.praticaAcao.QuemPratica;
-import br.com.pr.sida.responsavel.denuncia.dto.response.ResponsavelDenunciaResponseDTO;
-import br.com.pr.sida.situacao.denuncia.SituacaoDenunciada;
+import br.com.pr.sida.denuncia.mensagem.denuncia.dto.response.MensagensDenunciaResponseDTO;
+import br.com.pr.sida.denuncia.pratica.acao.QuemPratica;
+import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenuncia;
+import br.com.pr.sida.denuncia.responsavel.denuncia.dto.response.ResponsavelDenunciaResponseDTO;
+import br.com.pr.sida.denuncia.situacao.denuncia.SituacaoDenunciada;
 import br.com.pr.sida.status.dto.response.StatusDenunciaResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
@@ -107,6 +108,14 @@ public class DenunciaMapper {
             denunciaResumoResponseDTOList.add(denunciaResumoResponseDTO);
         }
         return denunciaResumoResponseDTOList;
+    }
+
+    public List<Denuncia> converterResponsavelDenunciaParaDenuncia(List<ResponsavelDenuncia> responsavelList){
+        List<Denuncia> denunciaList = new ArrayList<>();
+        for (ResponsavelDenuncia responsavelDenuncia : responsavelList){
+            denunciaList.add(responsavelDenuncia.getDenuncia());
+        }
+        return denunciaList;
     }
 
 }
