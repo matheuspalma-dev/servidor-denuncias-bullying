@@ -6,6 +6,7 @@ import br.com.pr.sida.denuncia.dto.response.DenunciaResumoResponseDTO;
 import br.com.pr.sida.security.jwt.TokenService;
 import br.com.pr.sida.security.service.RequerPermissao;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -26,7 +27,7 @@ public class AcessoDenunciaController {
 
     @PostMapping("/acessar")
     public ResponseEntity<DenunciaResponseDTO> acessarDenuncia(
-            @RequestBody AcessoDenunciaRequestDTO acessoDenunciaRequestDTO,
+            @RequestBody @Valid AcessoDenunciaRequestDTO acessoDenunciaRequestDTO,
             HttpServletResponse response
     )
     {

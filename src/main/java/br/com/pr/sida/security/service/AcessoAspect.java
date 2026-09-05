@@ -1,5 +1,6 @@
 package br.com.pr.sida.security.service;
 
+import br.com.pr.sida.security.exception.NaoTemPermissaoException;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -16,7 +17,7 @@ public class AcessoAspect {
     private final SecurityService securityService;
 
     @Before("@annotation(br.com.pr.sida.security.service.RequerPermissao)")
-    public void verificarPermissao(JoinPoint joinPoint){
+    public void verificarPermissao(JoinPoint joinPoint) throws NaoTemPermissaoException {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
@@ -41,7 +42,7 @@ public class AcessoAspect {
         }
 
         if (denunciaId == null && escolaId == null && orgaoCompetenteId == null) {
-            throw new IllegalArgumentException("Parâmetro 'denunciaId' não encontrado no método.");
+            throw new IllegalArgumentException("Informações incorretas");
         } else {
             boolean temPermissao;
 
@@ -54,7 +55,7 @@ public class AcessoAspect {
             }
 
             if (!temPermissao) {
-                throw new RuntimeException("Acesso Negado: Você não tem permissão para esta denúncia.");
+                throw new NaoTemPermissaoException("Você não tem permissão para acessar esta denúncia ou ela não existe.");
             }
         }
     }

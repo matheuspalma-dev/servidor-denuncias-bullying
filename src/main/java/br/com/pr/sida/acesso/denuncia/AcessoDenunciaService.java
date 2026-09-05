@@ -2,11 +2,13 @@ package br.com.pr.sida.acesso.denuncia;
 
 import br.com.pr.sida.acesso.denuncia.dto.request.AcessoDenunciaRequestDTO;
 import br.com.pr.sida.acesso.denuncia.dto.response.AcessoDenunciaResponseDTO;
+import br.com.pr.sida.acesso.denuncia.exception.ErroInternoException;
 import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.denuncia.DenunciaService;
 import br.com.pr.sida.denuncia.DenunciaServiceReader;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResumoResponseDTO;
+import br.com.pr.sida.login.exceptions.InformacoesIncorretasException;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenuncia;
 import br.com.pr.sida.responsavel.denuncia.ResponsavelDenunciaServiceReader;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +74,7 @@ public class AcessoDenunciaService {
             byte[] hashBytes = mac.doFinal(codigoAcesso.trim().getBytes(StandardCharsets.UTF_8));
             return Hex.encodeHexString(hashBytes);
         } catch (Exception e){
-            throw new RuntimeException("Erro ao gerar hash do código de acesso", e);
+            throw new ErroInternoException("Erro ao gerar código de acesso");
         }
     }
 
@@ -98,10 +100,10 @@ public class AcessoDenunciaService {
         String codigoAcesso = acessoDenunciaRequestDTO.codigoAcesso();
         String codigoAcessoCriptografado = gerarHashCodigoAcesso(codigoAcesso);
         Acesso acesso = acessoDenunciaRepository.findByCodigoAcessoHash(codigoAcessoCriptografado)
-                .orElseThrow(() -> new RuntimeException("Acesso não encontrado"));
+                .orElseThrow(() -> new InformacoesIncorretasException("Informações de acesso incorretas"));
 
         if (!passwordEncoder.matches(acessoDenunciaRequestDTO.senhaAcesso(), acesso.getSenhaAcesso())){
-            throw new RuntimeException("Senha de acesso incorreta");
+            throw new InformacoesIncorretasException("Informações de acesso incorretas");
         }
 
         System.out.println("True");

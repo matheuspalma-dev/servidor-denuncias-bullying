@@ -40,7 +40,7 @@ public class DenunciaController {
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
     @RequerPermissao
     public void adicionarMensagemDenunciaResponsavel(
-            @RequestBody MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO,
+            @RequestBody @Valid MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO,
             @PathVariable Long denunciaId
             ){
         mensagemDenunciaService.salvarMensagemResponsavel(denunciaId, mensagemDenunciaRequestDTO);
@@ -49,7 +49,7 @@ public class DenunciaController {
     @PostMapping("/mensagem/criar/denunciante")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('DENUNCIANTE')")
-    public void adicionarMensagemDenunciaDenunciante(@RequestBody MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO){
+    public void adicionarMensagemDenunciaDenunciante(@RequestBody @Valid MensagemDenunciaRequestDTO mensagemDenunciaRequestDTO){
         Long idDenuncia = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         mensagemDenunciaService.salvarMensagem(idDenuncia, mensagemDenunciaRequestDTO, AutorMensagem.DENUNCIANTE);
     }
