@@ -1,8 +1,7 @@
 package br.com.pr.sida.escola;
 
-import jakarta.persistence.EntityNotFoundException;
+import br.com.pr.sida.escola.exception.EscolaNaoEncontradaException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,7 +11,7 @@ public class EscolaServiceReader {
     private final EscolaRepository escolaRepository;
 
     public Escola buscarEscolaPorEmail(String email) {
-        return escolaRepository.findByEmail(email).orElseThrow(() -> new BadCredentialsException("Escola não encontrada"));
+        return escolaRepository.findByEmail(email).orElseThrow(() -> new EscolaNaoEncontradaException("Escola não encontrada"));
     }
 
     public Escola buscarEscolaPorIdSemExcecao(Long idEscola){
@@ -21,7 +20,7 @@ public class EscolaServiceReader {
 
     public Escola buscarEscolaPorId(Long idEscola){
         return escolaRepository.findById(idEscola)
-                .orElseThrow(() -> new EntityNotFoundException("Escola não encontrada"));
+                .orElseThrow(() -> new EscolaNaoEncontradaException("Escola não encontrada"));
     }
 
     public Escola buscarEscolaPorEmailSemExcecao(String email){

@@ -5,6 +5,7 @@ import br.com.pr.sida.login.dto.response.LoginResponseDTO;
 import br.com.pr.sida.security.jwt.TokenService;
 import br.com.pr.sida.security.jwt.ROLE;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -23,7 +24,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(
-            @RequestBody LoginRequestDTO loginRequestDTO,
+            @RequestBody @Valid LoginRequestDTO loginRequestDTO,
             HttpServletResponse response
     )
     {

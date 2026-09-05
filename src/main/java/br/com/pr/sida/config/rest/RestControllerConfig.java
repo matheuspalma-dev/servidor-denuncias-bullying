@@ -1,4 +1,4 @@
-package br.com.pr.sida.config;
+package br.com.pr.sida.config.rest;
 
 import br.com.pr.sida.security.jwt.FiltroAutentificacaoJWT;
 import lombok.RequiredArgsConstructor;

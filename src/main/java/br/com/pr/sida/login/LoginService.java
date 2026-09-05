@@ -6,8 +6,8 @@ import br.com.pr.sida.escola.Escola;
 import br.com.pr.sida.escola.EscolaServiceReader;
 import br.com.pr.sida.login.dto.request.LoginRequestDTO;
 import br.com.pr.sida.login.dto.response.LoginResponseDTO;
+import br.com.pr.sida.login.exceptions.InformacoesIncorretasException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +36,7 @@ public class LoginService {
             }
         }
 
-        throw new BadCredentialsException("Senha incorreta");
+        throw new InformacoesIncorretasException("Informações incorretas");
     }
 
     public TipoLogin tipoLogin(String email) {
@@ -46,7 +46,7 @@ public class LoginService {
                 .buscarPorEmailSemExcessao(email);
 
         if (escola == null && orgaoCompetente == null) {
-            throw new BadCredentialsException("Email não pertence a nenhuma organização");
+            throw new InformacoesIncorretasException("Informações incorretas");
         }
 
         if (escola != null){

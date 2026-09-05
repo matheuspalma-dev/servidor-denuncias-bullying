@@ -1,7 +1,7 @@
 package br.com.pr.sida.denuncia;
 
 import br.com.pr.sida.denuncia.dto.response.DenunciaResumoResponseDTO;
-import jakarta.persistence.EntityNotFoundException;
+import br.com.pr.sida.denuncia.exception.DenunciaNaoEncontradaException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class DenunciaServiceReader {
 
     public Denuncia buscarDenunciaPorId(Long id) {
         return denunciaRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Denúncia não encontrada com o ID: " + id));
+                .orElseThrow(() -> new DenunciaNaoEncontradaException("Denúncia não encontrada com o ID: " + id));
     }
 
     public List<Denuncia> buscarDenunciasPorEscolaId(Long escolaId) {
