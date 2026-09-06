@@ -51,7 +51,6 @@ public class AcessoDenunciaController {
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
     @RequerPermissao
     public ResponseEntity<DenunciaResponseDTO> acessarDenunciaResponsavel(@PathVariable Long denunciaId){
-        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         DenunciaResponseDTO denuncia = acessoDenunciaService.acessoDenuncia(denunciaId);
         return ResponseEntity.ok().body(denuncia);
     }

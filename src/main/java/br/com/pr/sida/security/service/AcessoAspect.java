@@ -47,7 +47,7 @@ public class AcessoAspect {
             boolean temPermissao;
 
             if (denunciaId != null){
-                temPermissao = securityService.temPermissaoDeAcessoDenuncia1(email, denunciaId);
+                temPermissao = securityService.temPermissaoDeAcessoDenuncia(email, denunciaId);
             } else if (escolaId != null) {
                 temPermissao = securityService.temPermissaoDeAcessoEscola(email, escolaId);
             } else {
