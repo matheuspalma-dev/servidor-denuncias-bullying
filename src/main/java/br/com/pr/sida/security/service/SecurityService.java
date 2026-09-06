@@ -10,6 +10,8 @@ import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenuncia;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class SecurityService {
@@ -18,46 +20,23 @@ public class SecurityService {
     private final EscolaServiceReader escolaServiceReader;
     private final DenunciaServiceReader denunciaServiceReader;
 
-    public boolean temPermissaoDeAcessoDenuncia(String email, Denuncia denuncia) {
-        Escola escola = escolaServiceReader.buscarEscolaPorEmailSemExcecao(email);
-
-        OrgaoCompetente orgaoCompetente = orgaoCompetenteServiceReader.buscarPorEmailSemExcessao(email);
-
-        if (escola != null || orgaoCompetente != null) {
-            for (ResponsavelDenuncia responsavelDenuncia : denuncia.getResponsavelDenuncias()) {
-                if (escola != null) {
-                    if (responsavelDenuncia.getEscolaResponsavel().getId() == escola.getId() && responsavelDenuncia.isEscolaVaiTerAcesso()) {
-                        return true;
-                    }
-                }
-
-                if (orgaoCompetente != null) {
-                    if (responsavelDenuncia.getOrgaoCompetenteResponsavel().getId() == orgaoCompetente.getId()) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean temPermissaoDeAcessoDenuncia1(String email, Long denunciaId) {
+    public boolean temPermissaoDeAcessoDenuncia(String email, Long denunciaId) {
         Escola escola = escolaServiceReader.buscarEscolaPorEmailSemExcecao(email);
 
         Denuncia denuncia = denunciaServiceReader.buscarDenunciaPorId(denunciaId);
 
-        OrgaoCompetente orgaoCompetente = orgaoCompetenteServiceReader.buscarPorEmailSemExcessao(email);
+        OrgaoCompetente orgaoCompetente = buscarOrgaoCompetentePorEmailSemExcecao(email);
 
         if (escola != null || orgaoCompetente != null) {
             for (ResponsavelDenuncia responsavelDenuncia : denuncia.getResponsavelDenuncias()) {
                 if (escola != null) {
-                    if (responsavelDenuncia.getEscolaResponsavel().getId() == escola.getId() && responsavelDenuncia.isEscolaVaiTerAcesso()) {
+                    if (Objects.equals(responsavelDenuncia.getEscolaResponsavel().getId(), escola.getId()) && responsavelDenuncia.isEscolaVaiTerAcesso()) {
                         return true;
                     }
                 }
 
                 if (orgaoCompetente != null) {
-                    if (responsavelDenuncia.getOrgaoCompetenteResponsavel().getId() == orgaoCompetente.getId()) {
+                    if (Objects.equals(responsavelDenuncia.getOrgaoCompetenteResponsavel().getId(), orgaoCompetente.getId())) {
                         return true;
                     }
                 }
@@ -76,8 +55,7 @@ public class SecurityService {
 
         Escola escola = escolaServiceReader.buscarEscolaPorEmailSemExcecao(email);
 
-        OrgaoCompetente orgaoCompetente = orgaoCompetenteServiceReader
-                .buscarPorEmailSemExcessao(email);
+        OrgaoCompetente orgaoCompetente = buscarOrgaoCompetentePorEmailSemExcecao(email);
 
         if (escola != null) {
             if (escola.getId() == escolaId) {
@@ -93,14 +71,17 @@ public class SecurityService {
     }
 
     public boolean temPermissaoDeAcessoOrgaoCompetente(String email, Long orgaoCompetenteId) {
-        OrgaoCompetente orgaoCompetente = orgaoCompetenteServiceReader
-                .buscarPorEmailSemExcessao(email);
+        OrgaoCompetente orgaoCompetente = buscarOrgaoCompetentePorEmailSemExcecao(email);
 
-        if (orgaoCompetente == null || orgaoCompetente.getId() != orgaoCompetenteId) {
+        if (orgaoCompetente == null || !Objects.equals(orgaoCompetente.getId(), orgaoCompetenteId)) {
             return false;
         }
 
         return true;
+    }
+
+    private OrgaoCompetente buscarOrgaoCompetentePorEmailSemExcecao(String email) {
+        return orgaoCompetenteServiceReader.buscarPorEmailSemExcessao(email);
     }
 
 }

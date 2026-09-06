@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Year;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @RequiredArgsConstructor
@@ -56,9 +57,8 @@ public class AcessoDenunciaService {
     }
 
     private String gerarCodigoAcesso() {
-        String aleatorio = UUID.randomUUID().toString().replace("-", "").substring(0, 8);
-        String codigoAcesso = aleatorio + "/" + Year.now().toString();
-        return codigoAcesso;
+        long numero = ThreadLocalRandom.current().nextLong(10_000_000L, 100_000_000L);
+        return numero + "/" + Year.now().getValue();
     }
 
     private String gerarHashCodigoAcesso(String codigoAcesso){
@@ -78,8 +78,8 @@ public class AcessoDenunciaService {
     }
 
     private String gerarSenhaAcesso() {
-        String senhaAceso = UUID.randomUUID().toString().replace("-", "").substring(0, 7);
-        return senhaAceso;
+        long senhaAceso = ThreadLocalRandom.current().nextLong(10_000_00L, 100_000_00L);
+        return String.valueOf(senhaAceso);
     }
 
     private String critografarSenhaAcesso(String senhaAcesso) {
