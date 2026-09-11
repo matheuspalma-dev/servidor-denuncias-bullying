@@ -26,4 +26,8 @@ public class EscolaServiceReader {
     public Escola buscarEscolaPorEmailSemExcecao(String email){
         return escolaRepository.findByEmail(email).orElse(null);
     }
+
+    public boolean verificarSeEscolaExistePorId(Long idEscola){
+        return escolaRepository.existsById(idEscola);
+    }
 }

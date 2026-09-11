@@ -8,7 +8,7 @@ import br.com.pr.sida.denuncia.DenunciaService;
 import br.com.pr.sida.denuncia.DenunciaServiceReader;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResumoResponseDTO;
-import br.com.pr.sida.login.exceptions.InformacoesIncorretasException;
+import br.com.pr.sida.usuarios.exception.InformacoesIncorretasException;
 import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenuncia;
 import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenunciaServiceReader;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Year;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service

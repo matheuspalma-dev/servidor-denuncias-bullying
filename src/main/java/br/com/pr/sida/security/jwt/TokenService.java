@@ -1,7 +1,7 @@
 package br.com.pr.sida.security.jwt;
 
 import br.com.pr.sida.acesso.denuncia.RoleDenuncia;
-import br.com.pr.sida.login.dto.response.LoginResponseDTO;
+import br.com.pr.sida.usuarios.dto.response.UsuarioLoginResponseDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -27,10 +27,23 @@ public class TokenService {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String gerarTokenUsuario(LoginResponseDTO loginResponseDTO, ROLE role){
+    public String gerarTokenUsuario(UsuarioLoginResponseDTO loginResponseDTO){
         return Jwts.builder()
                 .subject(loginResponseDTO.getEmail())
-                .claim("role", role.name())
+                .claim("role", ROLE.SOLICITAR_INFORMACOES)
+                .claim("type", "acesso_usuario")
+                .issuedAt(new java.util.Date())
+                .expiration(new Date(System.currentTimeMillis() + tempoexpiracao))
+                .signWith(getSecretKey())
+                .compact();
+    }
+
+    public String gerarTokenDeAcessoUsuario(String email, ROLE role, Long entidadeId){
+        return Jwts.builder()
+                .subject(email)
+                .claim("role", role)
+                .claim("type", "acesso_usuario")
+                .claim("entidadeId", entidadeId)
                 .issuedAt(new java.util.Date())
                 .expiration(new Date(System.currentTimeMillis() + tempoexpiracao))
                 .signWith(getSecretKey())
@@ -39,8 +52,8 @@ public class TokenService {
 
     public String gerarTokenAcessoDenuncia(Long idDenuncia, RoleDenuncia roleDenuncia){
         return Jwts.builder()
-                .subject("acesso_denuncia")
-                .claim("idDenuncia", idDenuncia)
+                .subject(String.valueOf(idDenuncia))
+                .claim("type", "acesso_denuncia")
                 .claim("role", roleDenuncia.name())
                 .issuedAt(new java.util.Date())
                 .expiration(new Date(System.currentTimeMillis() + tempoExpiracaoAcessoDenuncia))

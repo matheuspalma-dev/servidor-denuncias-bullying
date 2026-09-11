@@ -1,6 +1,6 @@
 package br.com.pr.sida.denuncia.responsavel.denuncia;
 
-import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
+import br.com.pr.sida.orgao.competente.OrgaoCompetente;
 import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.escola.Escola;
 import br.com.pr.sida.denuncia.responsavel.denuncia.dto.response.ResponsavelDenunciaResponseDTO;
@@ -16,13 +16,12 @@ public class ResponsavelDenunciaService {
     private final ResponsavelDenunciaRepository responsavelDenunciaRepository;
     private final ResponsavelDenunciaMapper responsavelDenunciaMapper;
 
-    public void adicionarResponsavelDenuncia(Denuncia denuncia, Escola escola, List<OrgaoCompetente> orgaoCompetenteList, boolean escolaVaiTerAcesso){
+    public void adicionarResponsavelDenuncia(Denuncia denuncia, Escola escola, List<OrgaoCompetente> orgaoCompetenteList){
         if (orgaoCompetenteList == null || orgaoCompetenteList.isEmpty()) {
             ResponsavelDenuncia responsavelDenuncia = new ResponsavelDenuncia();
             responsavelDenuncia.setDenuncia(denuncia);
             responsavelDenuncia.setEscolaResponsavel(escola);
             responsavelDenuncia.setOrgaoCompetenteResponsavel(null);
-            responsavelDenuncia.setEscolaVaiTerAcesso(escolaVaiTerAcesso);
             responsavelDenunciaRepository.save(responsavelDenuncia);
         } else {
             for (OrgaoCompetente orgaoCompetente : orgaoCompetenteList) {
@@ -30,7 +29,6 @@ public class ResponsavelDenunciaService {
                 responsavelDenuncia.setDenuncia(denuncia);
                 responsavelDenuncia.setEscolaResponsavel(escola);
                 responsavelDenuncia.setOrgaoCompetenteResponsavel(orgaoCompetente);
-                responsavelDenuncia.setEscolaVaiTerAcesso(escolaVaiTerAcesso);
                 responsavelDenunciaRepository.save(responsavelDenuncia);
             }
         }

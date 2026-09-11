@@ -1,6 +1,6 @@
 package br.com.pr.sida.escola;
 
-import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteServiceReader;
+import br.com.pr.sida.orgao.competente.OrgaoCompetenteServiceReader;
 import br.com.pr.sida.escola.dto.request.EscolaRequestResgisterDTO;
 import br.com.pr.sida.escola.dto.response.EscolaResponseDTO;
 import lombok.RequiredArgsConstructor;

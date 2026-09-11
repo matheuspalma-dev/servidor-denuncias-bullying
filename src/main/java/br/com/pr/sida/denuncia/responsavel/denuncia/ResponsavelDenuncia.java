@@ -1,6 +1,6 @@
 package br.com.pr.sida.denuncia.responsavel.denuncia;
 
-import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
+import br.com.pr.sida.orgao.competente.OrgaoCompetente;
 import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.escola.Escola;
 import jakarta.persistence.*;
@@ -24,6 +24,4 @@ public class ResponsavelDenuncia {
     @ManyToOne
     @JoinColumn(name = "escola_responsavel_id", referencedColumnName = "id", nullable = false)
     private Escola escolaResponsavel;
-    @Column(name = "escola_vai_ter_acesso", nullable = false)
-    private boolean escolaVaiTerAcesso;
 }

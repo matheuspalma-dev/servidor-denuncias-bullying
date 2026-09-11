@@ -29,16 +29,16 @@ public class FiltroAutentificacaoJWT extends OncePerRequestFilter {
         if (token != null) {
             Claims claims = tokenService.pegarClaims(token);
             if (claims != null) {
-                if ("acesso_denuncia".equals(claims.getSubject())) {
-                    Long idDenuncia = claims.get("idDenuncia", Long.class);
+                if ("acesso_denuncia".equals(claims.get("type", String.class))) {
+                    String idDenuncia = claims.getSubject();
                     String roleDenuncia = claims.get("role", String.class);
 
                     SimpleGrantedAuthority permissao = new SimpleGrantedAuthority("ROLE_" + roleDenuncia);
 
-                    UsernamePasswordAuthenticationToken autentificacao = new UsernamePasswordAuthenticationToken(idDenuncia, null, List.of(permissao));
+                    UsernamePasswordAuthenticationToken autentificacao = new UsernamePasswordAuthenticationToken(Long.valueOf(idDenuncia), null, List.of(permissao));
 
                     SecurityContextHolder.getContext().setAuthentication(autentificacao);
-                } else {
+                } else if ("acesso_usuario".equals(claims.get("type", String.class))){
                     String email = claims.getSubject();
                     String role = claims.get("role", String.class);
 

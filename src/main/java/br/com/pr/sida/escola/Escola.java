@@ -1,6 +1,6 @@
 package br.com.pr.sida.escola;
 
-import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
+import br.com.pr.sida.orgao.competente.OrgaoCompetente;
 import br.com.pr.sida.denuncia.Denuncia;
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -20,6 +20,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Table(name = "denuncias")
 public class Denuncia {
     @Id
     private Long id;
@@ -61,6 +62,8 @@ public class Denuncia {
     @Column(name = "prioridade_denuncia", nullable = false)
     @Enumerated(EnumType.STRING)
     private Prioridade prioridade;
+    @Column(name = "escola_vai_ter_acesso", nullable = false)
+    private boolean escolaVaiTerAcesso;
     @OneToOne(mappedBy = "denuncia")
     private Acesso acesso;
     @OneToMany(mappedBy = "denuncia")

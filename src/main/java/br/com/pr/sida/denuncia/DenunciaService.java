@@ -1,8 +1,8 @@
 package br.com.pr.sida.denuncia;
 
-import br.com.pr.sida.OrgaoCompetente.OrgaoCompetente;
-import br.com.pr.sida.OrgaoCompetente.OrgaoCompetenteServiceReader;
-import br.com.pr.sida.OrgaoCompetente.TipoOrgaoCompetente;
+import br.com.pr.sida.orgao.competente.OrgaoCompetente;
+import br.com.pr.sida.orgao.competente.OrgaoCompetenteServiceReader;
+import br.com.pr.sida.orgao.competente.TipoOrgaoCompetente;
 import br.com.pr.sida.denuncia.como.afetou.ComoAfetouService;
 import br.com.pr.sida.denuncia.como.afetou.ComoTeAfetou;
 import br.com.pr.sida.denuncia.como.afetou.dto.request.ComoAfetouRequestDTO;
@@ -64,6 +64,11 @@ public class DenunciaService {
                 gerarId(),
                 localizarEscola(denunciaRequestDTO.idEscola()),
                 prioridadeDenuncia);
+
+        boolean houveNegligencia = houveNegligencia(denuncia);
+        boolean escolaVaiTerAcesso = escolaVaiTerAcesso(denuncia, houveNegligencia);
+        denuncia.setEscolaVaiTerAcesso(escolaVaiTerAcesso);
+
         denunciaRepository.save(denuncia);
 
         adicionarComoAfetou(denuncia, denunciaRequestDTO.comoTeAfetouList());
@@ -92,8 +97,6 @@ public class DenunciaService {
 
         OrgaoCompetente orgaoCompetente = definirOrgaoCompetente(denuncia.getEscola().getRedeEnsino() == RedeEnsino.MUNICIPAL ? TipoOrgaoCompetente.SME : TipoOrgaoCompetente.NRE);
 
-        boolean houveNegligencia = houveNegligencia(denuncia);
-
         if (prioridadeDenuncia == Prioridade.URGENTE){
             orgaoCompetenteList.add(orgaoCompetente);
         } else if (prioridadeDenuncia == Prioridade.ALTA){
@@ -102,9 +105,7 @@ public class DenunciaService {
             orgaoCompetenteList.add(orgaoCompetenteConselhoTutelar);
         }
 
-        boolean escolaVaiTerAcesso = escolaVaiTerAcesso(denuncia, houveNegligencia);
-
-        responsavelDenunciaService.adicionarResponsavelDenuncia(denuncia, denuncia.getEscola(), orgaoCompetenteList, escolaVaiTerAcesso);
+        responsavelDenunciaService.adicionarResponsavelDenuncia(denuncia, denuncia.getEscola(), orgaoCompetenteList);
     }
 
     private boolean escolaVaiTerAcesso(Denuncia denuncia, boolean houveNegligencia){
