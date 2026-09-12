@@ -1,6 +1,5 @@
 package br.com.pr.sida.usuarios.lotacao.dto.request;
 
-import br.com.pr.sida.security.tirar.xss.TirarXss;
 import br.com.pr.sida.usuarios.lotacao.UsuarioLotacaoEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +14,6 @@ public record UsuarioLotacaoRequestDTO(
         UsuarioLotacaoEnum usuarioLotacaoEnum,
         @Positive
         Long entidadeId,
-        @TirarXss
         @NotBlank
         String cargo,
         @NotNull

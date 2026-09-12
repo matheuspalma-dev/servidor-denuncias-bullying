@@ -33,7 +33,7 @@ public class UsuarioController {
         usuarioService.cadastrarUsuario(usuarioResgisterRequestDTO);
     }
 
-    @PostMapping("/lotacao")
+    @PostMapping("/lotacao/cadastrar")
     @ResponseStatus(HttpStatus.CREATED)
     public void adicionarLotacao(@RequestBody @Valid UsuarioLotacaoRequestDTO usuarioLotacaoRequestDTO){
         usuarioService.adicionarLotacao(usuarioLotacaoRequestDTO);
@@ -65,7 +65,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/solicitar-acesso/{entidadeId}/{entidadeTipo}")
-    @PreAuthorize("hasRole('SOLICITAR_INFORMACOES')")
+    @PreAuthorize("hasRole('SOLICITAR_PERMISSAO_ACESSO')")
     @RequerPermissao
     public ResponseEntity solicitarAcessoAoSistema(
             @PathVariable Long entidadeId,

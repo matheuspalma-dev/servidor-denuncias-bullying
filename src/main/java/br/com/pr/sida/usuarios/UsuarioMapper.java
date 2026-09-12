@@ -1,5 +1,6 @@
 package br.com.pr.sida.usuarios;
 
+import br.com.pr.sida.security.tirar.xss.TirarXssService;
 import br.com.pr.sida.usuarios.dto.request.UsuarioResgisterRequestDTO;
 import br.com.pr.sida.usuarios.dto.response.UsuarioLoginResponseDTO;
 import br.com.pr.sida.usuarios.lotacao.dto.response.UsuarioLotacaoResponseDTO;
@@ -16,13 +17,15 @@ class UsuarioMapper {
 
     private final PasswordEncoder passwordEncoder;
     private final Random random = new Random();
+    private final TirarXssService tirarXssService;
+    private final UsuarioRepository usuarioRepository;
 
     public Usuario converterDTOEmEntity(UsuarioResgisterRequestDTO usuarioResgisterRequestDTO){
         Usuario usuario = new Usuario();
         usuario.setId(gerarId());
-        usuario.setNome(usuarioResgisterRequestDTO.nome());
+        usuario.setNome(tirarXss(usuarioResgisterRequestDTO.nome()));
         usuario.setEmail(usuarioResgisterRequestDTO.email());
-        usuario.setCpf(usuarioResgisterRequestDTO.cpf());
+        usuario.setCpf(tirarXss(usuarioResgisterRequestDTO.cpf()));
         usuario.setSenha(criptografarSenha(usuarioResgisterRequestDTO.senha()));
         return usuario;
     }
@@ -41,6 +44,15 @@ class UsuarioMapper {
     }
 
     private Long gerarId() {
-        return random.nextLong();
+        Long id;
+        do{
+            id = random.nextLong();
+        }
+        while (id <= 0 || usuarioRepository.existsById(id));
+        return id;
+    }
+
+    private String tirarXss(String entrada){
+        return tirarXssService.tirarXss(entrada);
     }
 }

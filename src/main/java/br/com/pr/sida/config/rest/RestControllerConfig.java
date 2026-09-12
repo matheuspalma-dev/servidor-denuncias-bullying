@@ -48,7 +48,9 @@ public class RestControllerConfig {
                                 "/escolas/todas",
                                 "/escolas/adicionar",
                                 "/orgao-competente/registrar",
-                                "/sida/login"
+                                "/usuarios/cadastrar",
+                                "/usuarios/login",
+                                "/usuarios/lotacao/cadastrar"
                                 ).permitAll()
                         .anyRequest().authenticated()
                 )

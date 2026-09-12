@@ -30,7 +30,7 @@ public class TokenService {
     public String gerarTokenUsuario(UsuarioLoginResponseDTO loginResponseDTO){
         return Jwts.builder()
                 .subject(loginResponseDTO.getEmail())
-                .claim("role", ROLE.SOLICITAR_INFORMACOES)
+                .claim("role", ROLE.SOLICITAR_PERMISSAO_ACESSO)
                 .claim("type", "acesso_usuario")
                 .issuedAt(new java.util.Date())
                 .expiration(new Date(System.currentTimeMillis() + tempoexpiracao))

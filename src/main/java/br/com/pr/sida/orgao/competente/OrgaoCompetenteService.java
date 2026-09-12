@@ -1,6 +1,7 @@
 package br.com.pr.sida.orgao.competente;
 
 import br.com.pr.sida.orgao.competente.dto.request.OrgaoCompetenteRegisterDTO;
+import br.com.pr.sida.security.tirar.xss.TirarXssService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class OrgaoCompetenteService {
 
     private final OrgaoCompetenteRepository orgaoCompetenteRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final TirarXssService tirarXssService;
 
     public void registrarOrgaoCompetente(OrgaoCompetenteRegisterDTO orgaoCompetenteRegisterDTO){
         OrgaoCompetente orgaoCompetente = criarOrgaoCompetente(orgaoCompetenteRegisterDTO);
@@ -19,16 +20,15 @@ public class OrgaoCompetenteService {
 
     public OrgaoCompetente criarOrgaoCompetente(OrgaoCompetenteRegisterDTO orgaoCompetenteRegisterDTO){
         OrgaoCompetente orgaoCompetente = new OrgaoCompetente();
-        orgaoCompetente.setNome(orgaoCompetenteRegisterDTO.nome());
+        orgaoCompetente.setNome(tirarXss(orgaoCompetenteRegisterDTO.nome()));
         orgaoCompetente.setTipoOrgaoCompetente(orgaoCompetenteRegisterDTO.tipoOrgaoCompetente());
-        orgaoCompetente.setNumero(orgaoCompetenteRegisterDTO.numero());
+        orgaoCompetente.setNumero(tirarXss(orgaoCompetenteRegisterDTO.numero()));
         orgaoCompetente.setEmail(orgaoCompetenteRegisterDTO.email());
-        orgaoCompetente.setSenhaAcesso(criptografarSenha(orgaoCompetenteRegisterDTO.senhaAcesso()));
 
         return orgaoCompetente;
     }
 
-    private String criptografarSenha(String senha) {
-        return passwordEncoder.encode(senha);
+    private String tirarXss(String entrada) {
+        return tirarXssService.tirarXss(entrada);
     }
 }

@@ -12,8 +12,9 @@ import br.com.pr.sida.usuarios.exception.InformacoesIncorretasException;
 import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenuncia;
 import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenunciaServiceReader;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.codec.binary.Hex;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.codec.Hex;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -70,7 +71,7 @@ public class AcessoDenunciaService {
             mac.init(secretKey);
 
             byte[] hashBytes = mac.doFinal(codigoAcesso.trim().getBytes(StandardCharsets.UTF_8));
-            return Hex.encodeHexString(hashBytes);
+            return Hex.encode(hashBytes).toString();
         } catch (Exception e){
             throw new ErroInternoException("Erro ao gerar código de acesso");
         }
@@ -113,10 +114,10 @@ public class AcessoDenunciaService {
     }
 
     public List<DenunciaResumoResponseDTO> acessarDenunciasEscola(Long escolaId){
-        List<ResponsavelDenuncia> responsavelDenunciaList = responsavelDenunciaServiceReader.buscarDenunciasPorEscolaId(escolaId);
-        List<Denuncia> denunciaList = denunciaService.converterResponsavelDenunciaParaDenuncia(responsavelDenunciaList);
+//        List<ResponsavelDenuncia> responsavelDenunciaList = responsavelDenunciaServiceReader.buscarDenunciasPorEscolaId(escolaId);
+//        List<Denuncia> denunciaList = denunciaService.converterResponsavelDenunciaParaDenuncia(responsavelDenunciaList);
 
-        return denunciaServiceReader.retornarDenunciasResumo(denunciaList);
+        return null; // denunciaServiceReader.retornarDenunciasResumo(denunciaList);
     }
 
     public List<DenunciaResumoResponseDTO> acessarDenunciasOrgaoCompetente(Long orgaoCompetenteId){

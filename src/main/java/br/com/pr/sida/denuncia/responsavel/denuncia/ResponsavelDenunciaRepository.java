@@ -7,8 +7,5 @@ import java.util.List;
 
 @Repository
 interface ResponsavelDenunciaRepository extends JpaRepository<ResponsavelDenuncia, Long> {
-
-    public List<ResponsavelDenuncia> findByEscolaResponsavelIdAndEscolaVaiTerAcessoIsTrue(Long escolaId);
-
     public List<ResponsavelDenuncia> findByOrgaoCompetenteResponsavelId(Long orgaoCompetenteId);
 }

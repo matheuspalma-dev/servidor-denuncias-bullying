@@ -11,10 +11,6 @@ public class ResponsavelDenunciaServiceReader {
 
     private final ResponsavelDenunciaRepository responsavelDenunciaRepository;
 
-    public List<ResponsavelDenuncia> buscarDenunciasPorEscolaId(Long id){
-        return responsavelDenunciaRepository.findByEscolaResponsavelIdAndEscolaVaiTerAcessoIsTrue(id);
-    }
-
     public List<ResponsavelDenuncia> buscarDenunciasPorOrgaoCompetenteId(Long id){
         return responsavelDenunciaRepository.findByOrgaoCompetenteResponsavelId(id);
     }

@@ -25,8 +25,6 @@ public class OrgaoCompetente {
     private String numero;
     @Column(name = "email", nullable = false)
     private String email;
-    @Column(name = "senha_acesso", nullable = false)
-    private String senhaAcesso;
     @OneToMany(mappedBy = "orgaoCompetenteResponsavel")
     private List<ResponsavelDenuncia> denunciasResponsaveis;
     @OneToMany(mappedBy = "orgaoCompetente")

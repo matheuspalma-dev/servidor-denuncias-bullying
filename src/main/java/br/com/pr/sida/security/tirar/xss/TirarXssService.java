@@ -11,6 +11,7 @@ public class TirarXssService {
     private final PolicyFactory policyFactory;
 
     public String tirarXss(String entrada) {
+        System.out.println("Entrada" + entrada);
         return policyFactory.sanitize(entrada);
     }
 }

@@ -3,6 +3,7 @@ package br.com.pr.sida.escola;
 import br.com.pr.sida.orgao.competente.OrgaoCompetenteServiceReader;
 import br.com.pr.sida.escola.dto.request.EscolaRequestResgisterDTO;
 import br.com.pr.sida.escola.dto.response.EscolaResponseDTO;
+import br.com.pr.sida.security.tirar.xss.TirarXssService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import java.util.List;
 public class EscolaService {
     private final EscolaRepository escolaRepository;
     private final OrgaoCompetenteServiceReader orgaoCompetenteServiceReader;
-    private final PasswordEncoder passwordEncoder;
+    private final TirarXssService tirarXssService;
 
     public List<EscolaResponseDTO> retornarTodasEscolas() {
         List<Escola> escolas = escolaRepository.findAll();
@@ -42,16 +43,15 @@ public class EscolaService {
 
     private Escola criarEscola(EscolaRequestResgisterDTO escolaRequestResgisterDTO) {
         Escola escola = new Escola();
-        escola.setNome(escolaRequestResgisterDTO.nome());
+        escola.setNome(tirarXss(escolaRequestResgisterDTO.nome()));
         escola.setEmail(escolaRequestResgisterDTO.email());
         escola.setAtiva(true);
         escola.setRedeEnsino(escolaRequestResgisterDTO.redeEnsino());
-        escola.setSenhaAcesso(criptografarSenha(escolaRequestResgisterDTO.senhaAcesso()));
         escola.setOrgaoCompetente(orgaoCompetenteServiceReader.buscarPorId(escolaRequestResgisterDTO.orgaoCompetenteId()));
         return escola;
     }
 
-    private String criptografarSenha(String senha) {
-        return passwordEncoder.encode(senha);
+    private String tirarXss(String entrada) {
+        return tirarXssService.tirarXss(entrada);
     }
 }

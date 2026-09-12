@@ -12,6 +12,7 @@ import br.com.pr.sida.denuncia.pratica.acao.QuemPratica;
 import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenuncia;
 import br.com.pr.sida.denuncia.responsavel.denuncia.dto.response.ResponsavelDenunciaResponseDTO;
 import br.com.pr.sida.denuncia.situacao.denuncia.SituacaoDenunciada;
+import br.com.pr.sida.security.tirar.xss.TirarXssService;
 import br.com.pr.sida.status.dto.response.StatusDenunciaResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
@@ -26,6 +27,7 @@ import java.util.List;
 public class DenunciaMapper {
 
     private final TextEncryptor textEncryptor;
+    private final TirarXssService tirarXssService;
 
     public DenunciaResponseDTO converterDenunciaEmDTO(
             Denuncia denuncia,
@@ -77,18 +79,18 @@ public class DenunciaMapper {
         denuncia.setDataCriacao(LocalDate.now());
         denuncia.setEscola(escola);
         denuncia.setAfetados(denunciaRequestDTO.afetados());
-        denuncia.setOqueAconteceu(criptografarDetalhes(denunciaRequestDTO.oqueAconteceu()));
+        denuncia.setOqueAconteceu(criptografarDetalhes(tirarXss(denunciaRequestDTO.oqueAconteceu())));
         denuncia.setEstaEmPerigo(denunciaRequestDTO.estaEmPerigo());
         denuncia.setFrequenciaOcorre(denunciaRequestDTO.frequenciaOcorre());
         denuncia.setQuandoOcorreu(denunciaRequestDTO.quandoOcorreu());
         denuncia.setContinuaAcontecendo(denunciaRequestDTO.continuaAcontecendo());
-        denuncia.setDetalhesAgressores(criptografarDetalhes(denunciaRequestDTO.detalhesAgressores()));
+        denuncia.setDetalhesAgressores(criptografarDetalhes(tirarXss(denunciaRequestDTO.detalhesAgressores())));
         denuncia.setPossuiTestemuna(denunciaRequestDTO.possuiTestemunha());
-        denuncia.setDetalhesTestemunha(criptografarDetalhes(denunciaRequestDTO.detalhesTestemunha()));
+        denuncia.setDetalhesTestemunha(criptografarDetalhes(tirarXss(denunciaRequestDTO.detalhesTestemunha())));
         denuncia.setRelatadoParaOResponsavel((denunciaRequestDTO.relatadoParaOResponsavel()));
         denuncia.setResultadoRelato(denunciaRequestDTO.resultadoRelato());
         denuncia.setSenteSeguroNaEscola(denunciaRequestDTO.senteSeguroNaEscola());
-        denuncia.setPedidoOuInformacaoExtra(criptografarDetalhes(denunciaRequestDTO.pedidoOuInformacaoExtra()));
+        denuncia.setPedidoOuInformacaoExtra(criptografarDetalhes(tirarXss(denunciaRequestDTO.pedidoOuInformacaoExtra())));
         denuncia.setPrioridade(prioridade);
         return denuncia;
     }
@@ -116,6 +118,10 @@ public class DenunciaMapper {
             denunciaList.add(responsavelDenuncia.getDenuncia());
         }
         return denunciaList;
+    }
+
+    private String tirarXss(String entrada) {
+        return tirarXssService.tirarXss(entrada);
     }
 
 }
