@@ -31,7 +31,7 @@ public class TokenService {
         return Jwts.builder()
                 .subject(loginResponseDTO.getEmail())
                 .claim("role", ROLE.SOLICITAR_PERMISSAO_ACESSO)
-                .claim("type", "acesso_usuario")
+                .claim("type", "acesso_solicitar")
                 .issuedAt(new java.util.Date())
                 .expiration(new Date(System.currentTimeMillis() + tempoexpiracao))
                 .signWith(getSecretKey())

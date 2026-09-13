@@ -1,8 +1,8 @@
 package br.com.pr.sida.security.service;
 
 import br.com.pr.sida.security.exception.NaoTemPermissaoException;
+import br.com.pr.sida.security.jwt.UsuarioAutenticado;
 import br.com.pr.sida.usuarios.exception.InformacoesIncorretasException;
-import br.com.pr.sida.usuarios.lotacao.UsuarioLotacaoEnum;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -18,56 +18,35 @@ public class AcessoAspect {
 
     private final SecurityService securityService;
 
-    @Before("@annotation(br.com.pr.sida.security.service.RequerPermissao)")
-    public void verificarPermissao(JoinPoint joinPoint) throws NaoTemPermissaoException {
-        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    @Before("@annotation(requerPermissao)")
+    public void verificarPermissao(JoinPoint joinPoint, RequerPermissao requerPermissao) throws NaoTemPermissaoException {
+        UsuarioAutenticado usuarioAutenticado = (UsuarioAutenticado) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        String[] nomesParametros = signature.getParameterNames();
-        Object[] args = joinPoint.getArgs();
+        TipoRecurso tipoRecurso = requerPermissao.tipoRecurso();
+        String nomeDoIdGuardado = requerPermissao.id();
+        Long id = -1L;
 
-        Long denunciaId = null;
-        Long escolaId = null;
-        Long orgaoCompetenteId = null;
-        Long entidadeId = null;
-        UsuarioLotacaoEnum lotacao = null;
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        String[] nomeParametros = methodSignature.getParameterNames();
+        Object[] argumentos = joinPoint.getArgs();
 
-        if (nomesParametros != null) {
-            for (int i = 0; i < nomesParametros.length; i++) {
-                if ("entidadeId".equals(nomesParametros[i]) && args[i] instanceof Long){
-                    entidadeId = (Long) args[i];
-                } else if ("denunciaId".equals(nomesParametros[i]) && args[i] instanceof Long) {
-                    denunciaId = (Long) args[i];
-                    break;
-                } else if("escolaId".equals(nomesParametros[i]) && args[i] instanceof Long){
-                    escolaId = (Long) args[i];
-                } else if("orgaoCompetenteId".equals(nomesParametros[i]) && args[i] instanceof Long){
-                    orgaoCompetenteId = (Long) args[i];
-                } else if ("entidadeTipo".equals(nomesParametros[i]) && args[i] instanceof UsuarioLotacaoEnum){
-                    lotacao = (UsuarioLotacaoEnum) args[i];
-                }
+        for (int i = 0; i < nomeParametros.length; i++){
+            if (nomeParametros[i].equals(nomeDoIdGuardado)){
+                id = (Long) argumentos[i];
             }
         }
 
-        if (denunciaId == null && escolaId == null && orgaoCompetenteId == null && entidadeId == null) {
-            throw new InformacoesIncorretasException("Informações incorretas");
-        } else {
-            boolean temPermissao;
+        boolean temPermissao = switch (tipoRecurso){
+            case ACESSO_INFORMACOES_DENUNCIA -> securityService.temPermissaoDeAcessoDenuncia(usuarioAutenticado, id);
+            case ACESSO_INFORMACOES_ESCOLA -> securityService.temPermissaoDeAcessoEscola(usuarioAutenticado, id);
+            case ACESSO_INFORMACOES_ORGAO_COMPETENTE -> securityService.temPermissaoDeAcessoOrgaoCompetente(usuarioAutenticado, id);
+            case ACESSO_INFORMACOES_ENTIDADE -> securityService.podeAcessarEntidade(usuarioAutenticado, id);
+        };
 
-            if (entidadeId != null){
-                temPermissao = securityService.podeAcessarEntidade(email, entidadeId, lotacao);
-            }
-            else if (denunciaId != null){
-                temPermissao = securityService.temPermissaoDeAcessoDenuncia(email, denunciaId);
-            } else if (escolaId != null) {
-                temPermissao = securityService.temPermissaoDeAcessoEscola(email, escolaId);
-            } else {
-                temPermissao = securityService.temPermissaoDeAcessoOrgaoCompetente(email, orgaoCompetenteId);
-            }
 
-            if (!temPermissao) {
-                throw new NaoTemPermissaoException("Você não tem permissão para acessar esta denúncia ou ela não existe.");
-            }
+        if (!temPermissao) {
+            throw new NaoTemPermissaoException("Você não tem permissão para acessar esta denúncia ou ela não existe.");
         }
+
     }
 }

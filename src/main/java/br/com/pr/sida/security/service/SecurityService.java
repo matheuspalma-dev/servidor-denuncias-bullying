@@ -7,6 +7,7 @@ import br.com.pr.sida.denuncia.DenunciaServiceReader;
 import br.com.pr.sida.escola.Escola;
 import br.com.pr.sida.escola.EscolaServiceReader;
 import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenuncia;
+import br.com.pr.sida.security.jwt.UsuarioAutenticado;
 import br.com.pr.sida.usuarios.Usuario;
 import br.com.pr.sida.usuarios.UsuarioServiceReader;
 import br.com.pr.sida.usuarios.lotacao.UsuarioLotacao;
@@ -25,12 +26,16 @@ public class SecurityService {
     private final DenunciaServiceReader denunciaServiceReader;
     private final UsuarioServiceReader usuarioServiceReader;
 
-    public boolean temPermissaoDeAcessoDenuncia(String email, Long denunciaId) {
-        Escola escola = escolaServiceReader.buscarEscolaPorEmailSemExcecao(email);
+    public boolean temPermissaoDeAcessoDenuncia(UsuarioAutenticado usuarioAutenticado, Long denunciaId) {
+        Escola escola = null;
+        OrgaoCompetente orgaoCompetente = null;
+        if (usuarioAutenticado.lotacao() == UsuarioLotacaoEnum.REDE_ENSINO){
+            escola = escolaServiceReader.buscarEscolaPorId(usuarioAutenticado.entidadeId());
+        } else { // Orgao Competente
+            orgaoCompetente = orgaoCompetenteServiceReader.buscarPorId(usuarioAutenticado.entidadeId());
+        }
 
         Denuncia denuncia = denunciaServiceReader.buscarDenunciaPorId(denunciaId);
-
-        OrgaoCompetente orgaoCompetente = buscarOrgaoCompetentePorEmailSemExcecao(email);
 
         if (escola != null || orgaoCompetente != null) {
             for (ResponsavelDenuncia responsavelDenuncia : denuncia.getResponsavelDenuncias()) {
@@ -51,19 +56,24 @@ public class SecurityService {
     }
 
 
-    public boolean temPermissaoDeAcessoEscola(String email, Long escolaId) {
+    public boolean temPermissaoDeAcessoEscola(UsuarioAutenticado usuarioAutenticado, Long escolaId) {
         Escola escolaAlvo = escolaServiceReader.buscarEscolaPorIdSemExcecao(escolaId);
 
         if (escolaAlvo == null) {
             return false;
         }
 
-        Escola escola = escolaServiceReader.buscarEscolaPorEmailSemExcecao(email);
+        Escola escola = null;
+        OrgaoCompetente orgaoCompetente = null;
 
-        OrgaoCompetente orgaoCompetente = buscarOrgaoCompetentePorEmailSemExcecao(email);
+        if (usuarioAutenticado.lotacao() == UsuarioLotacaoEnum.REDE_ENSINO){
+            escola = escolaServiceReader.buscarEscolaPorId(usuarioAutenticado.entidadeId());
+        } else { // Orgao Competente
+            orgaoCompetente = orgaoCompetenteServiceReader.buscarPorId(usuarioAutenticado.entidadeId());
+        }
 
         if (escola != null) {
-            if (escola.getId() == escolaId) {
+            if (Objects.equals(escola.getId(), escolaId)) {
                 return true;
             }
         } else if (orgaoCompetente != null) {
@@ -75,8 +85,8 @@ public class SecurityService {
         return false;
     }
 
-    public boolean temPermissaoDeAcessoOrgaoCompetente(String email, Long orgaoCompetenteId) {
-        OrgaoCompetente orgaoCompetente = buscarOrgaoCompetentePorEmailSemExcecao(email);
+    public boolean temPermissaoDeAcessoOrgaoCompetente(UsuarioAutenticado usuarioAutenticado, Long orgaoCompetenteId) {
+        OrgaoCompetente orgaoCompetente = orgaoCompetenteServiceReader.buscarPorId(usuarioAutenticado.entidadeId());
 
         if (orgaoCompetente == null || !Objects.equals(orgaoCompetente.getId(), orgaoCompetenteId)) {
             return false;
@@ -85,18 +95,14 @@ public class SecurityService {
         return true;
     }
 
-    private OrgaoCompetente buscarOrgaoCompetentePorEmailSemExcecao(String email) {
-        return orgaoCompetenteServiceReader.buscarPorEmailSemExcessao(email);
-    }
-
-    public boolean podeAcessarEntidade(String email, Long entidadeId, UsuarioLotacaoEnum lotacao){
-        Usuario usuario = usuarioServiceReader.buscarUsuarioPorEmail(email);
-        if (lotacao == UsuarioLotacaoEnum.ESCOLA) {
+    public boolean podeAcessarEntidade(UsuarioAutenticado usuarioAutenticado, Long entidadeId){
+        Usuario usuario = usuarioServiceReader.buscarUsuarioPorEmail(usuarioAutenticado.email());
+        if (usuarioAutenticado.lotacao() == UsuarioLotacaoEnum.REDE_ENSINO) {
             Escola escola = escolaServiceReader.buscarEscolaPorId(entidadeId);
 
 
             for (UsuarioLotacao usuarioLotacao : usuario.getLotacoes()){
-                if (Objects.equals(usuarioLotacao.getEntidadeId(), escola.getId()) && usuarioLotacao.getLotacao() == UsuarioLotacaoEnum.ESCOLA){
+                if (Objects.equals(usuarioLotacao.getEntidadeId(), escola.getId()) && usuarioLotacao.getLotacao() == UsuarioLotacaoEnum.REDE_ENSINO){
                     return true;
                 }
             }

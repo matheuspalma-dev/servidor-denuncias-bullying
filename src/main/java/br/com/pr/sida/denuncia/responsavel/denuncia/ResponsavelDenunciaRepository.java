@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 interface ResponsavelDenunciaRepository extends JpaRepository<ResponsavelDenuncia, Long> {
     public List<ResponsavelDenuncia> findByOrgaoCompetenteResponsavelId(Long orgaoCompetenteId);
+    public List<ResponsavelDenuncia> findByEscolaResponsavelId(Long escolaResponsavelId);
 }

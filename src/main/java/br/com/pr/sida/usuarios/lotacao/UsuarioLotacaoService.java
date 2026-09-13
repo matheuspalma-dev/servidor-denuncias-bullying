@@ -27,7 +27,7 @@ public class UsuarioLotacaoService {
     private final UsuarioLotacaoServiceReader usuarioLotacaoServiceReader;
 
     public void adicionarLotacao(UsuarioLotacaoRequestDTO usuarioLotacaoRequestDTO){
-        boolean existeEntidade = usuarioLotacaoRequestDTO.usuarioLotacaoEnum() == UsuarioLotacaoEnum.ESCOLA? verificarSeEscolaExistePorId(usuarioLotacaoRequestDTO.entidadeId()) : verificarSeOrgaoCompetenteExistePorId(usuarioLotacaoRequestDTO.entidadeId());
+        boolean existeEntidade = usuarioLotacaoRequestDTO.usuarioLotacaoEnum() == UsuarioLotacaoEnum.REDE_ENSINO? verificarSeEscolaExistePorId(usuarioLotacaoRequestDTO.entidadeId()) : verificarSeOrgaoCompetenteExistePorId(usuarioLotacaoRequestDTO.entidadeId());
 
         if (!existeEntidade){
             throw new InformacoesIncorretasException("Entidade não encontrada");
@@ -58,7 +58,7 @@ public class UsuarioLotacaoService {
         List<UsuarioLotacaoResponseDTO> lotacoesResponseDTO = new ArrayList<>();
 
         for (UsuarioLotacao usuarioLotacao : lotacoes){
-            if (usuarioLotacao.getLotacao() == UsuarioLotacaoEnum.ESCOLA){
+            if (usuarioLotacao.getLotacao() == UsuarioLotacaoEnum.REDE_ENSINO){
                 Escola escola = escolaServiceReader.buscarEscolaPorId(usuarioLotacao.getEntidadeId());
                 lotacoesResponseDTO.add(usuarioLotacaoMapper.converterEntityEmDTO(usuarioLotacao, escola.getNome(), escola.getEmail()));
             } else if (usuarioLotacao.getLotacao() == UsuarioLotacaoEnum.ORGAO_COMPETENTE){

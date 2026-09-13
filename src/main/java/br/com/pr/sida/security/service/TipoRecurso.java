@@ -1,0 +1,8 @@
+package br.com.pr.sida.security.service;
+
+public enum TipoRecurso {
+    ACESSO_INFORMACOES_DENUNCIA,
+    ACESSO_INFORMACOES_ESCOLA,
+    ACESSO_INFORMACOES_ORGAO_COMPETENTE,
+    ACESSO_INFORMACOES_ENTIDADE
+}

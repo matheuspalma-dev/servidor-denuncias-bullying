@@ -1,5 +1,6 @@
 package br.com.pr.sida.security.jwt;
 
+import br.com.pr.sida.usuarios.lotacao.UsuarioLotacaoEnum;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -38,13 +39,25 @@ public class FiltroAutentificacaoJWT extends OncePerRequestFilter {
                     UsernamePasswordAuthenticationToken autentificacao = new UsernamePasswordAuthenticationToken(Long.valueOf(idDenuncia), null, List.of(permissao));
 
                     SecurityContextHolder.getContext().setAuthentication(autentificacao);
-                } else if ("acesso_usuario".equals(claims.get("type", String.class))){
+                } else if ("acesso_solicitar".equals(claims.get("type", String.class))){
                     String email = claims.getSubject();
                     String role = claims.get("role", String.class);
 
                     SimpleGrantedAuthority permissao = new SimpleGrantedAuthority("ROLE_" + role);
 
                     UsernamePasswordAuthenticationToken autentificacao = new UsernamePasswordAuthenticationToken(email, null, List.of(permissao));
+
+                    SecurityContextHolder.getContext().setAuthentication(autentificacao);
+                } else if ("acesso_usuario".equals(claims.get("type", String.class))){
+                    String email = claims.getSubject();
+                    String role = claims.get("role", String.class);
+                    Long entidadeId = claims.get("entidadeId", Long.class);
+
+                    UsuarioAutenticado usuarioAutenticado = new UsuarioAutenticado(email, entidadeId, UsuarioLotacaoEnum.valueOf(role));
+
+                    SimpleGrantedAuthority permissao = new SimpleGrantedAuthority("ROLE_" + role);
+
+                    UsernamePasswordAuthenticationToken autentificacao = new UsernamePasswordAuthenticationToken(usuarioAutenticado, null, List.of(permissao));
 
                     SecurityContextHolder.getContext().setAuthentication(autentificacao);
                 }

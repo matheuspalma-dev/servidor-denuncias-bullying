@@ -5,6 +5,7 @@ import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResumoResponseDTO;
 import br.com.pr.sida.security.jwt.TokenService;
 import br.com.pr.sida.security.service.RequerPermissao;
+import br.com.pr.sida.security.service.TipoRecurso;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +50,7 @@ public class AcessoDenunciaController {
 
     @GetMapping("/acessar/{denunciaId}")
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
-    @RequerPermissao
+    @RequerPermissao(tipoRecurso = TipoRecurso.ACESSO_INFORMACOES_DENUNCIA, id = "denunciaId")
     public ResponseEntity<DenunciaResponseDTO> acessarDenunciaResponsavel(@PathVariable Long denunciaId){
         DenunciaResponseDTO denuncia = acessoDenunciaService.acessoDenuncia(denunciaId);
         return ResponseEntity.ok().body(denuncia);
@@ -57,7 +58,7 @@ public class AcessoDenunciaController {
 
     @GetMapping("/escola/{escolaId}/denuncias")
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
-    @RequerPermissao
+    @RequerPermissao(tipoRecurso = TipoRecurso.ACESSO_INFORMACOES_ESCOLA, id = "escolaId")
     public ResponseEntity<List<DenunciaResumoResponseDTO>> acessarDenunciasEscola(@PathVariable Long escolaId){
         List<DenunciaResumoResponseDTO> denuncias = acessoDenunciaService.acessarDenunciasEscola(escolaId);
         return ResponseEntity.ok().body(denuncias);
@@ -65,7 +66,7 @@ public class AcessoDenunciaController {
 
     @GetMapping("/orgaoCompetente/{orgaoCompetenteId}/denuncias")
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
-    @RequerPermissao
+    @RequerPermissao(tipoRecurso = TipoRecurso.ACESSO_INFORMACOES_ORGAO_COMPETENTE, id = "orgaoCompetenteId")
     public ResponseEntity<List<DenunciaResumoResponseDTO>> acessarDenunciasOrgaoCompetente(@PathVariable Long orgaoCompetenteId){
         List<DenunciaResumoResponseDTO> denuncias = acessoDenunciaService.acessarDenunciasOrgaoCompetente(orgaoCompetenteId);
         return ResponseEntity.ok().body(denuncias);

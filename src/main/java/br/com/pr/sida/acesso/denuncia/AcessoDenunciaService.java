@@ -114,10 +114,10 @@ public class AcessoDenunciaService {
     }
 
     public List<DenunciaResumoResponseDTO> acessarDenunciasEscola(Long escolaId){
-//        List<ResponsavelDenuncia> responsavelDenunciaList = responsavelDenunciaServiceReader.buscarDenunciasPorEscolaId(escolaId);
-//        List<Denuncia> denunciaList = denunciaService.converterResponsavelDenunciaParaDenuncia(responsavelDenunciaList);
+        List<ResponsavelDenuncia> responsavelDenunciaList = responsavelDenunciaServiceReader.buscarDenunciasPorEscolaId(escolaId);
+        List<Denuncia> denunciaList = denunciaService.converterResponsavelDenunciaParaDenuncia(responsavelDenunciaList);
 
-        return null; // denunciaServiceReader.retornarDenunciasResumo(denunciaList);
+        return denunciaService.retornarDenunciasResumo(denunciaList);
     }
 
     public List<DenunciaResumoResponseDTO> acessarDenunciasOrgaoCompetente(Long orgaoCompetenteId){

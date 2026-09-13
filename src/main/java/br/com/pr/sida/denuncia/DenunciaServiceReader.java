@@ -20,10 +20,6 @@ public class DenunciaServiceReader {
                 .orElseThrow(() -> new DenunciaNaoEncontradaException("Denúncia não encontrada com o ID: " + id));
     }
 
-    public List<Denuncia> buscarDenunciasPorEscolaId(Long escolaId) {
-        return denunciaRepository.findAllById(Collections.singleton(escolaId));
-    }
-
     public List<DenunciaResumoResponseDTO> retornarDenunciasResumo(List<Denuncia> denunciaList) {
         return denunciaMapper.retornarResumoDenunciaDTOList(denunciaList);
     }

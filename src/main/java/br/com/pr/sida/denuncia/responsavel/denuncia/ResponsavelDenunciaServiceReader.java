@@ -14,4 +14,8 @@ public class ResponsavelDenunciaServiceReader {
     public List<ResponsavelDenuncia> buscarDenunciasPorOrgaoCompetenteId(Long id){
         return responsavelDenunciaRepository.findByOrgaoCompetenteResponsavelId(id);
     }
+
+    public List<ResponsavelDenuncia> buscarDenunciasPorEscolaId(Long id){
+        return responsavelDenunciaRepository.findByEscolaResponsavelId(id);
+    }
 }

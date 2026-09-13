@@ -66,7 +66,6 @@ public class UsuarioController {
 
     @GetMapping("/solicitar-acesso/{entidadeId}/{entidadeTipo}")
     @PreAuthorize("hasRole('SOLICITAR_PERMISSAO_ACESSO')")
-    @RequerPermissao
     public ResponseEntity solicitarAcessoAoSistema(
             @PathVariable Long entidadeId,
             @PathVariable UsuarioLotacaoEnum entidadeTipo,
@@ -75,7 +74,7 @@ public class UsuarioController {
     {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String token;
-        if (entidadeTipo == UsuarioLotacaoEnum.ESCOLA) {
+        if (entidadeTipo == UsuarioLotacaoEnum.REDE_ENSINO) {
             token = tokenService.gerarTokenDeAcessoUsuario(email, ROLE.REDE_ENSINO, entidadeId);
         } else {
             token = tokenService.gerarTokenDeAcessoUsuario(email, ROLE.ORGAO_COMPETENTE, entidadeId);
