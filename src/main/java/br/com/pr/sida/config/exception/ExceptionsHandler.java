@@ -1,5 +1,7 @@
 package br.com.pr.sida.config.exception;
 
+import br.com.pr.sida.municipio.exception.MunicipioJaCadastradoException;
+import br.com.pr.sida.municipio.exception.MunicipioNaoFoiCadastradoException;
 import br.com.pr.sida.orgao.competente.exception.OrgaoCompetenteNaoEncontradoException;
 import br.com.pr.sida.acesso.denuncia.exception.ErroInternoException;
 import br.com.pr.sida.denuncia.exception.DenunciaNaoEncontradaException;
@@ -103,6 +105,32 @@ public class ExceptionsHandler {
         );
 
         problemDetail.setTitle("Usuario não existe");
+        problemDetail.setProperty("timestamp", Instant.now());
+
+        return problemDetail;
+    }
+
+    @ExceptionHandler(MunicipioJaCadastradoException.class)
+    public ProblemDetail handleMunicipioJaCadastradoException(MunicipioJaCadastradoException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT,
+                ex.getMessage()
+        );
+
+        problemDetail.setTitle("Municipio já cadastrado");
+        problemDetail.setProperty("timestamp", Instant.now());
+
+        return problemDetail;
+    }
+
+    @ExceptionHandler(MunicipioNaoFoiCadastradoException.class)
+    public ProblemDetail handleMunicipioNaoFoiCadastradoException(MunicipioNaoFoiCadastradoException ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage()
+        );
+
+        problemDetail.setTitle("Municipio não foi cadastrado");
         problemDetail.setProperty("timestamp", Instant.now());
 
         return problemDetail;
