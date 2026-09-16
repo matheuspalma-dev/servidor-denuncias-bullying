@@ -75,6 +75,8 @@ public class RestControllerConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+        // return new Argon2PasswordEncoder(16, 32, 1, 65536, 3);
+        // temporario, em produção usar argon2, mas para testes e desenvolvimento usar bcrypt
         return new BCryptPasswordEncoder();
     }
 

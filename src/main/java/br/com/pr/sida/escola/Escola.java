@@ -1,5 +1,6 @@
 package br.com.pr.sida.escola;
 
+import br.com.pr.sida.municipio.Municipio;
 import br.com.pr.sida.orgao.competente.OrgaoCompetente;
 import br.com.pr.sida.denuncia.Denuncia;
 import jakarta.persistence.*;
@@ -28,6 +29,9 @@ public class Escola {
     @ManyToOne
     @JoinColumn(name = "orgao_competente_id", nullable = false)
     private OrgaoCompetente orgaoCompetente;
+    @ManyToOne
+    @JoinColumn(name = "municipio_id", nullable = false, referencedColumnName = "codigo_ibge")
+    private Municipio municipio;
     @OneToMany(mappedBy = "escola")
     private List<Denuncia> denuncias;
 }

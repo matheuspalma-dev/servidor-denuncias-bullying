@@ -2,6 +2,7 @@ package br.com.pr.sida.orgao.competente;
 
 import br.com.pr.sida.escola.Escola;
 import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenuncia;
+import br.com.pr.sida.municipio.Municipio;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +26,9 @@ public class OrgaoCompetente {
     private String numero;
     @Column(name = "email", nullable = false)
     private String email;
+    @ManyToOne
+    @JoinColumn(name = "municipio_id", nullable = false, referencedColumnName = "codigo_ibge")
+    private Municipio municipio;
     @OneToMany(mappedBy = "orgaoCompetenteResponsavel")
     private List<ResponsavelDenuncia> denunciasResponsaveis;
     @OneToMany(mappedBy = "orgaoCompetente")

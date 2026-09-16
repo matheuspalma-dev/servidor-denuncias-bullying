@@ -15,6 +15,9 @@ public record EscolaRequestResgisterDTO(
         RedeEnsino redeEnsino,
         @NotNull
         @Positive
-        Long orgaoCompetenteId
+        Long orgaoCompetenteId,
+        @Positive
+        @NotNull
+        Long codigoIbgeMunicipio
 ) {
 }

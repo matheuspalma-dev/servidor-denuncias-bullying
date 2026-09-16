@@ -1,11 +1,10 @@
 package br.com.pr.sida.escola;
 
-import br.com.pr.sida.orgao.competente.OrgaoCompetenteServiceReader;
 import br.com.pr.sida.escola.dto.request.EscolaRequestResgisterDTO;
 import br.com.pr.sida.escola.dto.response.EscolaResponseDTO;
-import br.com.pr.sida.security.tirar.xss.TirarXssService;
+import br.com.pr.sida.municipio.Municipio;
+import br.com.pr.sida.municipio.MunicipioServiceReader;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,43 +14,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EscolaService {
     private final EscolaRepository escolaRepository;
-    private final OrgaoCompetenteServiceReader orgaoCompetenteServiceReader;
-    private final TirarXssService tirarXssService;
+    private final EscolaMapper escolaMapper;
+    private final MunicipioServiceReader municipioServiceReader;
 
     public List<EscolaResponseDTO> retornarTodasEscolas() {
         List<Escola> escolas = escolaRepository.findAll();
         List<EscolaResponseDTO> escolaResponseDTO = new ArrayList<>();
 
         for (Escola escola : escolas) {
-            escolaResponseDTO.add(converterEntityEmDTO(escola));
+            escolaResponseDTO.add(escolaMapper.converterEntityEmDTO(escola));
         }
         return escolaResponseDTO;
     }
 
-    private EscolaResponseDTO converterEntityEmDTO(Escola escola){
-        EscolaResponseDTO escolaResponseDTO = new EscolaResponseDTO();
-        escolaResponseDTO.setId(escola.getId());
-        escolaResponseDTO.setNome(escola.getNome());
-        escolaResponseDTO.setRedeEnsino(escola.getRedeEnsino());
-        return escolaResponseDTO;
-    }
-
-    public void adicionarEscola(EscolaRequestResgisterDTO escolaRequestResgisterDTO) {
-        Escola escola = criarEscola(escolaRequestResgisterDTO);
+    public void adicionarEscola(EscolaRequestResgisterDTO escolaRequestResgisterDTO){
+        Municipio municipio = municipioServiceReader.buscarPorCodigoIbge(escolaRequestResgisterDTO.codigoIbgeMunicipio());
+        Escola escola = escolaMapper.converterDTOEmEntity(escolaRequestResgisterDTO, municipio);
         escolaRepository.save(escola);
-    }
-
-    private Escola criarEscola(EscolaRequestResgisterDTO escolaRequestResgisterDTO) {
-        Escola escola = new Escola();
-        escola.setNome(tirarXss(escolaRequestResgisterDTO.nome()));
-        escola.setEmail(escolaRequestResgisterDTO.email());
-        escola.setAtiva(true);
-        escola.setRedeEnsino(escolaRequestResgisterDTO.redeEnsino());
-        escola.setOrgaoCompetente(orgaoCompetenteServiceReader.buscarPorId(escolaRequestResgisterDTO.orgaoCompetenteId()));
-        return escola;
-    }
-
-    private String tirarXss(String entrada) {
-        return tirarXssService.tirarXss(entrada);
     }
 }

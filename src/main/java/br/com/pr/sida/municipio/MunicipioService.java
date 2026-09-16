@@ -1,6 +1,7 @@
 package br.com.pr.sida.municipio;
 
 import br.com.pr.sida.municipio.dto.request.MunicipioRequestDTO;
+import br.com.pr.sida.municipio.dto.response.MunicipioResponseDTO;
 import br.com.pr.sida.municipio.exception.MunicipioJaCadastradoException;
 import br.com.pr.sida.municipio.exception.MunicipioNaoFoiCadastradoException;
 import lombok.RequiredArgsConstructor;
@@ -28,5 +29,9 @@ public class MunicipioService {
 
         Municipio municipio = municipioMapper.converterDTOParaEntity(municipioRequestDTO);
         municipioRepository.save(municipio);
+    }
+
+    public MunicipioResponseDTO devolverMunicipioResponseDTO(Municipio municipio){
+        return municipioMapper.converterEntityEmDTO(municipio);
     }
 }
