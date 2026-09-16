@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,7 +51,9 @@ public class RestControllerConfig {
                                 "/orgao-competente/registrar",
                                 "/usuarios/cadastrar",
                                 "/usuarios/login",
-                                "/usuarios/lotacao/cadastrar"
+                                "/usuarios/lotacao/cadastrar",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
                                 ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -72,7 +75,7 @@ public class RestControllerConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new Argon2PasswordEncoder(16, 32, 1, 65536, 3);
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
