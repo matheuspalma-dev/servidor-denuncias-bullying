@@ -1,5 +1,7 @@
 package br.com.pr.sida.denuncia;
 
+import br.com.pr.sida.denuncia.triagem.TriagemService;
+import br.com.pr.sida.denuncia.triagem.dto.response.TriagemResponseDTO;
 import br.com.pr.sida.orgao.competente.OrgaoCompetente;
 import br.com.pr.sida.orgao.competente.OrgaoCompetenteServiceReader;
 import br.com.pr.sida.orgao.competente.TipoOrgaoCompetente;
@@ -51,13 +53,15 @@ public class DenunciaService {
     private final SituacaoDenunciaService situacaoDenunciaService;
     private final MensagemDenunciaService mensagemDenunciaService;
     private final OndeOcorreuDenunciaService ondeOcorreuDenunciaService;
+    private final TriagemService triagem;
     private final Random random = new Random();
 
     public Denuncia salvarDenuncia(
             DenunciaRequestDTO denunciaRequestDTO
     )
     {
-        Prioridade prioridadeDenuncia = definirPrioridadeDenuncia(denunciaRequestDTO);
+        TriagemResponseDTO triagemDenuncia = triagem.triar(denunciaRequestDTO);
+        Prioridade prioridadeDenuncia = triagemDenuncia.getPrioridade();
 
         Denuncia denuncia = denunciaMapper.converterDTOEmDenuncia(
                 denunciaRequestDTO,
@@ -65,9 +69,7 @@ public class DenunciaService {
                 localizarEscola(denunciaRequestDTO.idEscola()),
                 prioridadeDenuncia);
 
-        boolean houveNegligencia = houveNegligencia(denuncia);
-        boolean escolaVaiTerAcesso = escolaVaiTerAcesso(denuncia, houveNegligencia);
-        denuncia.setEscolaVaiTerAcesso(escolaVaiTerAcesso);
+        denuncia.setEscolaVaiTerAcesso(triagemDenuncia.isEscolaVaiTerAcesso());
 
         denunciaRepository.save(denuncia);
 
@@ -99,34 +101,17 @@ public class DenunciaService {
 
         if (prioridadeDenuncia == Prioridade.URGENTE){
             orgaoCompetenteList.add(orgaoCompetente);
+            OrgaoCompetente orgaoCompetenteConselhoTutelar = definirOrgaoCompetente(denuncia.getEscola().getMunicipio().getCodigoIbge(),TipoOrgaoCompetente.CONSELHO_TUTELAR);
+            OrgaoCompetente orgaoCompetentePoliciaCivil = definirOrgaoCompetente(denuncia.getEscola().getMunicipio().getCodigoIbge(),TipoOrgaoCompetente.CONSELHO_TUTELAR);
+            orgaoCompetenteList.add(orgaoCompetenteConselhoTutelar);
+            orgaoCompetenteList.add(orgaoCompetentePoliciaCivil);
         } else if (prioridadeDenuncia == Prioridade.ALTA){
             orgaoCompetenteList.add(orgaoCompetente);
-            OrgaoCompetente orgaoCompetenteConselhoTutelar = definirOrgaoCompetente(TipoOrgaoCompetente.CONSELHO_TUTELAR);
+            OrgaoCompetente orgaoCompetenteConselhoTutelar = definirOrgaoCompetente(denuncia.getEscola().getMunicipio().getCodigoIbge(),TipoOrgaoCompetente.CONSELHO_TUTELAR);
             orgaoCompetenteList.add(orgaoCompetenteConselhoTutelar);
         }
 
         responsavelDenunciaService.adicionarResponsavelDenuncia(denuncia, denuncia.getEscola(), orgaoCompetenteList);
-    }
-
-    private boolean escolaVaiTerAcesso(Denuncia denuncia, boolean houveNegligencia){
-        if (houveNegligencia){
-            if (denuncia.getRelatadoParaOResponsavel() == RelatadoParaOResponsavel.SIM_EQUIPE_ESCOLA){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean houveNegligencia(Denuncia denuncia){
-        if (denuncia.getResultadoRelato() == null){
-            return false;
-        }
-
-        if (denuncia.getResultadoRelato() == ResultadoRelato.NINGUEM_FEZ_NADA || denuncia.getResultadoRelato() == ResultadoRelato.DISSERAM_QUE_NAO_PODIAM_FAZER_NADA){
-            return true;
-        }
-
-        return false;
     }
 
     private void adicionarSituacaoDenunciada(Denuncia denuncia, List<SituacaoDenunciada> situacaoDenunciadas){
@@ -149,6 +134,10 @@ public class DenunciaService {
 
     private OrgaoCompetente definirOrgaoCompetente(TipoOrgaoCompetente tipoOrgaoCompetente){
         return orgaoCompetenteServiceReader.buscarPorTipoDeUnidade(tipoOrgaoCompetente);
+    }
+
+    private OrgaoCompetente definirOrgaoCompetente(Long municipioId, TipoOrgaoCompetente tipoOrgaoCompetente){
+        return orgaoCompetenteServiceReader.buscarPorMunicipioETipoOrgaoCompetente(municipioId, tipoOrgaoCompetente);
     }
 
     private Long gerarId() {
