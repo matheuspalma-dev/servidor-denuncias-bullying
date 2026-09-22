@@ -1,10 +1,7 @@
 package br.com.pr.sida.escola.dto.request;
 
 import br.com.pr.sida.escola.RedeEnsino;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 
 public record EscolaRequestResgisterDTO(
         @NotBlank(message = "O nome é obrigatório")
@@ -19,6 +16,7 @@ public record EscolaRequestResgisterDTO(
         Long orgaoCompetenteId,
         @Positive(message = "O código IBGE do município deve ser um número positivo")
         @NotNull(message = "O código IBGE do município é obrigatório")
+        @Digits(integer = 7, fraction = 0, message = "O código IBGE do município deve ter no máximo 7 dígitos")
         Long codigoIbgeMunicipio
 ) {
 }

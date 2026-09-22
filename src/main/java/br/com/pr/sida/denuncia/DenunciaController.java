@@ -19,13 +19,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/denuncias")
 @RequiredArgsConstructor
-public class DenunciaController {
+public class DenunciaController implements DenunciaApi{
 
     private final DenunciaService denunciaService;
     private final MensagemDenunciaService mensagemDenunciaService;
     private final AcessoDenunciaService acessoDenunciaService;
 
 
+    @Override
     @PostMapping("/criar")
     public ResponseEntity<AcessoDenunciaResponseDTO> criarDenuncia(
             @RequestBody @Valid DenunciaRequestDTO denunciaRequestDTO
@@ -36,6 +37,7 @@ public class DenunciaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(acessoDenunciaResponseDTO);
     }
 
+    @Override
     @PostMapping("/{denunciaId}/mensagem/criar/responsavel")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
@@ -47,6 +49,7 @@ public class DenunciaController {
         mensagemDenunciaService.salvarMensagemResponsavel(denunciaId, mensagemDenunciaRequestDTO);
     }
 
+    @Override
     @PostMapping("/mensagem/criar/denunciante")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('DENUNCIANTE')")

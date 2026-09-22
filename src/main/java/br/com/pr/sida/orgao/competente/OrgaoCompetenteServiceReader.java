@@ -24,7 +24,7 @@ public class OrgaoCompetenteServiceReader {
     }
 
     public OrgaoCompetente buscarPorMunicipioETipoOrgaoCompetente(Long municipioId, TipoOrgaoCompetente tipoOrgaoCompetente){
-        return orgaoCompetenteRepository.findByMunicipioMunicipioCodigoIbgeAndTipoOrgaoCompetente(municipioId, tipoOrgaoCompetente)
+        return orgaoCompetenteRepository.findByMunicipioCodigoIbgeAndTipoOrgaoCompetente(municipioId, tipoOrgaoCompetente)
                 .orElseThrow(() -> new OrgaoCompetenteNaoEncontradoException("Orgão Competente não encontrado para o município e tipo de órgão competente fornecidos"));
     }
 }

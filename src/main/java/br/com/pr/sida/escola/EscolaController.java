@@ -12,16 +12,18 @@ import java.util.List;
 @RestController
 @RequestMapping("/escolas")
 @RequiredArgsConstructor
-public class EscolaController {
+public class EscolaController implements EscolaApi{
 
     private final EscolaService escolaService;
 
+    @Override
     @GetMapping("/todas")
     public ResponseEntity<List<EscolaResponseDTO>> retornarTodasEscolas() {
         List<EscolaResponseDTO> escolas = escolaService.retornarTodasEscolas();
         return ResponseEntity.ok(escolas);
     }
 
+    @Override
     @PostMapping("/adicionar")
     public void adicionarEscola(@RequestBody @Valid EscolaRequestResgisterDTO escolaRequestResgisterDTO) {
         escolaService.adicionarEscola(escolaRequestResgisterDTO);

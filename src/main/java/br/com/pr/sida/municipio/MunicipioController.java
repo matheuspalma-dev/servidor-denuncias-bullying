@@ -9,10 +9,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/municipios")
 @RequiredArgsConstructor
-public class MunicipioController {
+public class MunicipioController implements MunicipioApi{
 
     private final MunicipioService municipioService;
 
+    @Override
     @PostMapping("/cadastrar")
     @ResponseStatus(HttpStatus.CREATED)
     public void cadastrarMunicipio(@RequestBody @Valid MunicipioRequestDTO municipioRequestDTO) {

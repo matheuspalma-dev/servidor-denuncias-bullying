@@ -22,23 +22,26 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/usuarios")
 @RequiredArgsConstructor
-public class UsuarioController {
+public class UsuarioController implements UsuarioApi{
 
     private final UsuarioService usuarioService;
     private final TokenService tokenService;
 
+    @Override
     @PostMapping("/cadastrar")
     @ResponseStatus(HttpStatus.CREATED)
     public void cadastrarUsuario(@RequestBody @Valid UsuarioResgisterRequestDTO usuarioResgisterRequestDTO){
         usuarioService.cadastrarUsuario(usuarioResgisterRequestDTO);
     }
 
+    @Override
     @PostMapping("/lotacao/cadastrar")
     @ResponseStatus(HttpStatus.CREATED)
     public void adicionarLotacao(@RequestBody @Valid UsuarioLotacaoRequestDTO usuarioLotacaoRequestDTO){
         usuarioService.adicionarLotacao(usuarioLotacaoRequestDTO);
     }
 
+    @Override
     @PostMapping("/login")
     public ResponseEntity<UsuarioLoginResponseDTO> login(
             @RequestBody @Valid UsuarioLoginRequestDTO usuarioLoginRequestDTO,
@@ -64,6 +67,7 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioLoginResponseDTO);
     }
 
+    @Override
     @GetMapping("/solicitar-acesso/{entidadeId}/{entidadeTipo}")
     @PreAuthorize("hasRole('SOLICITAR_PERMISSAO_ACESSO')")
     public ResponseEntity solicitarAcessoAoSistema(

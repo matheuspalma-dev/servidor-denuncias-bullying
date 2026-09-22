@@ -3,22 +3,22 @@ package br.com.pr.sida.status;
 import br.com.pr.sida.security.service.RequerPermissao;
 import br.com.pr.sida.security.service.TipoRecurso;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/status-denuncia")
 @RequiredArgsConstructor
-public class StatusDenunciaController {
+public class StatusDenunciaController implements StatusDenunciaApi{
 
     private final StatusDenunciaService statusDenunciaService;
 
+    @Override
     @PostMapping("/atualizar-status/{denunciaId}/{statusDenunciaEnum}")
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
+    @ResponseStatus(HttpStatus.CREATED)
     @RequerPermissao(tipoRecurso = TipoRecurso.ACESSO_INFORMACOES_DENUNCIA, id = "denunciaId")
     public void atualizarStatusDenuncia(@PathVariable Long denunciaId,@PathVariable StatusDenunciaEnum statusDenunciaEnum) {
         statusDenunciaService.atualizarStatusDenuncia(denunciaId, statusDenunciaEnum);

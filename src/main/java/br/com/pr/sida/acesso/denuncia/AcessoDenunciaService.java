@@ -73,7 +73,7 @@ public class AcessoDenunciaService {
             byte[] hashBytes = mac.doFinal(codigoAcesso.trim().getBytes(StandardCharsets.UTF_8));
             return Hex.encode(hashBytes).toString();
         } catch (Exception e){
-            throw new ErroInternoException("Erro ao gerar código de acesso");
+            throw new ErroInternoException("Erro ao gerar hash do código de acesso");
         }
     }
 

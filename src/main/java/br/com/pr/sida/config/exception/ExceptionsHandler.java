@@ -20,19 +20,6 @@ import java.time.Instant;
 @RestControllerAdvice
 public class ExceptionsHandler {
 
-    @ExceptionHandler(ErroInternoException.class)
-    public ProblemDetail handleErroInternoException(ErroInternoException ex){
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "Ocorreu um erro interno inesperado no sistema. Tente novamente mais tarde."
-        );
-
-        problemDetail.setTitle("Erro Interno");
-        problemDetail.setProperty("timestamp", Instant.now());
-
-        return problemDetail;
-    }
-
     @ExceptionHandler(DenunciaNaoEncontradaException.class)
     public ProblemDetail handleDenunciaNaoEncontradaException(DenunciaNaoEncontradaException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
@@ -88,7 +75,7 @@ public class ExceptionsHandler {
     @ExceptionHandler(NaoTemPermissaoException.class)
     public ProblemDetail handleNaoTemPermissaoException(NaoTemPermissaoException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                HttpStatus.UNAUTHORIZED,
+                HttpStatus.FORBIDDEN,
                 ex.getMessage()
         );
 
@@ -140,11 +127,24 @@ public class ExceptionsHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleArgumentosInvalidosException(MethodArgumentNotValidException ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                HttpStatus.NOT_FOUND,
+                HttpStatus.BAD_REQUEST,
                 ex.getMessage()
         );
 
         problemDetail.setTitle("Informações inválidas");
+        problemDetail.setProperty("timestamp", Instant.now());
+
+        return problemDetail;
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ProblemDetail handleErrointernoException(Exception ex) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Erro interno do servidor. Tente novamente mais tarde."
+        );
+
+        problemDetail.setTitle("Erro interno do servidor");
         problemDetail.setProperty("timestamp", Instant.now());
 
         return problemDetail;

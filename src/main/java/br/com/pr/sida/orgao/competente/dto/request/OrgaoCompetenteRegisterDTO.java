@@ -14,7 +14,8 @@ public record OrgaoCompetenteRegisterDTO(
         @Email(message = "O e-mail do órgão competente deve ser válido")
         String email,
         @Positive(message = "O código IBGE do município deve ser um número positivo")
-        @Size(min = 7, max = 7, message = "O código IBGE do município deve ter exatamente 7 dígitos")
+        @Min(value = 7, message = "O código IBGE do município deve ter exatamente 7 dígitos")
+        @Max(value = 7, message = "O código IBGE do município deve ter exatamente 7 dígitos")
         Long codigoIbgeMunicipio
 ) {
 }

@@ -21,11 +21,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/acesso/denuncia")
 @RequiredArgsConstructor
-public class AcessoDenunciaController {
+public class AcessoDenunciaController implements AcessoDenunciaApi{
 
     private final AcessoDenunciaService acessoDenunciaService;
     private final TokenService tokenService;
 
+    @Override
     @PostMapping("/acessar")
     public ResponseEntity<DenunciaResponseDTO> acessarDenuncia(
             @RequestBody @Valid AcessoDenunciaRequestDTO acessoDenunciaRequestDTO,
@@ -48,6 +49,7 @@ public class AcessoDenunciaController {
         return ResponseEntity.ok().body(denuncia);
     }
 
+    @Override
     @GetMapping("/acessar/{denunciaId}")
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
     @RequerPermissao(tipoRecurso = TipoRecurso.ACESSO_INFORMACOES_DENUNCIA, id = "denunciaId")
@@ -56,6 +58,7 @@ public class AcessoDenunciaController {
         return ResponseEntity.ok().body(denuncia);
     }
 
+    @Override
     @GetMapping("/escola/{escolaId}/denuncias")
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
     @RequerPermissao(tipoRecurso = TipoRecurso.ACESSO_INFORMACOES_ESCOLA, id = "escolaId")
@@ -64,6 +67,7 @@ public class AcessoDenunciaController {
         return ResponseEntity.ok().body(denuncias);
     }
 
+    @Override
     @GetMapping("/orgaoCompetente/{orgaoCompetenteId}/denuncias")
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
     @RequerPermissao(tipoRecurso = TipoRecurso.ACESSO_INFORMACOES_ORGAO_COMPETENTE, id = "orgaoCompetenteId")
