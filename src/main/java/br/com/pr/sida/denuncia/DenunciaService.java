@@ -152,18 +152,6 @@ public class DenunciaService {
         return escolaServiceReader.buscarEscolaPorId(idEscola);
     }
 
-    private Prioridade definirPrioridadeDenuncia(DenunciaRequestDTO denuncia){
-        if (denuncia.estaEmPerigo()){
-            return Prioridade.URGENTE;
-        } else if (!denuncia.senteSeguroNaEscola() && (denuncia.frequenciaOcorre() == FrequenciaOcorre.FREQUENTEMENTE || denuncia.frequenciaOcorre() == FrequenciaOcorre.TODOS_OS_DIAS)) {
-            return Prioridade.URGENTE;
-        } else if (denuncia.frequenciaOcorre() == FrequenciaOcorre.FREQUENTEMENTE) {
-            return Prioridade.ALTA;
-        } else {
-            return Prioridade.NORMAL;
-        }
-    }
-
     public DenunciaResponseDTO retornarDenunciaResponseDTO(Denuncia denuncia) {
         List<ComoTeAfetou> comoTeAfetouList = comoAfetouService.retornarComoAfetou(denuncia.getComoTeAfetou());
         List<QuemPratica> quemPraticaList = praticaAcaoService.retornarQuemPratica(denuncia.getPraticantesAcao());

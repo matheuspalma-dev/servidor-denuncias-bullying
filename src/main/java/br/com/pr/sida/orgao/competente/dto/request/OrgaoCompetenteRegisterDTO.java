@@ -1,22 +1,20 @@
 package br.com.pr.sida.orgao.competente.dto.request;
 
 import br.com.pr.sida.orgao.competente.TipoOrgaoCompetente;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import org.hibernate.validator.constraints.Length;
+import jakarta.validation.constraints.*;
 
 public record OrgaoCompetenteRegisterDTO(
-        @NotBlank
+        @NotBlank(message = "O nome é obrigatório")
         String nome,
-        @NotNull
+        @NotNull(message = "O tipo do órgão competente é obrigatório")
         TipoOrgaoCompetente tipoOrgaoCompetente,
-        @NotBlank
+        @NotBlank(message = "O número do órgão competente é obrigatório")
         String numero,
-        @NotBlank
+        @NotBlank(message = "O e-mail do órgão competente é obrigatório")
+        @Email(message = "O e-mail do órgão competente deve ser válido")
         String email,
-        @Positive
-        @Length(min = 7, max = 7)
+        @Positive(message = "O código IBGE do município deve ser um número positivo")
+        @Size(min = 7, max = 7, message = "O código IBGE do município deve ter exatamente 7 dígitos")
         Long codigoIbgeMunicipio
 ) {
 }

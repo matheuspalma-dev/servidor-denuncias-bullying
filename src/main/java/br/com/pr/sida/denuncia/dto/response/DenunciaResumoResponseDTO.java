@@ -10,4 +10,5 @@ public class DenunciaResumoResponseDTO {
     private Long denunciaId;
     private Prioridade prioridadeDenuncia;
     private String nomeEscola;
+    private String nomeMunicipio;
 }

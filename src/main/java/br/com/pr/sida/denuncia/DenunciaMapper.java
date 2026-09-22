@@ -107,6 +107,7 @@ public class DenunciaMapper {
             denunciaResumoResponseDTO.setDenunciaId(denuncia.getId());
             denunciaResumoResponseDTO.setNomeEscola(denuncia.getEscola().getNome());
             denunciaResumoResponseDTO.setPrioridadeDenuncia(denuncia.getPrioridade());
+            denunciaResumoResponseDTO.setNomeMunicipio(denuncia.getEscola().getMunicipio().getNome());
             denunciaResumoResponseDTOList.add(denunciaResumoResponseDTO);
         }
         return denunciaResumoResponseDTOList;

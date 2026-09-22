@@ -8,17 +8,19 @@ import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
 
 public record UsuarioLotacaoRequestDTO(
-        @Positive
+        @NotNull(message = "O id do usuário é obrigatório.")
+        @Positive(message = "O id do usuário deve ser um número positivo valido.")
         Long usuarioId,
-        @NotNull
+        @NotNull(message = "O tipo de lotação do usuário é obrigatório.")
         UsuarioLotacaoEnum usuarioLotacaoEnum,
-        @Positive
+        @NotNull(message = "O id da entidade é obrigatório.")
+        @Positive(message = "O id da entidade deve ser um número positivo valido.")
         Long entidadeId,
-        @NotBlank
+        @NotBlank(message = "O cargo do usuário é obrigatório.")
         String cargo,
-        @NotNull
+        @NotNull(message = "A data de início da lotação do usuário é obrigatória.")
         LocalDate dataInicio,
-        @NotNull
+        @NotNull(message = "A data de fim da lotação do usuário é obrigatória.")
         LocalDate dataFim
 ) {
 }

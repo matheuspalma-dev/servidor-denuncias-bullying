@@ -1,14 +1,14 @@
 package br.com.pr.sida.acesso.denuncia.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
-import org.hibernate.validator.constraints.Length;
+import jakarta.validation.constraints.Size;
 
 public record AcessoDenunciaRequestDTO(
-        @NotBlank
-        @Length(min = 13, max = 13)
+        @NotBlank(message = "O código de acesso é obrigatório.")
+        @Size(min = 13, max = 13, message = "O código de acesso deve conter exatamente 13 caracteres.")
         String codigoAcesso,
-        @NotBlank
-        @Length(min = 8, max = 8)
+        @NotBlank(message = "A senha é obrigatória.")
+        @Size(min = 8, max = 8, message = "A senha deve conter exatamente 8 caracteres.")
         String senhaAcesso
 ) {
 }
