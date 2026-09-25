@@ -53,7 +53,9 @@ public class RestControllerConfig {
                                 "/usuarios/login",
                                 "/usuarios/lotacao/cadastrar",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                "/municipios/cadastrar",
+                                "/usuarios/logout"
                                 ).permitAll()
                         .anyRequest().authenticated()
                 )

@@ -22,6 +22,7 @@ public class ExceptionsHandler {
 
     @ExceptionHandler(DenunciaNaoEncontradaException.class)
     public ProblemDetail handleDenunciaNaoEncontradaException(DenunciaNaoEncontradaException ex) {
+
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.NOT_FOUND,
                 ex.getMessage()
@@ -126,9 +127,14 @@ public class ExceptionsHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleArgumentosInvalidosException(MethodArgumentNotValidException ex) {
+        String erro = ex.getBindingResult().getFieldErrors().stream()
+                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+                .findFirst()
+                .orElse("Argumentos inválidos");
+
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST,
-                ex.getMessage()
+                erro
         );
 
         problemDetail.setTitle("Informações inválidas");

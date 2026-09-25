@@ -2,6 +2,7 @@ package br.com.pr.sida.orgao.competente.dto.request;
 
 import br.com.pr.sida.orgao.competente.TipoOrgaoCompetente;
 import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.Range;
 
 public record OrgaoCompetenteRegisterDTO(
         @NotBlank(message = "O nome é obrigatório")
@@ -14,8 +15,7 @@ public record OrgaoCompetenteRegisterDTO(
         @Email(message = "O e-mail do órgão competente deve ser válido")
         String email,
         @Positive(message = "O código IBGE do município deve ser um número positivo")
-        @Min(value = 7, message = "O código IBGE do município deve ter exatamente 7 dígitos")
-        @Max(value = 7, message = "O código IBGE do município deve ter exatamente 7 dígitos")
+        @Range(min = 1000000, max = 9999999, message = "O código do município deve ter exatamente 7 digitos.")
         Long codigoIbgeMunicipio
 ) {
 }

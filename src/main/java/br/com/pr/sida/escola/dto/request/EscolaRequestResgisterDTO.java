@@ -2,6 +2,7 @@ package br.com.pr.sida.escola.dto.request;
 
 import br.com.pr.sida.escola.RedeEnsino;
 import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.Range;
 
 public record EscolaRequestResgisterDTO(
         @NotBlank(message = "O nome é obrigatório")
@@ -16,7 +17,7 @@ public record EscolaRequestResgisterDTO(
         Long orgaoCompetenteId,
         @Positive(message = "O código IBGE do município deve ser um número positivo")
         @NotNull(message = "O código IBGE do município é obrigatório")
-        @Digits(integer = 7, fraction = 0, message = "O código IBGE do município deve ter no máximo 7 dígitos")
+        @Range(min = 1000000, max = 9999999, message = "O código do município deve ter exatamente 7 digitos.")
         Long codigoIbgeMunicipio
 ) {
 }

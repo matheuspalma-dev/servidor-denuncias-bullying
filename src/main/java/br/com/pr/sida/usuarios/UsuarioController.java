@@ -96,4 +96,17 @@ public class UsuarioController implements UsuarioApi{
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/logout")
+    public void logout(HttpServletResponse response) {
+        ResponseCookie cookie = ResponseCookie.from("tokenAcesso", "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(0) // Expira imediatamente
+                .sameSite("Strict")
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+    }
 }
