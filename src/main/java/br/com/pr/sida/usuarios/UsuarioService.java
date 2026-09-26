@@ -7,8 +7,8 @@ import br.com.pr.sida.usuarios.dto.response.UsuarioLoginResponseDTO;
 import br.com.pr.sida.usuarios.lotacao.UsuarioLotacaoService;
 import br.com.pr.sida.usuarios.lotacao.dto.request.UsuarioLotacaoRequestDTO;
 import br.com.pr.sida.usuarios.lotacao.dto.response.UsuarioLotacaoResponseDTO;
+import br.com.pr.sida.shared.Criptografia;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class UsuarioService {
     private final UsuarioLotacaoService usuarioLotacaoService;
     private final UsuarioMapper usuarioMapper;
     private final UsuarioServiceReader usuarioServiceReader;
-    private final PasswordEncoder encoder;
+    private final Criptografia criptografia;
 
     public void cadastrarUsuario(UsuarioResgisterRequestDTO usuarioResgisterRequestDTO){
         Usuario usuario = usuarioMapper.converterDTOEmEntity(usuarioResgisterRequestDTO);
@@ -35,7 +35,7 @@ public class UsuarioService {
     public UsuarioLoginResponseDTO login(UsuarioLoginRequestDTO usuarioLoginRequestDTO) {
         Usuario usuario = usuarioServiceReader.buscarUsuarioPorEmail(usuarioLoginRequestDTO.email());
 
-        if (!encoder.matches(usuarioLoginRequestDTO.senha(), usuario.getSenha())) {
+        if (!criptografia.validarSenha(usuarioLoginRequestDTO.senha(), usuario.getSenha())) {
             throw new InformacoesIncorretasException("Informações incorretas");
         }
 

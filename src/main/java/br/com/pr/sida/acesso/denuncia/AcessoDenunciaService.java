@@ -11,12 +11,11 @@ import br.com.pr.sida.denuncia.dto.response.DenunciaResumoResponseDTO;
 import br.com.pr.sida.usuarios.exception.InformacoesIncorretasException;
 import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenuncia;
 import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenunciaServiceReader;
+import br.com.pr.sida.shared.Criptografia;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.codec.Hex;
-import org.springframework.security.crypto.encrypt.TextEncryptor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
@@ -31,8 +30,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class AcessoDenunciaService {
 
     private final AcessoDenunciaRepository acessoDenunciaRepository;
-    private final TextEncryptor textEncryptor;
-    private final PasswordEncoder passwordEncoder;
+    private final Criptografia criptografia;
     private final DenunciaService denunciaService;
     private final DenunciaServiceReader denunciaServiceReader;
     private final ResponsavelDenunciaServiceReader responsavelDenunciaServiceReader;
@@ -83,14 +81,14 @@ public class AcessoDenunciaService {
     }
 
     private String critografarSenhaAcesso(String senhaAcesso) {
-        return passwordEncoder.encode(senhaAcesso);
+        return criptografia.criptografarSenhas(senhaAcesso);
 
     }
 
     private String criptografarCodigoAcesso(String codigoAcesso){
         String codigoAcessoCriptografado;
         do {
-            codigoAcessoCriptografado = textEncryptor.encrypt(codigoAcesso);
+            codigoAcessoCriptografado = criptografia.criptografarInformacoes(codigoAcesso);
         } while(acessoDenunciaRepository.existsByCodigoAcesso(codigoAcessoCriptografado));
         return codigoAcessoCriptografado;
     }
@@ -101,7 +99,7 @@ public class AcessoDenunciaService {
         Acesso acesso = acessoDenunciaRepository.findByCodigoAcessoHash(codigoAcessoCriptografado)
                 .orElseThrow(() -> new InformacoesIncorretasException("Informações de acesso incorretas"));
 
-        if (!passwordEncoder.matches(acessoDenunciaRequestDTO.senhaAcesso(), acesso.getSenhaAcesso())){
+        if (!criptografia.validarSenha(acessoDenunciaRequestDTO.senhaAcesso(), acesso.getSenhaAcesso())){
             throw new InformacoesIncorretasException("Informações de acesso incorretas");
         }
         

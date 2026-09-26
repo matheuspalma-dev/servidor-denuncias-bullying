@@ -4,8 +4,8 @@ import br.com.pr.sida.security.tirar.xss.TirarXssService;
 import br.com.pr.sida.usuarios.dto.request.UsuarioResgisterRequestDTO;
 import br.com.pr.sida.usuarios.dto.response.UsuarioLoginResponseDTO;
 import br.com.pr.sida.usuarios.lotacao.dto.response.UsuarioLotacaoResponseDTO;
+import br.com.pr.sida.shared.Criptografia;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 class UsuarioMapper {
 
-    private final PasswordEncoder passwordEncoder;
+    private final Criptografia criptografia;
     private final Random random = new Random();
     private final TirarXssService tirarXssService;
     private final UsuarioRepository usuarioRepository;
@@ -40,7 +40,7 @@ class UsuarioMapper {
     }
 
     private String criptografarSenha(String senha) {
-        return passwordEncoder.encode(senha);
+        return criptografia.criptografarSenhas(senha);
     }
 
     private Long gerarId() {

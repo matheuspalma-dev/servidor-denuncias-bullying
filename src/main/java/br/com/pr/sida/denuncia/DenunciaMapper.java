@@ -14,8 +14,8 @@ import br.com.pr.sida.denuncia.responsavel.denuncia.dto.response.ResponsavelDenu
 import br.com.pr.sida.denuncia.situacao.denuncia.SituacaoDenunciada;
 import br.com.pr.sida.security.tirar.xss.TirarXssService;
 import br.com.pr.sida.status.dto.response.StatusDenunciaResponseDTO;
+import br.com.pr.sida.shared.Criptografia;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.encrypt.TextEncryptor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -26,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DenunciaMapper {
 
-    private final TextEncryptor textEncryptor;
+    private final Criptografia criptografia;
     private final TirarXssService tirarXssService;
 
     public DenunciaResponseDTO converterDenunciaEmDTO(
@@ -70,7 +70,7 @@ public class DenunciaMapper {
     }
 
     private String descriptografarDetalhes(String mensagemCriptografada){
-        return textEncryptor.decrypt(mensagemCriptografada);
+        return criptografia.descriptografarInformacoes(mensagemCriptografada);
     }
 
     public Denuncia converterDTOEmDenuncia(DenunciaRequestDTO denunciaRequestDTO, Long idGerado, Escola escola, Prioridade prioridade){
@@ -96,7 +96,7 @@ public class DenunciaMapper {
     }
 
     private String criptografarDetalhes(String detalhes){
-        return textEncryptor.encrypt(detalhes);
+        return criptografia.criptografarInformacoes(detalhes);
     }
 
     public List<DenunciaResumoResponseDTO> retornarResumoDenunciaDTOList(List<Denuncia> denunciaList){

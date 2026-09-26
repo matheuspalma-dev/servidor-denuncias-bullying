@@ -27,10 +27,11 @@ public class StatusDenunciaService {
     }
 
     public void adicionarStatusDenuncia(Long denunciaId, StatusDenunciaEnum status) {
-        br.com.pr.sida.status.StatusDenuncia statusDenuncia = new br.com.pr.sida.status.StatusDenuncia();
+        StatusDenuncia statusDenuncia = new StatusDenuncia();
         statusDenuncia.setDataCriacao(LocalDate.now());
         statusDenuncia.setDenuncia(denunciaServiceReader.buscarDenunciaPorId(denunciaId));
         statusDenuncia.setStatusDenunciaEnum(status);
+
         statusDenunciaRepository.save(statusDenuncia);
     }
 
