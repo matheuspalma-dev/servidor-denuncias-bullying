@@ -4,6 +4,7 @@ import br.com.pr.sida.acesso.denuncia.dto.request.AcessoDenunciaRequestDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResumoResponseDTO;
 import br.com.pr.sida.security.jwt.TokenService;
+import br.com.pr.sida.security.jwt.UsuarioAutenticado;
 import br.com.pr.sida.security.service.RequerPermissao;
 import br.com.pr.sida.security.service.TipoRecurso;
 import jakarta.servlet.http.HttpServletResponse;
@@ -54,7 +55,8 @@ public class AcessoDenunciaController implements AcessoDenunciaApi{
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
     @RequerPermissao(tipoRecurso = TipoRecurso.ACESSO_INFORMACOES_DENUNCIA, id = "denunciaId")
     public ResponseEntity<DenunciaResponseDTO> acessarDenunciaResponsavel(@PathVariable Long denunciaId){
-        DenunciaResponseDTO denuncia = acessoDenunciaService.acessoDenuncia(denunciaId);
+        UsuarioAutenticado usuarioAutenticado = (UsuarioAutenticado) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        DenunciaResponseDTO denuncia = acessoDenunciaService.acessoDenuncia(denunciaId, usuarioAutenticado);
         return ResponseEntity.ok().body(denuncia);
     }
 

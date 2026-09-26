@@ -22,7 +22,6 @@ class UsuarioMapper {
 
     public Usuario converterDTOEmEntity(UsuarioResgisterRequestDTO usuarioResgisterRequestDTO){
         Usuario usuario = new Usuario();
-        usuario.setId(gerarId());
         usuario.setNome(tirarXss(usuarioResgisterRequestDTO.nome()));
         usuario.setEmail(usuarioResgisterRequestDTO.email());
         usuario.setCpf(tirarXss(usuarioResgisterRequestDTO.cpf()));
@@ -41,15 +40,6 @@ class UsuarioMapper {
 
     private String criptografarSenha(String senha) {
         return criptografia.criptografarSenhas(senha);
-    }
-
-    private Long gerarId() {
-        Long id;
-        do{
-            id = random.nextLong();
-        }
-        while (id <= 0 || usuarioRepository.existsById(id));
-        return id;
     }
 
     private String tirarXss(String entrada){

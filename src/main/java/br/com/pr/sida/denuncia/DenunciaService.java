@@ -97,12 +97,12 @@ public class DenunciaService {
     private void adicionarResponsaveisDenuncia(Denuncia denuncia, Prioridade prioridadeDenuncia){
         List<OrgaoCompetente> orgaoCompetenteList = new ArrayList<>();
 
-        OrgaoCompetente orgaoCompetente = definirOrgaoCompetente(denuncia.getEscola().getRedeEnsino() == RedeEnsino.MUNICIPAL ? TipoOrgaoCompetente.SME : TipoOrgaoCompetente.NRE);
+        OrgaoCompetente orgaoCompetente = denuncia.getEscola().getOrgaoCompetente();
 
         if (prioridadeDenuncia == Prioridade.URGENTE){
             orgaoCompetenteList.add(orgaoCompetente);
             OrgaoCompetente orgaoCompetenteConselhoTutelar = definirOrgaoCompetente(denuncia.getEscola().getMunicipio().getCodigoIbge(),TipoOrgaoCompetente.CONSELHO_TUTELAR);
-            OrgaoCompetente orgaoCompetentePoliciaCivil = definirOrgaoCompetente(denuncia.getEscola().getMunicipio().getCodigoIbge(),TipoOrgaoCompetente.CONSELHO_TUTELAR);
+            OrgaoCompetente orgaoCompetentePoliciaCivil = definirOrgaoCompetente(denuncia.getEscola().getMunicipio().getCodigoIbge(),TipoOrgaoCompetente.POLICIA_CIVIL);
             orgaoCompetenteList.add(orgaoCompetenteConselhoTutelar);
             orgaoCompetenteList.add(orgaoCompetentePoliciaCivil);
         } else if (prioridadeDenuncia == Prioridade.ALTA){
@@ -130,10 +130,6 @@ public class DenunciaService {
         for (QuemPratica quemPratica : quemPraticaList){
             praticaAcaoService.salvarPraticaAcao(new PraticaAcaoRequestDTO(quemPratica, denuncia));
         }
-    }
-
-    private OrgaoCompetente definirOrgaoCompetente(TipoOrgaoCompetente tipoOrgaoCompetente){
-        return orgaoCompetenteServiceReader.buscarPorTipoDeUnidade(tipoOrgaoCompetente);
     }
 
     private OrgaoCompetente definirOrgaoCompetente(Long municipioId, TipoOrgaoCompetente tipoOrgaoCompetente){

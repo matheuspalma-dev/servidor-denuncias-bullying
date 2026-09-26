@@ -53,7 +53,11 @@ public class FiltroAutentificacaoJWT extends OncePerRequestFilter {
                     String role = claims.get("role", String.class);
                     Long entidadeId = claims.get("entidadeId", Long.class);
 
-                    UsuarioAutenticado usuarioAutenticado = new UsuarioAutenticado(email, entidadeId, UsuarioLotacaoEnum.valueOf(role));
+                    String enderoIp = buscarEnderecoIp(request);
+
+                    String userAgent = buscarUserAgent(request);
+
+                    UsuarioAutenticado usuarioAutenticado = new UsuarioAutenticado(email, entidadeId, UsuarioLotacaoEnum.valueOf(role), enderoIp, userAgent);
 
                     SimpleGrantedAuthority permissao = new SimpleGrantedAuthority("ROLE_" + role);
 
@@ -75,5 +79,40 @@ public class FiltroAutentificacaoJWT extends OncePerRequestFilter {
             }
         }
         return null;
+    }
+
+    private String buscarEnderecoIp(HttpServletRequest request){
+        String enderoIp = request.getHeader("X-Forwarded-For");
+        if (enderoIp == null || enderoIp.isEmpty()) {
+            enderoIp = request.getRemoteAddr();
+        }
+
+        return enderoIp;
+    }
+
+    private String buscarUserAgent(HttpServletRequest request){
+        String userAgent = request.getHeader("User-Agent");
+
+        String os = descobrirSistemaOperacional(userAgent.toLowerCase());
+        String navegador = descobrirNavegador(userAgent.toLowerCase());
+        return os + " - " + navegador;
+    }
+
+    private String descobrirSistemaOperacional(String userAgent) {
+        if (userAgent.contains("windows"))       return "Windows";
+        else if (userAgent.contains("mac os"))   return "macOS";
+        else if (userAgent.contains("android"))  return "Android";
+        else if (userAgent.contains("iphone") || userAgent.contains("ipad")) return "iOS";
+        else if (userAgent.contains("linux"))    return "Linux";
+        else return "Desconhecido";
+    }
+
+    private String descobrirNavegador(String userAgent) {
+        if (userAgent.contains("edg/") || userAgent.contains("edge/"))  return "Edge";
+        if (userAgent.contains("opr/") || userAgent.contains("opera"))  return "Opera";
+        if (userAgent.contains("chrome"))  return "Chrome";
+        if (userAgent.contains("firefox"))  return "Firefox";
+        if (userAgent.contains("safari"))  return "Safari";
+        return "Desconhecido";
     }
 }

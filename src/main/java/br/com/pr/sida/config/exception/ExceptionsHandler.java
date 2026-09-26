@@ -147,7 +147,8 @@ public class ExceptionsHandler {
     public ProblemDetail handleErrointernoException(Exception ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                "Erro interno do servidor. Tente novamente mais tarde."
+                ex.getMessage()
+                //"Erro interno do servidor. Tente novamente mais tarde."
         );
 
         problemDetail.setTitle("Erro interno do servidor");

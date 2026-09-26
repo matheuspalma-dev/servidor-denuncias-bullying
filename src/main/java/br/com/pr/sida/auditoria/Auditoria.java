@@ -35,7 +35,7 @@ public class Auditoria {
     private UsuarioLotacaoEnum lotacao;
     @Column(name = "entidade_id", nullable = false, updatable = false)
     private Long entidadeId;
-    @Column(name = "entidade_afetada", nullable = false, updatable = false)
+    @Column(name = "entidade_afetada", nullable = true, updatable = false)
     private EntidadeAfetadaEnum entidadeAfetada;
     @Column(name = "dados_anteriores", nullable = true, updatable = false, columnDefinition = "jsonb")
     @JdbcTypeCode(SqlTypes.JSON)

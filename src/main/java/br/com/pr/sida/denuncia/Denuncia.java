@@ -52,6 +52,7 @@ public class Denuncia {
     @Column(name = "detalhes_testemunha", nullable = false)
     private String detalhesTestemunha;
     @Column(name = "relatado_para_qual_responsavel", nullable = false)
+    @Enumerated(EnumType.STRING)
     private RelatadoParaOResponsavel relatadoParaOResponsavel;
     @Column(name = "resultado_relato", nullable = true)
     private ResultadoRelato resultadoRelato;

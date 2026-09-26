@@ -3,11 +3,17 @@ package br.com.pr.sida.acesso.denuncia;
 import br.com.pr.sida.acesso.denuncia.dto.request.AcessoDenunciaRequestDTO;
 import br.com.pr.sida.acesso.denuncia.dto.response.AcessoDenunciaResponseDTO;
 import br.com.pr.sida.acesso.denuncia.exception.ErroInternoException;
+import br.com.pr.sida.auditoria.AuditoriaService;
+import br.com.pr.sida.auditoria.dto.AuditoriaDTO;
+import br.com.pr.sida.auditoria.enums.AcaoEnum;
+import br.com.pr.sida.auditoria.enums.QuemRealizouEnum;
 import br.com.pr.sida.denuncia.Denuncia;
 import br.com.pr.sida.denuncia.DenunciaService;
 import br.com.pr.sida.denuncia.DenunciaServiceReader;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResumoResponseDTO;
+import br.com.pr.sida.security.jwt.UsuarioAutenticado;
+import br.com.pr.sida.usuarios.UsuarioServiceReader;
 import br.com.pr.sida.usuarios.exception.InformacoesIncorretasException;
 import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenuncia;
 import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenunciaServiceReader;
@@ -35,6 +41,8 @@ public class AcessoDenunciaService {
     private final DenunciaServiceReader denunciaServiceReader;
     private final ResponsavelDenunciaServiceReader responsavelDenunciaServiceReader;
     @Value("${sida.seguranca.crypto-hmac}") private String hmacSecretKey;
+    private final AuditoriaService auditoriaService;
+    private final UsuarioServiceReader usuarioServiceReader;
 
     public AcessoDenunciaResponseDTO salvarAcessoDenuncia(Denuncia denuncia) {
         Acesso acesso = criarAcessoDenuncia(denuncia);
@@ -106,8 +114,22 @@ public class AcessoDenunciaService {
         return denunciaService.retornarDenunciaResponseDTO(acesso.getDenuncia());
     }
 
-    public DenunciaResponseDTO acessoDenuncia(Long denunciaId){
+    public DenunciaResponseDTO acessoDenuncia(Long denunciaId, UsuarioAutenticado usuarioAutenticado){
         Denuncia denuncia = denunciaServiceReader.buscarDenunciaPorId(denunciaId);
+        auditoriaService.registrarAuditoria(
+                new AuditoriaDTO(
+                        AcaoEnum.ACESSOU_DETALHES_DENUNCIA,
+                        QuemRealizouEnum.USUARIO,
+                        buscarUsuarioIdPorEmail(usuarioAutenticado.email()),
+                        usuarioAutenticado.lotacao(),
+                        usuarioAutenticado.entidadeId(),
+                        null,
+                        null,
+                        null,
+                        usuarioAutenticado.enderecoIp(),
+                        usuarioAutenticado.userAgent()
+                )
+        );
         return denunciaService.retornarDenunciaResponseDTO(denuncia);
     }
 
@@ -123,5 +145,9 @@ public class AcessoDenunciaService {
         List<Denuncia> denunciaList = denunciaService.converterResponsavelDenunciaParaDenuncia(responsavelDenunciaList);
 
         return denunciaServiceReader.retornarDenunciasResumo(denunciaList);
+    }
+
+    private Long buscarUsuarioIdPorEmail(String email){
+        return usuarioServiceReader.buscarUsuarioPorEmail(email).getId();
     }
 }

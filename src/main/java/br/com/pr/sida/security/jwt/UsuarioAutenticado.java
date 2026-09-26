@@ -5,6 +5,8 @@ import br.com.pr.sida.usuarios.lotacao.UsuarioLotacaoEnum;
 public record UsuarioAutenticado(
         String email,
         Long entidadeId,
-        UsuarioLotacaoEnum lotacao
+        UsuarioLotacaoEnum lotacao,
+        String enderecoIp,
+        String userAgent
 ) {
 }
