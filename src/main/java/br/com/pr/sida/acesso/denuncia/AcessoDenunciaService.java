@@ -13,7 +13,6 @@ import br.com.pr.sida.denuncia.DenunciaServiceReader;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResponseDTO;
 import br.com.pr.sida.denuncia.dto.response.DenunciaResumoResponseDTO;
 import br.com.pr.sida.security.jwt.UsuarioAutenticado;
-import br.com.pr.sida.usuarios.UsuarioServiceReader;
 import br.com.pr.sida.usuarios.exception.InformacoesIncorretasException;
 import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenuncia;
 import br.com.pr.sida.denuncia.responsavel.denuncia.ResponsavelDenunciaServiceReader;
@@ -21,6 +20,7 @@ import br.com.pr.sida.shared.Criptografia;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.codec.Hex;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,9 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Year;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
@@ -42,7 +44,6 @@ public class AcessoDenunciaService {
     private final ResponsavelDenunciaServiceReader responsavelDenunciaServiceReader;
     @Value("${sida.seguranca.crypto-hmac}") private String hmacSecretKey;
     private final AuditoriaService auditoriaService;
-    private final UsuarioServiceReader usuarioServiceReader;
 
     public AcessoDenunciaResponseDTO salvarAcessoDenuncia(Denuncia denuncia) {
         Acesso acesso = criarAcessoDenuncia(denuncia);
@@ -114,18 +115,24 @@ public class AcessoDenunciaService {
         return denunciaService.retornarDenunciaResponseDTO(acesso.getDenuncia());
     }
 
-    public DenunciaResponseDTO acessoDenuncia(Long denunciaId, UsuarioAutenticado usuarioAutenticado){
+    public DenunciaResponseDTO acessoDenuncia(Long denunciaId){
+        UsuarioAutenticado usuarioAutenticado = pegarUsuarioAutenticado();
+
         Denuncia denuncia = denunciaServiceReader.buscarDenunciaPorId(denunciaId);
+
+        Map<String, String> detalhes = new HashMap<>();
+        detalhes.put("Denuncia ID", String.valueOf(denunciaId));
         auditoriaService.registrarAuditoria(
                 new AuditoriaDTO(
                         AcaoEnum.ACESSOU_DETALHES_DENUNCIA,
                         QuemRealizouEnum.USUARIO,
-                        buscarUsuarioIdPorEmail(usuarioAutenticado.email()),
+                        usuarioAutenticado.usuarioId(),
                         usuarioAutenticado.lotacao(),
                         usuarioAutenticado.entidadeId(),
                         null,
                         null,
                         null,
+                        detalhes,
                         usuarioAutenticado.enderecoIp(),
                         usuarioAutenticado.userAgent()
                 )
@@ -134,20 +141,58 @@ public class AcessoDenunciaService {
     }
 
     public List<DenunciaResumoResponseDTO> acessarDenunciasEscola(Long escolaId){
+        UsuarioAutenticado usuarioAutenticado = pegarUsuarioAutenticado();
         List<ResponsavelDenuncia> responsavelDenunciaList = responsavelDenunciaServiceReader.buscarDenunciasPorEscolaId(escolaId);
         List<Denuncia> denunciaList = denunciaService.converterResponsavelDenunciaParaDenuncia(responsavelDenunciaList);
+
+        Map<String, String> detalhes = new HashMap<>();
+        detalhes.put("Escola ID", String.valueOf(escolaId));
+        auditoriaService.registrarAuditoria(
+                new AuditoriaDTO(
+                        AcaoEnum.ACESSOU_DENUNCIAS_DE_UMA_ESCOLA,
+                        QuemRealizouEnum.USUARIO,
+                        usuarioAutenticado.usuarioId(),
+                        usuarioAutenticado.lotacao(),
+                        usuarioAutenticado.entidadeId(),
+                        null,
+                        null,
+                        null,
+                        detalhes,
+                        usuarioAutenticado.enderecoIp(),
+                        usuarioAutenticado.userAgent()
+                )
+        );
 
         return denunciaService.retornarDenunciasResumo(denunciaList);
     }
 
     public List<DenunciaResumoResponseDTO> acessarDenunciasOrgaoCompetente(Long orgaoCompetenteId){
+        UsuarioAutenticado usuarioAutenticado = pegarUsuarioAutenticado();
         List<ResponsavelDenuncia> responsavelDenunciaList = responsavelDenunciaServiceReader.buscarDenunciasPorOrgaoCompetenteId(orgaoCompetenteId);
         List<Denuncia> denunciaList = denunciaService.converterResponsavelDenunciaParaDenuncia(responsavelDenunciaList);
+
+        Map<String, String> detalhes = new HashMap<>();
+        detalhes.put("Entidade ID", String.valueOf(orgaoCompetenteId));
+        auditoriaService.registrarAuditoria(
+                new AuditoriaDTO(
+                        AcaoEnum.ACESSOU_DENUNCIAS_DE_UMA_ENTIDADE,
+                        QuemRealizouEnum.USUARIO,
+                        usuarioAutenticado.usuarioId(),
+                        usuarioAutenticado.lotacao(),
+                        usuarioAutenticado.entidadeId(),
+                        null,
+                        null,
+                        null,
+                        detalhes,
+                        usuarioAutenticado.enderecoIp(),
+                        usuarioAutenticado.userAgent()
+                )
+        );
 
         return denunciaServiceReader.retornarDenunciasResumo(denunciaList);
     }
 
-    private Long buscarUsuarioIdPorEmail(String email){
-        return usuarioServiceReader.buscarUsuarioPorEmail(email).getId();
+    private UsuarioAutenticado pegarUsuarioAutenticado() {
+        return (UsuarioAutenticado) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

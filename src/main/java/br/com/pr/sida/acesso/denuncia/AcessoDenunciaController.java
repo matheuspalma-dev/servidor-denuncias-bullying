@@ -55,8 +55,7 @@ public class AcessoDenunciaController implements AcessoDenunciaApi{
     @PreAuthorize("hasAnyRole('ORGAO_COMPETENTE', 'REDE_ENSINO')")
     @RequerPermissao(tipoRecurso = TipoRecurso.ACESSO_INFORMACOES_DENUNCIA, id = "denunciaId")
     public ResponseEntity<DenunciaResponseDTO> acessarDenunciaResponsavel(@PathVariable Long denunciaId){
-        UsuarioAutenticado usuarioAutenticado = (UsuarioAutenticado) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        DenunciaResponseDTO denuncia = acessoDenunciaService.acessoDenuncia(denunciaId, usuarioAutenticado);
+        DenunciaResponseDTO denuncia = acessoDenunciaService.acessoDenuncia(denunciaId);
         return ResponseEntity.ok().body(denuncia);
     }
 

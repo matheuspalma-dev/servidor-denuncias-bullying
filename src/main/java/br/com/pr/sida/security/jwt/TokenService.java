@@ -38,12 +38,13 @@ public class TokenService {
                 .compact();
     }
 
-    public String gerarTokenDeAcessoUsuario(String email, ROLE role, Long entidadeId){
+    public String gerarTokenDeAcessoUsuario(String email, ROLE role, Long entidadeId, Long usuarioId){
         return Jwts.builder()
                 .subject(email)
                 .claim("role", role)
                 .claim("type", "acesso_usuario")
                 .claim("entidadeId", entidadeId)
+                .claim("usuarioId", usuarioId)
                 .issuedAt(new java.util.Date())
                 .expiration(new Date(System.currentTimeMillis() + tempoexpiracao))
                 .signWith(getSecretKey())

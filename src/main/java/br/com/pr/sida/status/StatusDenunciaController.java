@@ -21,6 +21,6 @@ public class StatusDenunciaController implements StatusDenunciaApi{
     @ResponseStatus(HttpStatus.CREATED)
     @RequerPermissao(tipoRecurso = TipoRecurso.ACESSO_INFORMACOES_DENUNCIA, id = "denunciaId")
     public void atualizarStatusDenuncia(@PathVariable Long denunciaId,@PathVariable StatusDenunciaEnum statusDenunciaEnum) {
-        statusDenunciaService.atualizarStatusDenuncia(denunciaId, statusDenunciaEnum);
+        statusDenunciaService.atualizarStatusDenuncia(denunciaId, statusDenunciaEnum, false);
     }
 }

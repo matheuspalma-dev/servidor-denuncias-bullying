@@ -3,12 +3,15 @@ package br.com.pr.sida.auditoria;
 import br.com.pr.sida.auditoria.dto.AuditoriaDTO;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+
 @Component
 public class AuditoriaMapper {
 
     public Auditoria converterDTOParaEntity(AuditoriaDTO auditoriaDTO){
         Auditoria auditoria = new Auditoria();
         auditoria.setAcao(auditoriaDTO.acao());
+        auditoria.setCriadoEm(Instant.now());
         auditoria.setQuemRealizou(auditoriaDTO.quemRealizou());
         auditoria.setIdUsuario(auditoriaDTO.idUsuario());
         auditoria.setLotacao(auditoriaDTO.lotacaoNoMomentoDaAcao());
@@ -16,6 +19,7 @@ public class AuditoriaMapper {
         auditoria.setEntidadeAfetada(auditoriaDTO.entidadeAfetada());
         auditoria.setDadosAnteriores(auditoriaDTO.dadosAnteriores());
         auditoria.setDadosNovos(auditoriaDTO.dadosNovos());
+        auditoria.setDetalhes(auditoriaDTO.detalhes());
         auditoria.setIpOrigem(auditoriaDTO.ipOrigem());
         auditoria.setUserAgent(auditoriaDTO.userAgent());
         return auditoria;

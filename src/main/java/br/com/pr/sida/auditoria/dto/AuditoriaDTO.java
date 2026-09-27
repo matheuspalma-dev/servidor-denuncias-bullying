@@ -16,6 +16,7 @@ public record AuditoriaDTO(
         EntidadeAfetadaEnum entidadeAfetada,
         Map<String, Object> dadosAnteriores,
         Map<String, Object> dadosNovos,
+        Map<String, String> detalhes,
         String ipOrigem,
         String userAgent
 

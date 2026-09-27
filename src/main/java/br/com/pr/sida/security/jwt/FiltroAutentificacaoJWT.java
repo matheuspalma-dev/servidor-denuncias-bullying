@@ -52,12 +52,13 @@ public class FiltroAutentificacaoJWT extends OncePerRequestFilter {
                     String email = claims.getSubject();
                     String role = claims.get("role", String.class);
                     Long entidadeId = claims.get("entidadeId", Long.class);
+                    Long usuarioId = claims.get("usuarioId", Long.class);
 
                     String enderoIp = buscarEnderecoIp(request);
 
                     String userAgent = buscarUserAgent(request);
 
-                    UsuarioAutenticado usuarioAutenticado = new UsuarioAutenticado(email, entidadeId, UsuarioLotacaoEnum.valueOf(role), enderoIp, userAgent);
+                    UsuarioAutenticado usuarioAutenticado = new UsuarioAutenticado(usuarioId, email, entidadeId, UsuarioLotacaoEnum.valueOf(role), enderoIp, userAgent);
 
                     SimpleGrantedAuthority permissao = new SimpleGrantedAuthority("ROLE_" + role);
 

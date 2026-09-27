@@ -26,6 +26,7 @@ public class UsuarioController implements UsuarioApi{
 
     private final UsuarioService usuarioService;
     private final TokenService tokenService;
+    private final UsuarioServiceReader usuarioServiceReader;
 
     @Override
     @PostMapping("/cadastrar")
@@ -77,6 +78,7 @@ public class UsuarioController implements UsuarioApi{
     )
     {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long UsuarioId = usuarioServiceReader.buscarUsuarioPorEmail(email).getId();
         String token;
         if (entidadeTipo == UsuarioLotacaoEnum.REDE_ENSINO) {
             token = tokenService.gerarTokenDeAcessoUsuario(email, ROLE.REDE_ENSINO, entidadeId);

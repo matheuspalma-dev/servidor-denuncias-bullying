@@ -75,7 +75,7 @@ public class DenunciaService {
 
         adicionarComoAfetou(denuncia, denunciaRequestDTO.comoTeAfetouList());
 
-        statusDenunciaService.adicionarStatusDenuncia(denuncia.getId(), StatusDenunciaEnum.RECEBIDA);
+        statusDenunciaService.atualizarStatusDenuncia(denuncia.getId(), StatusDenunciaEnum.RECEBIDA, true);
 
         adicionarQuemPratica(denuncia, denunciaRequestDTO.quemPratica());
 
