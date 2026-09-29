@@ -78,12 +78,12 @@ public class UsuarioController implements UsuarioApi{
     )
     {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long UsuarioId = usuarioServiceReader.buscarUsuarioPorEmail(email).getId();
+        Long usuarioId = usuarioServiceReader.buscarUsuarioPorEmail(email).getId();
         String token;
         if (entidadeTipo == UsuarioLotacaoEnum.REDE_ENSINO) {
-            token = tokenService.gerarTokenDeAcessoUsuario(email, ROLE.REDE_ENSINO, entidadeId);
+            token = tokenService.gerarTokenDeAcessoUsuario(email, ROLE.REDE_ENSINO, entidadeId, usuarioId);
         } else {
-            token = tokenService.gerarTokenDeAcessoUsuario(email, ROLE.ORGAO_COMPETENTE, entidadeId);
+            token = tokenService.gerarTokenDeAcessoUsuario(email, ROLE.ORGAO_COMPETENTE, entidadeId, usuarioId);
         }
 
         ResponseCookie cookie = ResponseCookie.from("tokenAcesso", token)
