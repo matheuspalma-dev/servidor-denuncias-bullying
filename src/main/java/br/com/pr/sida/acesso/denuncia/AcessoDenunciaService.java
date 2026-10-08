@@ -29,6 +29,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.Year;
 import java.util.HashMap;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
@@ -78,7 +79,7 @@ public class AcessoDenunciaService {
             mac.init(secretKey);
 
             byte[] hashBytes = mac.doFinal(codigoAcesso.trim().getBytes(StandardCharsets.UTF_8));
-            return Hex.encode(hashBytes).toString();
+            return HexFormat.of().formatHex(hashBytes);
         } catch (Exception e){
             throw new ErroInternoException("Erro ao gerar hash do código de acesso");
         }
@@ -105,6 +106,7 @@ public class AcessoDenunciaService {
     public DenunciaResponseDTO acessarDenuncia(AcessoDenunciaRequestDTO acessoDenunciaRequestDTO){
         String codigoAcesso = acessoDenunciaRequestDTO.codigoAcesso();
         String codigoAcessoCriptografado = gerarHashCodigoAcesso(codigoAcesso);
+        System.out.println("Código de Acesso Criptografado: " + codigoAcessoCriptografado);
         Acesso acesso = acessoDenunciaRepository.findByCodigoAcessoHash(codigoAcessoCriptografado)
                 .orElseThrow(() -> new InformacoesIncorretasException("Informações de acesso incorretas"));
 
