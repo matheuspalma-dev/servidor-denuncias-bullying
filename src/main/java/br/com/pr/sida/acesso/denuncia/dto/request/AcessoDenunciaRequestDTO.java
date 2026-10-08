@@ -8,7 +8,7 @@ public record AcessoDenunciaRequestDTO(
         @Size(min = 13, max = 13, message = "O código de acesso deve conter exatamente 13 caracteres.")
         String codigoAcesso,
         @NotBlank(message = "A senha é obrigatória.")
-        @Size(min = 8, max = 8, message = "A senha deve conter exatamente 8 caracteres.")
+        @Size(min = 7, max = 7, message = "A senha deve conter exatamente 7 caracteres.")
         String senhaAcesso
 ) {
 }
